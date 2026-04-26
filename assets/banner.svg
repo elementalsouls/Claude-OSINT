@@ -3,69 +3,56 @@
     <pattern id="grid" width="64" height="64" patternUnits="userSpaceOnUse">
       <path d="M 64 0 L 0 0 0 64" fill="none" stroke="#1a1a1a" stroke-width="1"/>
     </pattern>
-    <pattern id="grid-coarse" width="320" height="320" patternUnits="userSpaceOnUse">
-      <path d="M 320 0 L 0 0 0 320" fill="none" stroke="#222222" stroke-width="1"/>
-    </pattern>
     <radialGradient id="vignette" cx="50%" cy="50%" r="75%">
       <stop offset="0%" stop-color="#0a0a0a" stop-opacity="0"/>
-      <stop offset="100%" stop-color="#000000" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.7"/>
     </radialGradient>
   </defs>
 
   <!-- background -->
   <rect width="1280" height="480" fill="#0a0a0a"/>
   <rect width="1280" height="480" fill="url(#grid)"/>
-  <rect width="1280" height="480" fill="url(#grid-coarse)"/>
   <rect width="1280" height="480" fill="url(#vignette)"/>
 
-  <!-- burst / sun logo (red spokes radiating from center) -->
-  <g transform="translate(225, 240)" stroke="#DC2626" stroke-linecap="round">
-    <!-- 12 spokes at varying angles + lengths for an organic burst -->
-    <line x1="0" y1="0" x2="0"   y2="-115" stroke-width="14"/>
-    <line x1="0" y1="0" x2="58"  y2="-100" stroke-width="14"/>
-    <line x1="0" y1="0" x2="100" y2="-58"  stroke-width="14"/>
-    <line x1="0" y1="0" x2="115" y2="0"    stroke-width="14"/>
-    <line x1="0" y1="0" x2="100" y2="58"   stroke-width="14"/>
-    <line x1="0" y1="0" x2="58"  y2="100"  stroke-width="14"/>
-    <line x1="0" y1="0" x2="0"   y2="115"  stroke-width="14"/>
-    <line x1="0" y1="0" x2="-58" y2="100"  stroke-width="14"/>
-    <line x1="0" y1="0" x2="-100" y2="58"  stroke-width="14"/>
-    <line x1="0" y1="0" x2="-115" y2="0"   stroke-width="14"/>
-    <line x1="0" y1="0" x2="-100" y2="-58" stroke-width="14"/>
-    <line x1="0" y1="0" x2="-58" y2="-100" stroke-width="14"/>
-    <!-- shorter offset spokes -->
-    <line x1="0" y1="0" x2="32"  y2="-78" stroke-width="10"/>
-    <line x1="0" y1="0" x2="78"  y2="-32" stroke-width="10"/>
-    <line x1="0" y1="0" x2="78"  y2="32"  stroke-width="10"/>
-    <line x1="0" y1="0" x2="32"  y2="78"  stroke-width="10"/>
-    <line x1="0" y1="0" x2="-32" y2="78"  stroke-width="10"/>
-    <line x1="0" y1="0" x2="-78" y2="32"  stroke-width="10"/>
-    <line x1="0" y1="0" x2="-78" y2="-32" stroke-width="10"/>
-    <line x1="0" y1="0" x2="-32" y2="-78" stroke-width="10"/>
-    <!-- center dot -->
+  <!-- burst / sun logo: 12 even spokes radiating from center -->
+  <g transform="translate(200, 240)" stroke="#DC2626" stroke-linecap="round">
+    <line x1="0" y1="0" x2="0"    y2="-115" stroke-width="14"/>
+    <line x1="0" y1="0" x2="58"   y2="-100" stroke-width="14"/>
+    <line x1="0" y1="0" x2="100"  y2="-58"  stroke-width="14"/>
+    <line x1="0" y1="0" x2="115"  y2="0"    stroke-width="14"/>
+    <line x1="0" y1="0" x2="100"  y2="58"   stroke-width="14"/>
+    <line x1="0" y1="0" x2="58"   y2="100"  stroke-width="14"/>
+    <line x1="0" y1="0" x2="0"    y2="115"  stroke-width="14"/>
+    <line x1="0" y1="0" x2="-58"  y2="100"  stroke-width="14"/>
+    <line x1="0" y1="0" x2="-100" y2="58"   stroke-width="14"/>
+    <line x1="0" y1="0" x2="-115" y2="0"    stroke-width="14"/>
+    <line x1="0" y1="0" x2="-100" y2="-58"  stroke-width="14"/>
+    <line x1="0" y1="0" x2="-58"  y2="-100" stroke-width="14"/>
     <circle cx="0" cy="0" r="14" fill="#DC2626" stroke="none"/>
   </g>
 
-  <!-- main wordmark -->
-  <g transform="translate(380, 270)">
-    <text x="0" y="0" font-size="115" font-weight="700" fill="#f1f5f9" letter-spacing="-3">claude</text>
-    <text x="395" y="0" font-size="115" font-weight="700" fill="#DC2626" letter-spacing="-3">osint</text>
-    <!-- red underline -->
-    <line x1="0" y1="22" x2="710" y2="22" stroke="#DC2626" stroke-width="5"/>
-    <!-- subtitle -->
-    <text x="0" y="62" font-size="22" font-weight="400" fill="#94a3b8" letter-spacing="0.5">Claude-powered external red-team OSINT &amp; bug-bounty recon skills</text>
+  <!-- main wordmark: claude (white) osint (red), 88pt to fit cleanly with stat panel -->
+  <g transform="translate(345, 265)">
+    <text x="0" y="0" font-size="88" font-weight="700" fill="#f1f5f9" letter-spacing="-2">claude</text>
+    <text x="295" y="0" font-size="88" font-weight="700" fill="#DC2626" letter-spacing="-2">osint</text>
+    <!-- red underline below wordmark -->
+    <line x1="0" y1="20" x2="540" y2="20" stroke="#DC2626" stroke-width="4"/>
+    <!-- subtitle below underline -->
+    <text x="0" y="55" font-size="20" font-weight="400" fill="#94a3b8" letter-spacing="0.3">Claude-powered external red-team OSINT &amp; bug-bounty recon skills</text>
   </g>
 
-  <!-- right-side stats -->
+  <!-- right-side stat panel: 2 stacked lines, mimics claude-red layout -->
   <g transform="translate(1010, 230)">
+    <!-- line 1: "2  skills" -->
     <text x="0" y="0" font-size="62" font-weight="600" fill="#f1f5f9">2</text>
-    <text x="78" y="-8" font-size="22" font-weight="400" fill="#94a3b8">skills</text>
-    <text x="78" y="22" font-size="22" font-weight="400" fill="#94a3b8">~5,500 lines</text>
-    <text x="0" y="64" font-size="62" font-weight="600" fill="#f1f5f9">by</text>
-    <text x="105" y="55" font-size="22" font-weight="400" fill="#94a3b8">ElementalSoul</text>
-    <text x="105" y="80" font-size="22" font-weight="400" fill="#94a3b8">v2.1 · MIT</text>
+    <text x="55" y="-8" font-size="20" fill="#94a3b8">skills</text>
+    <text x="55" y="18" font-size="20" fill="#94a3b8">~5,500 lines</text>
+    <!-- line 2: "by  ElementalSoul" -->
+    <text x="0" y="68" font-size="62" font-weight="600" fill="#f1f5f9">by</text>
+    <text x="100" y="60" font-size="20" fill="#94a3b8">ElementalSoul</text>
+    <text x="100" y="86" font-size="20" fill="#94a3b8">v2.1 · MIT</text>
   </g>
 
   <!-- footer url -->
-  <text x="345" y="445" font-size="16" font-weight="400" fill="#475569" letter-spacing="0.5">github.com/elementalsouls/Claude-OSINT</text>
+  <text x="640" y="445" text-anchor="middle" font-size="14" font-weight="400" fill="#475569" letter-spacing="0.5">github.com/elementalsouls/Claude-OSINT</text>
 </svg>
