@@ -1,17 +1,48 @@
-# Claude-OSINT
+<div align="center">
 
-> **Two production-ready Claude skills for external red-team OSINT and bug-bounty reconnaissance.**
-> Methodology + arsenal, paired. ~5,500 lines of structured OSINT tradecraft. Tested to ~97% PASS on a 32-prompt self-evaluation suite. ~85–90% coverage of what an experienced practitioner reaches for during the recon phase of an authorized engagement.
+# 🦅 Claude-OSINT
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Skills: 2](https://img.shields.io/badge/skills-2-orange.svg)](#what-you-get)
-[![Modules: 90](https://img.shields.io/badge/modules-~90-red.svg)](#coverage)
-[![Version: 2.1](https://img.shields.io/badge/version-2.1-green.svg)](CHANGELOG.md)
-[![Self-Test: 31%2F32](https://img.shields.io/badge/self--test-31%2F32%20PASS-success.svg)](tests/smoke-test-prompts.md)
+### Two production-ready Claude skills for external red-team OSINT and bug-bounty reconnaissance
+
+**Methodology + arsenal, paired.**
+~5,500 lines of structured OSINT tradecraft · 96.9% PASS on 32-prompt self-eval · ~85–90% practitioner coverage for the recon phase of authorized engagements.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
+[![Version](https://img.shields.io/badge/version-2.1-green.svg?style=flat-square)](CHANGELOG.md)
+[![Skills](https://img.shields.io/badge/skills-2-orange.svg?style=flat-square)](#-what-you-get)
+[![Modules](https://img.shields.io/badge/modules-~90-red.svg?style=flat-square)](#-coverage)
+[![Self-Test](https://img.shields.io/badge/self--test-31%2F32%20PASS-success.svg?style=flat-square)](tests/smoke-test-prompts.md)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](CONTRIBUTING.md)
+[![Last Commit](https://img.shields.io/github/last-commit/elementalsouls/Claude-OSINT?style=flat-square)](https://github.com/elementalsouls/Claude-OSINT/commits/main)
+[![Stars](https://img.shields.io/github/stars/elementalsouls/Claude-OSINT?style=flat-square)](https://github.com/elementalsouls/Claude-OSINT/stargazers)
+
+[Quick Start](#-quick-start) · [What's in the box](#-whats-in-the-box) · [Coverage](#-coverage) · [Examples](#-examples) · [Architecture](docs/architecture.md) · [Contributing](CONTRIBUTING.md)
+
+</div>
 
 ---
 
-## What you get
+## 📚 Table of Contents
+
+- [What you get](#-what-you-get)
+- [Quick start](#-quick-start)
+- [Coverage](#-coverage)
+- [What's in the box](#-whats-in-the-box)
+- [How they work together](#-how-they-work-together)
+- [The asset graph](#-the-asset-graph)
+- [Confidence pipeline](#-confidence-pipeline)
+- [Examples](#-examples)
+- [Self-test](#-self-test)
+- [Authorization & legal](#-authorization--legal)
+- [Architecture & design philosophy](#-architecture--design-philosophy)
+- [Project status & roadmap](#-project-status--roadmap)
+- [Contributing](#-contributing)
+- [Acknowledgments](#-acknowledgments)
+- [License](#-license)
+
+---
+
+## 🎁 What you get
 
 Two complementary [Claude skills](https://docs.claude.com/en/docs/claude-code/skills) for offensive OSINT:
 
@@ -24,12 +55,12 @@ Most prompts pull both — they're complementary, not overlapping.
 
 ---
 
-## Quick start
+## 🚀 Quick start
 
 ### Option A: Use with Claude Code
 
 ```bash
-git clone https://github.com/<your-username>/Claude-OSINT.git
+git clone https://github.com/elementalsouls/Claude-OSINT.git
 cd Claude-OSINT
 
 # Populate the full SKILL.md content (one-time, after clone)
@@ -55,7 +86,7 @@ Both `SKILL.md` files are readable Markdown. Open them in any editor and use as 
 
 ---
 
-## Coverage
+## 📊 Coverage
 
 These skills are scoped to **external OSINT-driven reconnaissance for authorized engagements**. Honest coverage assessment by red-team archetype:
 
@@ -73,9 +104,22 @@ These skills are scoped to **external OSINT-driven reconnaissance for authorized
 
 See [`docs/coverage.md`](docs/coverage.md) for the full coverage breakdown.
 
+```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#1e293b','primaryTextColor':'#f1f5f9','primaryBorderColor':'#475569','lineColor':'#64748b','secondaryColor':'#0f172a','tertiaryColor':'#334155'}}}%%
+pie showData
+    title Coverage by Engagement Phase
+    "External OSINT / passive recon" : 88
+    "External active recon (light probing)" : 80
+    "Reporting (technical + exec)" : 75
+    "Disclosure / vendor coordination" : 60
+    "Re-test / continuous monitoring" : 30
+    "Pre-engagement / SOW / scoping" : 10
+    "Out of scope (exploit, post-exploit, C2, AD, evasion)" : 0
+```
+
 ---
 
-## What's in the box
+## 📦 What's in the box
 
 ### `osint-methodology` (the "how to think")
 
@@ -135,48 +179,116 @@ See [`docs/coverage.md`](docs/coverage.md) for the full coverage breakdown.
 
 ---
 
-## How they work together
+## 🔄 How they work together
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                                                                 │
-│   USER PROMPT                                                   │
-│   "Plan first 4 hours of recon on acme.com (in-scope BB)"      │
-│                                                                 │
-└────────────┬────────────────────────────────────┬───────────────┘
-             │                                    │
-             v                                    v
-┌──────────────────────────┐         ┌──────────────────────────┐
-│   osint-methodology      │         │   offensive-osint        │
-│   ─────────────────      │         │   ──────────────         │
-│   §0  scope check        │         │                          │
-│   §7.6 4-hour profile    │         │                          │
-│   §7   5-stage pipeline  │         │                          │
-│   §8.5 asset triage      │         │                          │
-│   §11  identity fabric   │ ──────> │   §16.1  Swagger paths   │
-│        methodology       │         │   §16.2  GraphQL probe   │
-│   §22  breach correlation│         │   §16.7  SSO prefixes    │
-│                          │ <────── │   §22.1  Entra endpoints │
-│                          │         │   §17    secret catalog  │
-│                          │         │   §23.1  validators      │
-└──────────────────────────┘         └──────────────────────────┘
-             │                                    │
-             └────────────────┬───────────────────┘
-                              v
-                ┌─────────────────────────────┐
-                │   STRUCTURED OSINT OUTPUT   │
-                │   - Asset graph             │
-                │   - Findings (sev+conf)     │
-                │   - Attack-path hints       │
-                │   - Reproduction package    │
-                └─────────────────────────────┘
+```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#1e293b','primaryTextColor':'#f1f5f9','primaryBorderColor':'#475569','lineColor':'#94a3b8','secondaryColor':'#0f172a'}}}%%
+flowchart TD
+    U["👤 USER PROMPT<br/><i>'Plan first 4 hours of recon<br/>on acme.com (in-scope BB)'</i>"]
+
+    subgraph M ["📘 osint-methodology — how to think"]
+        M1["§0 scope check"]
+        M2["§7.6 4-hour profile"]
+        M3["§7 5-stage pipeline"]
+        M4["§8.5 asset triage"]
+        M5["§11 identity fabric"]
+        M6["§22 breach correlation"]
+    end
+
+    subgraph A ["🛠️ offensive-osint — what to reach for"]
+        A1["§16.1 Swagger paths (28)"]
+        A2["§16.2 GraphQL probe"]
+        A3["§16.7 SSO prefixes (8)"]
+        A4["§22.1 Entra endpoints"]
+        A5["§17 secret catalog (48)"]
+        A6["§23.1 validators (9)"]
+    end
+
+    O["📋 STRUCTURED OUTPUT<br/>• Asset graph<br/>• Findings (severity + confidence)<br/>• Attack-path hints<br/>• Reproduction package"]
+
+    U --> M
+    U --> A
+    M <-.cross-reference.-> A
+    M --> O
+    A --> O
+
+    style U fill:#3b82f6,stroke:#1e40af,color:#fff
+    style M fill:#1e293b,stroke:#475569,color:#f1f5f9
+    style A fill:#7c2d12,stroke:#9a3412,color:#fef3c7
+    style O fill:#14532d,stroke:#166534,color:#dcfce7
 ```
 
 Methodology pulls from arsenal for concrete artifacts; arsenal references methodology for context.
 
 ---
 
-## Examples
+## 🕸️ The asset graph
+
+Every discovery is a typed asset — never a free-floating string. **29 asset types across 9 categories**, **23 typed edges**, with provenance tracked through every transition.
+
+```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#1e293b','primaryTextColor':'#f1f5f9','primaryBorderColor':'#475569','lineColor':'#94a3b8'}}}%%
+flowchart TD
+    Domain["🌐 Domain"]
+    Subdomain["🔗 Subdomain"]
+    IP["📡 IP"]
+    ASN["🏢 ASN"]
+    WebApp["💻 WebApp"]
+    ApiSpec["📜 ApiSpec"]
+    Secret["🔑 Secret"]
+    Email["📧 Email"]
+    Person["👤 Person"]
+    Breach["💥 Breach"]
+
+    Domain -->|ALIAS_OF / RESOLVES_TO| Subdomain
+    Subdomain -->|RESOLVES_TO| IP
+    IP -->|IN_NETBLOCK| ASN
+    Subdomain -->|HOSTED_ON| ASN
+    Subdomain -->|EXPOSES| WebApp
+    WebApp -->|DOCUMENTED_BY| ApiSpec
+    WebApp -->|CONTAINS_SECRET| Secret
+    Secret -->|BREACHED_FROM| Breach
+    Breach -->|CONTAINS| Email
+    Email -->|EMPLOYED_BY| Person
+
+    style Domain fill:#1e40af,color:#fff
+    style Subdomain fill:#1e40af,color:#fff
+    style IP fill:#0891b2,color:#fff
+    style ASN fill:#0891b2,color:#fff
+    style WebApp fill:#7c3aed,color:#fff
+    style ApiSpec fill:#7c3aed,color:#fff
+    style Secret fill:#dc2626,color:#fff
+    style Breach fill:#dc2626,color:#fff
+    style Email fill:#ea580c,color:#fff
+    style Person fill:#ea580c,color:#fff
+```
+
+---
+
+## 🎚️ Confidence pipeline
+
+Every assertion carries a graded confidence level. Per-asset-type upgrade workflows in `methodology` §2.1 define exactly what evidence moves an asset between tiers.
+
+```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#1e293b','primaryTextColor':'#f1f5f9','primaryBorderColor':'#475569','lineColor':'#94a3b8'}}}%%
+flowchart LR
+    T["🟡 TENTATIVE<br/>1 source<br/>inferred pattern"]
+    F["🟠 FIRM<br/>2+ sources<br/>OR direct observation"]
+    C["🟢 CONFIRMED<br/>verified +<br/>multiple independent corroborations"]
+
+    T -->|+ corroborating evidence| F
+    F -->|+ verification| C
+    C -.->|stale / contradicted| F
+    F -.->|stale / contradicted| T
+
+    style T fill:#ca8a04,color:#fff
+    style F fill:#ea580c,color:#fff
+    style C fill:#16a34a,color:#fff
+```
+
+---
+
+## 📂 Examples
 
 See [`examples/`](examples/) for end-to-end walk-throughs:
 
@@ -187,7 +299,7 @@ See [`examples/`](examples/) for end-to-end walk-throughs:
 
 ---
 
-## Self-test
+## ✅ Self-test
 
 We ship a 32-prompt smoke test ([`tests/smoke-test-prompts.md`](tests/smoke-test-prompts.md)). After installing the skills, paste each prompt into a fresh Claude session and verify:
 
@@ -198,9 +310,18 @@ We ship a 32-prompt smoke test ([`tests/smoke-test-prompts.md`](tests/smoke-test
 
 Current self-grade: **31 / 32 PASS** (1 PARTIAL on combinatorial cloud-bucket generation, which is acceptable runtime synthesis).
 
+```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#1e293b','primaryTextColor':'#f1f5f9','primaryBorderColor':'#475569','lineColor':'#94a3b8','xyChart':{'plotColorPalette':'#dc2626,#16a34a'}}}%%
+xychart-beta
+    title "Self-test grade by version"
+    x-axis ["v2.0 initial", "v2.1 current"]
+    y-axis "Tests" 0 --> 32
+    bar [1, 31]
+```
+
 ---
 
-## Authorization & legal
+## ⚖️ Authorization & legal
 
 These skills are intended for assets you **own** or have **written authorization to assess** (red-team rules of engagement, bug-bounty in-scope assets, ASM contracts).
 
@@ -212,7 +333,7 @@ The skills explicitly **exclude** active exploitation, post-exploitation, malwar
 
 ---
 
-## Architecture & design philosophy
+## 🏗️ Architecture & design philosophy
 
 See [`docs/architecture.md`](docs/architecture.md). Highlights:
 
@@ -227,7 +348,7 @@ See [`docs/architecture.md`](docs/architecture.md). Highlights:
 
 ---
 
-## Project status & roadmap
+## 🗺️ Project status & roadmap
 
 | Phase | Status | Description |
 |---|---|---|
@@ -237,9 +358,20 @@ See [`docs/architecture.md`](docs/architecture.md). Highlights:
 | v2.2 (planned) | 🔜 | Continuous-monitoring playbook, multi-tenant engagement workflow, Burp Suite extension recipes |
 | v3.0 (planned) | 🔜 | Plugin manifest for one-click Claude Code install, optional MCP server companion |
 
+```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#1e293b','primaryTextColor':'#f1f5f9','primaryBorderColor':'#475569','lineColor':'#94a3b8'}}}%%
+timeline
+    title Release timeline
+    v1.0 : Original framework
+    v2.0 : External-red-team posture rewrite : 17 new sections
+    v2.1 : Comprehensive expansion : 11 new methodology sections : 18 new arsenal sections : 19 modern secret patterns
+    v2.2 : Continuous-monitoring playbook : Multi-tenant engagement workflow : Burp Suite extension recipes
+    v3.0 : Plugin manifest (one-click install) : MCP server companion
+```
+
 ---
 
-## Contributing
+## 🤝 Contributing
 
 Pull requests welcome. See [`CONTRIBUTING.md`](CONTRIBUTING.md). Most-needed contributions:
 
@@ -251,27 +383,33 @@ Pull requests welcome. See [`CONTRIBUTING.md`](CONTRIBUTING.md). Most-needed con
 
 ---
 
-## Acknowledgments
+## 🙏 Acknowledgments
 
-- Built on lessons from the [Falcon-Recon](https://github.com/<your-username>/falcon-recon) external attack-surface management platform — the 90+ modules in these skills correspond closely to Falcon-Recon's implemented techniques.
+- Built on lessons from the [Falcon-Recon](https://github.com/elementalsouls/falcon-recon) external attack-surface management platform — the 90+ modules in these skills correspond closely to Falcon-Recon's implemented techniques.
 - Methodology layer originally based on [SnailSploit/offensive-checklist](https://github.com/SnailSploit/offensive-checklist) (v1.x).
 - Inspired by [Bellingcat's Online Investigations Toolkit](https://www.bellingcat.com/resources/2024/09/24/bellingcat-online-investigations-toolkit/), [IntelTechniques tools](https://inteltechniques.com/tools/), [OSINT Framework](https://osintframework.com/).
 - Tool inventory pulls from the [ProjectDiscovery](https://github.com/projectdiscovery), [Six2dez reconftw](https://github.com/six2dez/reconftw), [SecLists](https://github.com/danielmiessler/SecLists), and [Assetnote Wordlists](https://wordlists.assetnote.io/) ecosystems.
 
 ---
 
-## License
+## 📄 License
 
 [MIT](LICENSE) — use, modify, and redistribute freely. Attribution appreciated but not required.
 
 ---
 
-## Contact / Reporting issues
+## 📮 Contact / Reporting issues
 
-- **Bug reports / feature requests:** [GitHub Issues](https://github.com/<your-username>/Claude-OSINT/issues)
+- **Bug reports / feature requests:** [GitHub Issues](https://github.com/elementalsouls/Claude-OSINT/issues)
 - **Security concerns:** see [`SECURITY.md`](SECURITY.md)
-- **Discussion:** [GitHub Discussions](https://github.com/<your-username>/Claude-OSINT/discussions)
+- **Discussion:** [GitHub Discussions](https://github.com/elementalsouls/Claude-OSINT/discussions)
 
 ---
 
+<div align="center">
+
 **Built for the offensive-recon community. Use responsibly. Stay in scope.**
+
+⭐ **If this helps your work, drop a star** ⭐
+
+</div>
