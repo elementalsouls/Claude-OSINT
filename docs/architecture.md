@@ -9,28 +9,38 @@ The skills are deliberately split into **methodology** ("how to think") and **ar
 
 A single mega-skill of ~5,500 lines would have noisier triggering and worse retrieval. The split lets each skill have a tight, distinct trigger vocabulary.
 
+```mermaid
+flowchart TD
+    U["USER ASKS:<br/><i>'How do I find an origin behind Cloudflare?'</i>"]
+    M["📘 methodology §27<br/>technique catalog + confidence rules"]
+    A["🛠️ arsenal §16.15<br/>actual curl commands"]
+    O["✅ Composed answer"]
+    U --> M
+    U --> A
+    M --> O
+    A --> O
+    style U fill:#3b82f6,color:#fff
+    style M fill:#1e293b,color:#f1f5f9
+    style A fill:#7c2d12,color:#fef3c7
+    style O fill:#14532d,color:#dcfce7
 ```
-Most prompts pull both. They're complementary, not overlapping.
 
-  USER ASKS: "How do I find an origin behind Cloudflare?"
-       │
-       ├── methodology §27 (the technique catalog + confidence rules)
-       │
-       └── arsenal §16.15 (the actual curl commands)
-```
+> Most prompts pull both. They're complementary, not overlapping.
 
 ## Confidence model
 
 Every assertion carries a graded confidence level:
 
-```
-TENTATIVE  →  FIRM  →  CONFIRMED
-   ▲           ▲          ▲
-   │           │          │
-   1+ source   2+ src.    Verified
-   inferred    OR direct  AND multiple
-   pattern     observed   independent
-                          corroborations
+```mermaid
+flowchart LR
+    T["🟡 TENTATIVE<br/>1 source · inferred pattern"]
+    F["🟠 FIRM<br/>2+ sources OR direct observation"]
+    C["🟢 CONFIRMED<br/>verified + multiple independent corroborations"]
+    T -->|+ corroborating evidence| F
+    F -->|+ verification| C
+    style T fill:#ca8a04,color:#fff
+    style F fill:#ea580c,color:#fff
+    style C fill:#16a34a,color:#fff
 ```
 
 Per-asset-type upgrade workflows in `methodology` §2.1 specify exactly what evidence moves an asset between levels.
@@ -39,12 +49,19 @@ Per-asset-type upgrade workflows in `methodology` §2.1 specify exactly what evi
 
 Severity is **operational**, anchored on examples. The methodology rubric (§9) defines tiers:
 
-```
-CRITICAL → Pre-auth RCE / valid creds / listable prod data / fundamental trust violations
-HIGH     → Sourcemap, open GraphQL introspection, takeover, reflected CORS+creds, exposed admin UI
-MEDIUM   → Missing headers, info disclosure, hardening gaps, brute-force exposure
-LOW      → Cosmetic, marginal hardening
-INFO     → Recordable, no immediate action
+```mermaid
+flowchart TD
+    CRIT["🔴 CRITICAL<br/>Pre-auth RCE · valid creds · listable prod data · trust violations"]
+    HIGH["🟠 HIGH<br/>Sourcemap · open GraphQL introspection · takeover · reflected CORS+creds · exposed admin UI"]
+    MED["🟡 MEDIUM<br/>Missing headers · info disclosure · hardening gaps · brute-force exposure"]
+    LOW["🟢 LOW<br/>Cosmetic · marginal hardening"]
+    INFO["⚪ INFO<br/>Recordable · no immediate action"]
+    CRIT --> HIGH --> MED --> LOW --> INFO
+    style CRIT fill:#7f1d1d,color:#fff
+    style HIGH fill:#9a3412,color:#fff
+    style MED fill:#a16207,color:#fff
+    style LOW fill:#15803d,color:#fff
+    style INFO fill:#475569,color:#fff
 ```
 
 The arsenal severity matrix (§40) provides 80+ worked examples for triage. Escalation rules cover special cases (HSTS missing on `/login` → MED→HIGH, etc.).
@@ -53,39 +70,53 @@ The arsenal severity matrix (§40) provides 80+ worked examples for triage. Esca
 
 Every probe carries a detectability tag:
 
-```
-LOW    → Passive sources (CT logs, Wayback, Shodan InternetDB, Hunter.io, etc.)
-MEDIUM → Targeted probes (user-enum, validator queries, GraphQL probes, screenshots)
-HIGH   → Active scans (port scans, Nuclei full templates, web fuzzing, brute-force)
+```mermaid
+flowchart LR
+    L["🟢 LOW<br/>Passive sources<br/>CT logs · Wayback · Shodan InternetDB · Hunter.io"]
+    M["🟡 MEDIUM<br/>Targeted probes<br/>user-enum · validator queries · GraphQL probes · screenshots"]
+    H["🔴 HIGH<br/>Active scans<br/>port scans · Nuclei full templates · web fuzzing · brute-force"]
+    L --> M --> H
+    style L fill:#15803d,color:#fff
+    style M fill:#a16207,color:#fff
+    style H fill:#7f1d1d,color:#fff
 ```
 
 The detection-aware probing section (`methodology` §6.4) provides the back-off ladder for when you start hitting active defenses.
 
 ## Asset graph model
 
-```
-              ┌──────────┐
-              │  Domain  │
-              └─────┬────┘
-                    │ ALIAS_OF / RESOLVES_TO
-              ┌─────▼────┐
-              │Subdomain │◀──────HOSTED_ON─────┐
-              └─────┬────┘                     │
-                    │ RESOLVES_TO              │
-              ┌─────▼────┐  IN_NETBLOCK   ┌────┴───┐
-              │   IP     ├───────────────▶│  ASN   │
-              └─────┬────┘                └────────┘
-                    │ EXPOSES
-              ┌─────▼────┐    DOCUMENTED_BY  ┌──────────┐
-              │  WebApp  ├──────────────────▶│  ApiSpec │
-              └─────┬────┘                   └──────────┘
-                    │ CONTAINS_SECRET
-              ┌─────▼────┐
-              │  Secret  │◀──BREACHED_FROM──┐
-              └──────────┘                  │
-                                       ┌────┴─────┐
-                                       │  Email   │◀──EMPLOYED_BY── Person
-                                       └──────────┘
+```mermaid
+flowchart TD
+    Domain["🌐 Domain"]
+    Subdomain["🔗 Subdomain"]
+    IP["📡 IP"]
+    ASN["🏢 ASN"]
+    WebApp["💻 WebApp"]
+    ApiSpec["📜 ApiSpec"]
+    Secret["🔑 Secret"]
+    Email["📧 Email"]
+    Person["👤 Person"]
+    Breach["💥 Breach"]
+    Domain -->|ALIAS_OF / RESOLVES_TO| Subdomain
+    Subdomain -->|RESOLVES_TO| IP
+    IP -->|IN_NETBLOCK| ASN
+    Subdomain -->|HOSTED_ON| ASN
+    Subdomain -->|EXPOSES| WebApp
+    WebApp -->|DOCUMENTED_BY| ApiSpec
+    WebApp -->|CONTAINS_SECRET| Secret
+    Secret -->|BREACHED_FROM| Breach
+    Breach -->|CONTAINS| Email
+    Email -->|EMPLOYED_BY| Person
+    style Domain fill:#1e40af,color:#fff
+    style Subdomain fill:#1e40af,color:#fff
+    style IP fill:#0891b2,color:#fff
+    style ASN fill:#0891b2,color:#fff
+    style WebApp fill:#7c3aed,color:#fff
+    style ApiSpec fill:#7c3aed,color:#fff
+    style Secret fill:#dc2626,color:#fff
+    style Breach fill:#dc2626,color:#fff
+    style Email fill:#ea580c,color:#fff
+    style Person fill:#ea580c,color:#fff
 ```
 
 29 asset types organized in 9 categories. 23 typed edges. Discipline: every discovery is a typed asset (never a free-floating string), with provenance tracked.
@@ -120,15 +151,13 @@ This shape is portable to any asset / findings store (Falcon-Recon, ASM platform
 
 When techniques produce outputs that feed other techniques, sidecar JSON files enable late binding:
 
-```
-┌──────────────────────┐    writes      ┌──────────────────────┐
-│ mobile_attack_surface│───────────────▶│ mobile_endpoints.json│
-└──────────────────────┘                └─────────┬────────────┘
-                                                  │ reads
-                                                  ▼
-                                        ┌──────────────────────┐
-                                        │   api_discovery      │
-                                        └──────────────────────┘
+```mermaid
+flowchart LR
+    M["📱 mobile_attack_surface"] -->|writes| J["📄 mobile_endpoints.json"]
+    J -->|reads| A["🔌 api_discovery"]
+    style M fill:#7c3aed,color:#fff
+    style J fill:#475569,color:#f1f5f9
+    style A fill:#7c3aed,color:#fff
 ```
 
 Patterns documented in `methodology` §24.2.
@@ -137,13 +166,17 @@ Patterns documented in `methodology` §24.2.
 
 Credential validators are **read-only by design**. Never destructive.
 
-```
-Discovery → Validation → Scope-enum → Attack-path-hint
-   (catalog    (read-only    (read-only     (operator
-   regex)      /me, /user,   IAM enum,      pivots from
-               auth.test)    repo enum,     here)
-                             workspace
-                             enum)
+```mermaid
+flowchart LR
+    D["🔍 Discovery<br/><i>catalog regex</i>"]
+    V["✅ Validation<br/><i>read-only<br/>/me · /user · auth.test</i>"]
+    S["🗺️ Scope-enum<br/><i>read-only<br/>IAM · repo · workspace</i>"]
+    A["🎯 Attack-path-hint<br/><i>operator pivots from here</i>"]
+    D --> V --> S --> A
+    style D fill:#1e40af,color:#fff
+    style V fill:#15803d,color:#fff
+    style S fill:#7c3aed,color:#fff
+    style A fill:#9a3412,color:#fff
 ```
 
 9 providers covered (Postman, AWS, GitHub, Slack, Anthropic, OpenAI, npm, Atlassian, DataDog). Hard rule: never create / delete / send. Tag every validation with detectability + `checked_at`.
@@ -190,6 +223,6 @@ These exclusions are intentional. A "comprehensive offensive security" skill wou
 
 ## Why pair with Falcon-Recon?
 
-These skills were extracted from the operational tradecraft of [Falcon-Recon](https://github.com/<your-username>/falcon-recon), an external attack-surface management platform. The 90+ modules in these skills correspond closely to Falcon-Recon's implemented techniques, but generalized so they apply to any OSINT engagement (with or without Falcon-Recon).
+These skills were extracted from the operational tradecraft of [Falcon-Recon](https://github.com/elementalsouls/falcon-recon), an external attack-surface management platform. The 90+ modules in these skills correspond closely to Falcon-Recon's implemented techniques, but generalized so they apply to any OSINT engagement (with or without Falcon-Recon).
 
 Use the skills standalone, or use them alongside Falcon-Recon (or any ASM platform) to drive your engagement.

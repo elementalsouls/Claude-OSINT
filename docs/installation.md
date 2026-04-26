@@ -9,7 +9,7 @@ Claude Code looks for skills in `~/.claude/skills/` by default.
 ### Method 1: Direct copy
 
 ```bash
-git clone https://github.com/<your-username>/Claude-OSINT.git
+git clone https://github.com/elementalsouls/Claude-OSINT.git
 cd Claude-OSINT
 
 # Optional: populate full SKILL.md content from bundled full-skills (one-time after clone)
@@ -24,7 +24,7 @@ cp -r skills/offensive-osint   ~/.claude/skills/
 ### Method 2: Symlink (stays in sync with git pull)
 
 ```bash
-git clone https://github.com/<your-username>/Claude-OSINT.git ~/.local/share/Claude-OSINT
+git clone https://github.com/elementalsouls/Claude-OSINT.git ~/.local/share/Claude-OSINT
 mkdir -p ~/.claude/skills
 
 ln -sf ~/.local/share/Claude-OSINT/skills/osint-methodology ~/.claude/skills/osint-methodology
@@ -114,7 +114,7 @@ Most AI IDEs allow custom system-prompt injection. Use the API method above as a
 The skill's `triggers:` list controls auto-activation. If your prompt's wording isn't in the list, Claude may not pull the skill.
 
 - Try rephrasing with a phrase from the SKILL.md `triggers:` list.
-- If your phrasing is a common practitioner term, [open an issue](https://github.com/<your-username>/Claude-OSINT/issues) to add it.
+- If your phrasing is a common practitioner term, [open an issue](https://github.com/elementalsouls/Claude-OSINT/issues) to add it.
 
 ### "I get the structured-outline SKILL.md, not the full content"
 

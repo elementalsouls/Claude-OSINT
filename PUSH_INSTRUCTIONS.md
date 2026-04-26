@@ -126,7 +126,7 @@ gh repo create Claude-OSINT --public --source=. --remote=origin --push
 7. Then locally:
 
 ```powershell
-git remote add origin https://github.com/<your-username>/Claude-OSINT.git
+git remote add origin https://github.com/elementalsouls/Claude-OSINT.git
 git push -u origin main
 ```
 
@@ -205,7 +205,7 @@ After push, test the install path:
 ```powershell
 # In a temporary directory
 cd ~\Desktop
-git clone https://github.com/<your-username>/Claude-OSINT.git test-clone
+git clone https://github.com/elementalsouls/Claude-OSINT.git test-clone
 cd test-clone
 
 # Verify structure
