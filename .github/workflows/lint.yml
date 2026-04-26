@@ -1,0 +1,97 @@
+name: Lint
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  markdown:
+    name: Markdown lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DavidAnson/markdownlint-cli2-action@v18
+        with:
+          globs: |
+            **/*.md
+            !node_modules
+          config: |
+            {
+              "default": true,
+              "MD013": false,
+              "MD024": { "siblings_only": true },
+              "MD025": false,
+              "MD033": false,
+              "MD041": false
+            }
+
+  yaml-frontmatter:
+    name: SKILL.md YAML frontmatter
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate YAML frontmatter is parseable
+        run: |
+          for skill in skills/*/SKILL.md; do
+            echo "Checking $skill"
+            python3 - <<EOF
+          import sys
+          import yaml
+          with open("$skill") as f:
+              content = f.read()
+          if not content.startswith("---"):
+              print(f"  FAIL: $skill does not start with YAML frontmatter")
+              sys.exit(1)
+          end = content.index("---", 3)
+          frontmatter = content[3:end].strip()
+          try:
+              data = yaml.safe_load(frontmatter)
+          except yaml.YAMLError as e:
+              print(f"  FAIL: $skill has invalid YAML frontmatter: {e}")
+              sys.exit(1)
+          required = ["name", "description", "version", "triggers"]
+          for r in required:
+              if r not in data:
+                  print(f"  FAIL: $skill missing required field: {r}")
+                  sys.exit(1)
+          if not isinstance(data["triggers"], list) or len(data["triggers"]) < 5:
+              print(f"  FAIL: $skill needs at least 5 trigger phrases")
+              sys.exit(1)
+          print(f"  OK: name={data['name']} version={data['version']} triggers={len(data['triggers'])}")
+          EOF
+          done
+
+  python-helper:
+    name: Validate secret_scan.py
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Syntax check
+        run: python3 -m py_compile skills/offensive-osint/scripts/secret_scan.py
+      - name: Smoke test
+        run: |
+          # Should detect AKIA + ghp + JWT
+          echo 'AKIAIOSFODNN7EXAMPLE
+          ghp_abc1234567890123456789012345678901234
+          eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIn0.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c' | \
+            python3 skills/offensive-osint/scripts/secret_scan.py | \
+            tee /tmp/output.jsonl
+
+          # Verify expected hits
+          grep -q '"AWS_ACCESS_KEY"' /tmp/output.jsonl || (echo "FAIL: AWS key not detected"; exit 1)
+          grep -q '"JWT"' /tmp/output.jsonl || (echo "FAIL: JWT not detected"; exit 1)
+          echo "OK: secret_scan.py smoke test passed"
+
+  shellcheck:
+    name: Shell script lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ludeeus/action-shellcheck@master
+        with:
+          scandir: ./scripts

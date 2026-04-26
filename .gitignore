@@ -1,0 +1,58 @@
+# OS / editor artifacts
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+*.iml
+
+# Engagement artifacts (NEVER commit these)
+evidence/
+runs/
+scans/
+*.scan.db
+*.findings.db
+*.assets.db
+*.run.jsonl
+*.evidence.zip
+*-engagement-*.zip
+*-reproduction-package.zip
+secrets-found.*
+breach-data/
+stealer-logs/
+
+# API keys / config that shouldn't ship
+.env
+.env.local
+*.key
+*.pem
+*.p12
+*.pfx
+keys.yaml
+config.local.yaml
+~/.falcon-recon/
+
+# Build / dist
+dist/
+build/
+*.egg-info/
+__pycache__/
+*.pyc
+*.pyo
+
+# Test / coverage
+.coverage
+.pytest_cache/
+htmlcov/
+*.cover
+
+# Tooling caches
+node_modules/
+.npm/
+.pnpm-store/
+
+# Local sync artifacts
+*.local.md
+*.synced
