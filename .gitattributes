@@ -1,0 +1,25 @@
+# Normalize line endings — eliminates the LF→CRLF warnings on Windows
+* text=auto eol=lf
+
+# Ensure shell + Python scripts always use LF
+*.sh   text eol=lf
+*.py   text eol=lf
+*.bash text eol=lf
+
+# Markdown + YAML — LF
+*.md   text eol=lf
+*.yml  text eol=lf
+*.yaml text eol=lf
+
+# PowerShell — CRLF (Windows convention)
+*.ps1  text eol=crlf
+
+# Binary
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+*.zip  binary
+*.tar  binary
+*.gz   binary

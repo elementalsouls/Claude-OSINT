@@ -145,7 +145,7 @@ Finding:
   remediation:  <action the asset owner can take>
 ```
 
-This shape is portable to any asset / findings store (Falcon-Recon, ASM platforms, ticketing systems, custom DBs).
+This shape is portable to any asset / findings store (ASM platforms, ticketing systems, custom DBs).
 
 ## Cross-module sidecar coordination
 
@@ -221,8 +221,8 @@ By design, the skills do NOT cover:
 
 These exclusions are intentional. A "comprehensive offensive security" skill would be a textbook, not a focused tool. We'd rather do one thing well than many things adequately.
 
-## Why pair with Falcon-Recon?
+## Engagement-platform agnostic
 
-These skills were extracted from the operational tradecraft of [Falcon-Recon](https://github.com/elementalsouls/falcon-recon), an external attack-surface management platform. The 90+ modules in these skills correspond closely to Falcon-Recon's implemented techniques, but generalized so they apply to any OSINT engagement (with or without Falcon-Recon).
+These skills are extracted from operational tradecraft accumulated across external attack-surface engagements. The 90+ modules generalize to any OSINT engagement and slot into any ASM / ticketing / asset-graph platform you already use — or none.
 
-Use the skills standalone, or use them alongside Falcon-Recon (or any ASM platform) to drive your engagement.
+Use the skills standalone (paste a SKILL.md into a Claude Project) or wired into your own pipeline.

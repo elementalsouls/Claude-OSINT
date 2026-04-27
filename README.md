@@ -4,7 +4,7 @@
 
 > 2 paired Claude skills · **90+ recon modules** · 48 secret-regex patterns · 80+ dorks · 9 read-only credential validators · 27 attack-path templates · 5,500+ lines of structured tradecraft. Drop-in `SKILL.md` files that turn Claude into a god-mode external recon operator for authorized red-team and bug-bounty engagements.
 
-Built by **[ElementalSoul](https://github.com/elementalsouls)** — extracted from the operational tradecraft of the [Falcon-Recon](https://github.com/elementalsouls/falcon-recon) external attack-surface management platform.
+Built by **[ElementalSoul](https://github.com/elementalsouls)** — GenAI Security Research.
 
 ---
 
@@ -24,41 +24,160 @@ Drop both into your Claude environment and it behaves like a senior recon analys
 ## Structure
 
 ```
-Claude-OSINT/
-└── skills/
-    ├── osint-methodology/
-    │   └── SKILL.md
-    └── offensive-osint/
-        ├── SKILL.md
-        └── scripts/
-            └── secret_scan.py
+claude-osint/
+├── skills/
+│   ├── osint-methodology/SKILL.md     # how to think  (1,694 lines)
+│   └── offensive-osint/
+│       ├── SKILL.md                   # what to reach for (4,168 lines)
+│       └── scripts/secret_scan.py     # stdlib-only secret scanner
+├── docs/                              # architecture · coverage · install · usage
+├── examples/                          # 4 end-to-end engagement walk-throughs
+├── tests/smoke-test-prompts.md        # 32-prompt self-evaluation
+└── assets/banner.svg
 ```
 
-Each directory is a self-contained skill. Point Claude at the relevant `SKILL.md` and the skill auto-triggers on relevant phrases.
+Each skill directory is self-contained. Drop into `~/.claude/skills/` and Claude auto-triggers on relevant phrases.
 
 ---
 
 ## Skill Index
 
-### Methodology — *"how to think"*
+90+ capabilities across 12 domains. Categorized like Claude-Red — pick a domain to drill in.
 
-| Skill | Description |
+### Reconnaissance & Asset Discovery
+
+| Capability | Reference |
 |---|---|
-| `osint-methodology` | 5-stage recon pipeline · asset-graph discipline (29 types, 23 edges) · severity rubric · identity-fabric mapping (Entra/Okta/ADFS/Google/SAML/M365 deep) · breach × identity correlation · WAF/CDN bypass · vulnerability prioritization (CVE/EPSS/KEV) · phishing infrastructure planning · bug-bounty submission templates · client deliverable templates |
+| 5-stage external recon pipeline + time-budget profiles (1h / 4h / 1d / 1w) | methodology §7 |
+| Subdomain-source stack (crt.sh + 7-source fallback chain when crt.sh 502s) | arsenal §27, §27.0.1 |
+| Common-prefix subdomain sweep (100+ ordered prefixes, PowerShell + bash) | arsenal §16.24 |
+| Wayback CDX deep mining + legacy-app pivot (.asp/.php/.jsp/.cfm) | arsenal §16.23 |
+| WHOIS / RDAP / historical-WHOIS + reverse-WHOIS pivots | arsenal §16.21 |
+| Public records (OpenCorporates · SEC EDGAR · GSXT · Rusprofile · Companies House) | arsenal §14 |
+| Bulk IP → ASN (Cymru / RIPEstat / bgp.tools) | arsenal §28.1 |
 
-### Arsenal — *"what to reach for"*
+### Identity & SSO Mapping
 
-| Skill | Description |
+| Capability | Reference |
 |---|---|
-| `offensive-osint` | Pre-built wordlists & probe paths (Swagger/GraphQL/SAML/SSO/cloud buckets/vendor fingerprints/K8s/CI-CD) · 48-pattern secret-regex catalog (incl. modern AI APIs) · 80+ dork corpus · 9 read-only secret validators · endpoint interest score · attack-path hint templates · severity decision matrix · LinkedIn/job/Slack/Discord enumeration · package registry leak hunting · sat imagery · sector-specific recon · runnable `secret_scan.py` |
+| Microsoft Entra (Azure AD) tenant fingerprint + GUID extraction | arsenal §22.1 |
+| M365 deep enum (Teams federation · SharePoint · OneDrive · OAuth · device-code phishing) | arsenal §22.8 |
+| Autodiscover IP correlation (passive M365 confirm even when MX wrapped by Mimecast/Proofpoint) | arsenal §22.1, §16.22 |
+| Okta tenant slug + `/api/v1/authn` user-enum | arsenal §22.2 |
+| ADFS fingerprint + mex endpoint | arsenal §22.3 |
+| Google Workspace OIDC discovery | arsenal §22.4 |
+| Generic OIDC (Auth0 · Keycloak · Ping · OneLogin · Duo) | arsenal §22.5 |
+| SAML metadata (5 paths) | arsenal §16.6, §22.6 |
+| AWS account-ID extraction from headers + ARN regex | arsenal §22.7 |
 
-Most prompts pull both — they're complementary, not overlapping. Full §-by-§ breakdown lives in [`docs/architecture.md`](docs/architecture.md) and each skill's `SKILL.md` frontmatter.
+### Web Application Attack Surface
+
+| Capability | Reference |
+|---|---|
+| Swagger / OpenAPI discovery (28 paths) | arsenal §16.1 |
+| GraphQL discovery + introspection POST body (13 paths) | arsenal §16.2 |
+| GraphQL field-suggestion enum (when introspection disabled) + alias batching + depth bypass | arsenal §22.9 |
+| Always-on HTTP checks (15 paths: .git/.env/actuator/heapdump/etc.) | arsenal §16.5 |
+| Missing security header audit (HSTS/CSP/XFO/etc.) | arsenal §16.4 |
+| Endpoint extraction regex tiers (3 tiers) | arsenal §16.10 |
+| Endpoint interest score (0–100 rubric) | arsenal §20 |
+| JS deep analysis · sourcemap leakage · internal-host regex | arsenal §16.9, §16.11 |
+| Subdomain takeover fingerprints (27 providers) | arsenal §16.12 |
+
+### Cloud & Container
+
+| Capability | Reference |
+|---|---|
+| Cloud bucket arsenal (S3 / GCS / Azure · 6 prefixes × 15 suffixes × 47 stems) | arsenal §16.8 |
+| Cloud-native fingerprints (Lambda URLs · Cloud Run · Azure Functions · Vercel · Netlify · Workers) | arsenal §16.17 |
+| Kubernetes / etcd / kubelet exposure (12 ports + probes) | arsenal §16.18 |
+| Container registry leak hunting (Docker Hub · Quay · GHCR · ECR · GCR · ACR) | arsenal §16.18 |
+| CI/CD platform exposure (Jenkins · GitLab · TeamCity-KEV · Argo CD · Spinnaker · CircleCI) | arsenal §16.19 |
+
+### Secret & Credential Hunting
+
+| Capability | Reference |
+|---|---|
+| 48-pattern secret-regex catalog (29 base + 19 modern) | arsenal §17 |
+| Modern AI API keys (Anthropic / OpenAI / HuggingFace / Cloudflare) | arsenal §17 (rows 30-36) |
+| Package-registry tokens (npm / PyPI / Docker Hub) | arsenal §17 (rows 38-40) |
+| GitHub code-search dorks (13 templates) | arsenal §19 |
+| 9 read-only credential validators (Postman / AWS / GitHub / Slack / Anthropic / OpenAI / npm / Atlassian / DataDog) | arsenal §23 |
+| Post-discovery enumeration workflows (IAM enum · repo enum · workspace enum · JWT triage) | arsenal §23.12 |
+| `secret_scan.py` runnable helper (stdlib-only, JSONL output) | arsenal §48 |
+| 80+ dork corpus across 9 categories | arsenal §18 |
+
+### Breach Intelligence
+
+| Capability | Reference |
+|---|---|
+| HudsonRock Cavalier direct API (free; FYI: web-UI wraps a public JSON endpoint) | arsenal §15.0.1 |
+| Domain-level breach severity mapping | arsenal §15.1 |
+| `SSO_EXPOSURE` finding + legacy-mail-decommissioned escalation pattern | arsenal §15.2 |
+| Breach × identity correlation (HudsonRock + HIBP + DeHashed + IntelX) | methodology §22 |
+
+### Vendor & Edge-Appliance Fingerprinting
+
+| Capability | Reference |
+|---|---|
+| Citrix Netscaler · F5 BIG-IP · Pulse Secure / Ivanti · FortiGate | arsenal §16.16 |
+| PaloAlto GlobalProtect · Cisco AnyConnect · VMware vCenter / ESXi / Horizon | arsenal §16.16 |
+| Microsoft Exchange OWA (ProxyShell / ProxyLogon / ProxyNotShell) | arsenal §16.16 |
+| KEV CVE enrichment + EPSS scoring + Metasploit availability | arsenal §29.2 |
+| WAF / CDN bypass + origin discovery (8 techniques) | methodology §27, arsenal §16.15 |
+
+### Email Security
+
+| Capability | Reference |
+|---|---|
+| SPF / DMARC / DKIM / BIMI / MTA-STS / TLS-RPT / DNSSEC audit (bash + PowerShell) | arsenal §16.14 |
+| DMARC reporting-vendor inference (Kratikal / dmarcian / Valimail / Agari / EasyDMARC) | arsenal §16.14 |
+| TXT verification token catalog (35+ SaaS tenants) | arsenal §16.22 |
+| MX → IdP / mail-host inference | arsenal §16.14 |
+
+### Human Intelligence
+
+| Capability | Reference |
+|---|---|
+| LinkedIn employee enumeration (P0–P5 role tiers · sock-puppet hygiene) | arsenal §41 |
+| Job posting tech-stack analysis (Lever · Greenhouse · AshbyHQ · Workable) | arsenal §42 |
+| Slack / Discord / Telegram / Mattermost workspace discovery | arsenal §43 |
+| Sat imagery for physical recon (Google Earth · NearMap · Sentinel Hub) | arsenal §45 |
+| Email-pattern inference (8 templates) | arsenal §11 |
+
+### Supply Chain
+
+| Capability | Reference |
+|---|---|
+| Package-registry leak hunting (npm · PyPI · RubyGems · Cargo · Packagist · NuGet · Maven) | arsenal §44 |
+| Typosquat surveillance | arsenal §44.10 |
+| Postman public-workspace search (verified endpoint) | arsenal §24 |
+| Stack Exchange OSINT sweep (8 sites) | arsenal §25 |
+
+### Reporting & Deliverables
+
+| Capability | Reference |
+|---|---|
+| Findings rubric (CRITICAL/HIGH/MED/LOW/INFO + escalation) | methodology §9 |
+| Severity decision matrix (88 worked examples) | arsenal §40 |
+| Attack-path hint patterns (27 templates) | arsenal §39 |
+| Bug-bounty submission templates (HackerOne / Bugcrowd / Intigriti) | methodology §30 |
+| Client deliverable templates (exec summary · risk-translation matrix · cadence) | methodology §31 |
+| Reproduction package | methodology §3, §31 |
+
+### Sector-Specific
+
+| Capability | Reference |
+|---|---|
+| Healthcare (DICOM · HL7 v2 · FHIR · Epic / Cerner / Allscripts) | arsenal §47.1 |
+| Finance (SWIFT · FIX · Bloomberg · Temenos / Finacle / FIS / Fiserv) | arsenal §47.2 |
+| ICS / SCADA (Modbus · BACnet · Siemens S7 · DNP3 · EtherNet/IP) | arsenal §47.3 |
+| IoT (MQTT · CoAP · UPnP · Hikvision / Dahua DVRs) | arsenal §47.4 |
+| Government (`.gov` / `.mil` · FedRAMP · FISMA · CUI · SAM.gov) | arsenal §47.5 |
 
 ---
 
 ## Capability Mindmap
-
-What the paired skills can actually do, at a glance:
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#1e293b','primaryTextColor':'#f1f5f9','primaryBorderColor':'#475569','lineColor':'#94a3b8'}}}%%
@@ -76,7 +195,7 @@ mindmap
         Provenance tracking
       Findings Rubric
         CRITICAL/HIGH/MED/LOW/INFO
-        80+ worked examples
+        88 worked examples
         Escalation rules
       Identity Fabric
         Entra / Okta / ADFS
@@ -176,7 +295,7 @@ mindmap
         OneDrive personal site
         GraphQL field-suggestion
       Severity Matrix
-        80+ worked examples
+        88 worked examples
         Attack-path hints
       Human Intel
         LinkedIn enum
@@ -205,8 +324,6 @@ mindmap
 ---
 
 ## Engagement Flow
-
-How a typical authorized engagement walks through both skills:
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#1e293b','primaryTextColor':'#f1f5f9','primaryBorderColor':'#475569','lineColor':'#94a3b8'}}}%%
@@ -249,22 +366,20 @@ flowchart TD
 ### With Claude Code
 
 ```bash
+# Install both skills (one-time, after clone)
 git clone https://github.com/elementalsouls/Claude-OSINT.git
-cd Claude-OSINT
-
-# One-time after clone: populate full SKILL.md content
-./scripts/sync-skill-content.sh
-
-# Install both skills
 mkdir -p ~/.claude/skills
-cp -r skills/* ~/.claude/skills/
+cp -r Claude-OSINT/skills/* ~/.claude/skills/
 ```
 
-Then in any Claude Code session, just ask an OSINT question — the skills auto-trigger on relevant phrases.
+Then in any Claude Code session, ask an OSINT question — both skills auto-load and trigger on relevant phrases (50+ trigger phrases each).
 
 ### With the Claude Skills System
 
-Place either skill folder under your configured skills path (e.g. `/mnt/skills/user/`) and Claude will auto-load it based on trigger keywords. Both skills declare 50+ trigger phrases each.
+```bash
+# Point Claude at a single skill before starting your session
+cat skills/offensive-osint/SKILL.md | claude --system-file -
+```
 
 ### Manual (Claude.ai / Claude API)
 
@@ -297,13 +412,13 @@ Both skills include a soft scope-check when you ask Claude to act against an unv
 
 ## About
 
-These skills were developed through the operational tradecraft of [Falcon-Recon](https://github.com/elementalsouls/falcon-recon), an external attack-surface management platform. The 90+ modules correspond closely to Falcon-Recon's implemented techniques — generalized so they apply to any OSINT engagement (with or without Falcon-Recon).
+Operational tradecraft accumulated across external attack-surface engagements, codified into Claude skills. Engagement-platform agnostic — slot into any ASM / ticketing / asset-graph platform you already use, or none.
 
 **Author:** [ElementalSoul](https://github.com/elementalsouls)
 **Original framework:** [SnailSploit/offensive-checklist](https://github.com/SnailSploit/offensive-checklist) (v1.x)
 **Inspired by:** [Bellingcat's Online Investigations Toolkit](https://www.bellingcat.com/resources/2024/09/24/bellingcat-online-investigations-toolkit/) · [IntelTechniques](https://inteltechniques.com/tools/) · [OSINT Framework](https://osintframework.com/)
 **Tool inventory:** [ProjectDiscovery](https://github.com/projectdiscovery) · [Six2dez reconftw](https://github.com/six2dez/reconftw) · [SecLists](https://github.com/danielmiessler/SecLists) · [Assetnote Wordlists](https://wordlists.assetnote.io/)
-**License:** MIT — use freely, attribution appreciated.
+**License:** [MIT](LICENSE) — use freely, attribution appreciated.
 
 ---
 

@@ -147,7 +147,7 @@ The skills assume you have standard recon tools available (subfinder, httpx, nuc
 
 - Your tooling (see `offensive-osint` §46 for install one-liners).
 - A note-taking system (Hunchly, Obsidian, etc.).
-- An asset-graph store (Falcon-Recon, your own).
+- An asset-graph store (your own platform / spreadsheet / DB).
 - A reporting platform (HackerOne, Bugcrowd, custom).
 
 ## Anti-patterns

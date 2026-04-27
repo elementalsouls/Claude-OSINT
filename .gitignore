@@ -32,7 +32,7 @@ stealer-logs/
 *.pfx
 keys.yaml
 config.local.yaml
-~/.falcon-recon/
+~/.claude-osint/
 
 # Build / dist
 dist/
