@@ -315,12 +315,22 @@ Both skills include a soft scope-check when you ask Claude to act against an unv
 
 ## About
 
-Operational tradecraft accumulated across external attack-surface engagements, codified into Claude skills. Engagement-platform agnostic — slot into any ASM / ticketing / asset-graph platform you already use, or none.
+Operational tradecraft accumulated across external attack-surface engagements, codified into Claude skills. Engagement-platform agnostic - slot into any ASM / ticketing / asset-graph platform you already use, or none.
 
 **Author:** [ElementalSoul](https://github.com/elementalsouls)
+
 **Original framework:** [SnailSploit/offensive-checklist](https://github.com/SnailSploit/offensive-checklist) (v1.x)
-**Inspired by:** [Bellingcat's Online Investigations Toolkit](https://www.bellingcat.com/resources/2024/09/24/bellingcat-online-investigations-toolkit/) · [IntelTechniques](https://inteltechniques.com/tools/) · [OSINT Framework](https://osintframework.com/)
-**Tool inventory:** [ProjectDiscovery](https://github.com/projectdiscovery) · [Six2dez reconftw](https://github.com/six2dez/reconftw) · [SecLists](https://github.com/danielmiessler/SecLists) · [Assetnote Wordlists](https://wordlists.assetnote.io/)
+
+**Inspired by:** [Bellingcat's Online Investigations Toolkit](https://www.bellingcat.com/resources/2024/09/24/bellingcat-online-investigations-toolkit/) 
+· [IntelTechniques](https://inteltechniques.com/tools/) 
+· [OSINT Framework](https://osintframework.com/)
+
+**Tool inventory:** 
+. [ProjectDiscovery](https://github.com/projectdiscovery) 
+· [Six2dez reconftw](https://github.com/six2dez/reconftw) 
+· [SecLists](https://github.com/danielmiessler/SecLists) 
+· [Assetnote Wordlists](https://wordlists.assetnote.io/)
+
 **License:** [MIT](LICENSE) — use freely, attribution appreciated.
 
 ---
