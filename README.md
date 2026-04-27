@@ -177,148 +177,51 @@ Each skill directory is self-contained. Drop into `~/.claude/skills/` and Claude
 
 ---
 
-## Capability Mindmap
+## Capability Map
+
+Two skills, twelve capability domains. Drill into the [Skill Index](#skill-index) above for concrete sub-capabilities.
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#1e293b','primaryTextColor':'#f1f5f9','primaryBorderColor':'#475569','lineColor':'#94a3b8'}}}%%
-mindmap
-  root((claude-osint))
-    osint-methodology
-      Recon Pipeline
-        5-stage flow
-        Time budgeting (1h/4h/1d/1w)
-        Engagement profiles
-      Asset Graph
-        29 typed asset types
-        23 typed edges
-        Per-asset triage rules
-        Provenance tracking
-      Findings Rubric
-        CRITICAL/HIGH/MED/LOW/INFO
-        88 worked examples
-        Escalation rules
-      Identity Fabric
-        Entra / Okta / ADFS
-        Google Workspace
-        SAML / OIDC
-        M365 deep mapping
-      Breach Correlation
-        HudsonRock
-        HIBP / DeHashed
-        IntelX / LeakCheck
-        SSO_EXPOSURE finding
-      WAF/CDN Bypass
-        DNS history
-        Cert SAN pivots
-        Favicon mmh3
-        JARM clustering
-      Vuln Prioritization
-        CVE / EPSS
-        CISA KEV
-        Metasploit availability
-      Reporting
-        Bug bounty templates
-        HackerOne / Bugcrowd
-        Client exec summary
-        Risk translation matrix
-        Reproduction package
-      OpSec
-        Sock puppets
-        Persona rotation
-        Detectability tagging
-        Detection-aware backoff
-    offensive-osint
-      Probe Wordlists
-        28 Swagger paths
-        13 GraphQL paths
-        35 high-risk ports
-        15 always-on HTTP checks
-        5 SAML metadata paths
-        8 SSO prefixes
-        Cloud bucket arsenal
-        JS guess-paths
-      Vendor Fingerprints
-        Citrix Netscaler
-        F5 BIG-IP
-        Pulse Secure
-        FortiGate
-        PaloAlto GP
-        Cisco AnyConnect
-        VMware vCenter
-        Exchange OWA
-        KEV CVE map
-      Cloud Native
-        AWS Lambda URLs
-        Cloud Run
-        Azure Functions
-        Vercel / Netlify
-        Cloudflare Workers
-      Container / K8s
-        kubelet
-        etcd
-        K8s API
-        Docker registries
-        Helm Tiller
-      CI/CD Exposure
-        Jenkins script console
-        GitLab self-hosted
-        TeamCity (KEV)
-        Argo CD / Spinnaker
-        GitHub Actions leaks
-      Secret Catalog (48)
-        AWS keys
-        AI APIs (Anthropic/OpenAI/HF)
-        Package tokens (npm/PyPI/Docker)
-        Cloudflare / DigitalOcean
-        Atlassian / DataDog
-        JWT / Bearer
-        Private keys
-      Dork Corpus (80+)
-        Files / configs
-        Admin panels
-        Secrets / creds
-        Cloud / CI shadow-IT
-        Vuln indicators
-        Sector-specific
-      Read-Only Validators
-        Postman PMAK
-        AWS sts
-        GitHub PAT
-        Slack
-        Anthropic / OpenAI
-        npm / Atlassian / DataDog
-      Identity Endpoints
-        Entra getuserrealm
-        Okta /api/v1/authn
-        ADFS mex
-        M365 SharePoint probe
-        OneDrive personal site
-        GraphQL field-suggestion
-      Severity Matrix
-        88 worked examples
-        Attack-path hints
-      Human Intel
-        LinkedIn enum
-        Job posting tech-stack
-        Slack/Discord/Teams discovery
-      Supply Chain
-        npm / PyPI leaks
-        Docker Hub / Quay / GHCR
-        Typosquat surveillance
-      Email Security
-        SPF / DMARC / DKIM
-        BIMI / MTA-STS
-        DNSSEC
-        DMARC vendor inference
-      Sector Notes
-        Healthcare HL7/FHIR
-        Finance SWIFT/FIX
-        ICS-SCADA Modbus
-        IoT MQTT/CoAP
-        Government CUI
-      Tooling Quick-Install
-        35+ tools
-        12 categories
+flowchart LR
+    Root(["🦅 claude-osint"])
+
+    Root --> M["📘 osint-methodology<br/><i>how to think</i>"]
+    Root --> A["🛠️ offensive-osint<br/><i>what to reach for</i>"]
+
+    M --> M1[Recon Pipeline]
+    M --> M2[Asset Graph]
+    M --> M3[Identity Fabric]
+    M --> M4[Findings Rubric]
+    M --> M5[Reporting Templates]
+    M --> M6[OpSec & Detectability]
+
+    A --> A1[Probe Wordlists]
+    A --> A2[Vendor Fingerprints]
+    A --> A3[Cloud · K8s · CI-CD]
+    A --> A4[Secret Catalog]
+    A --> A5[Read-Only Validators]
+    A --> A6[Email Security]
+    A --> A7[Human Intel]
+    A --> A8[Sector Notes]
+
+    style Root fill:#dc2626,stroke:#7f1d1d,color:#fff
+    style M fill:#1e293b,stroke:#475569,color:#f1f5f9
+    style A fill:#7c2d12,stroke:#9a3412,color:#fef3c7
+    style M1 fill:#0f172a,stroke:#334155,color:#cbd5e1
+    style M2 fill:#0f172a,stroke:#334155,color:#cbd5e1
+    style M3 fill:#0f172a,stroke:#334155,color:#cbd5e1
+    style M4 fill:#0f172a,stroke:#334155,color:#cbd5e1
+    style M5 fill:#0f172a,stroke:#334155,color:#cbd5e1
+    style M6 fill:#0f172a,stroke:#334155,color:#cbd5e1
+    style A1 fill:#1c1917,stroke:#44403c,color:#fed7aa
+    style A2 fill:#1c1917,stroke:#44403c,color:#fed7aa
+    style A3 fill:#1c1917,stroke:#44403c,color:#fed7aa
+    style A4 fill:#1c1917,stroke:#44403c,color:#fed7aa
+    style A5 fill:#1c1917,stroke:#44403c,color:#fed7aa
+    style A6 fill:#1c1917,stroke:#44403c,color:#fed7aa
+    style A7 fill:#1c1917,stroke:#44403c,color:#fed7aa
+    style A8 fill:#1c1917,stroke:#44403c,color:#fed7aa
 ```
 
 ---
