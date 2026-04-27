@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 680" width="1280" height="680" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
   <defs>
     <pattern id="grid" width="64" height="64" patternUnits="userSpaceOnUse">
       <path d="M 64 0 L 0 0 0 64" fill="none" stroke="#1a1a1a" stroke-width="1"/>
@@ -22,12 +22,12 @@
   </defs>
 
   <!-- background -->
-  <rect width="1280" height="680" fill="#0a0a0a"/>
-  <rect width="1280" height="680" fill="url(#grid)"/>
-  <rect width="1280" height="680" fill="url(#vignette)"/>
+  <rect width="1280" height="720" fill="#0a0a0a"/>
+  <rect width="1280" height="720" fill="url(#grid)"/>
+  <rect width="1280" height="720" fill="url(#vignette)"/>
 
-  <!-- ============= TOP BAND: branding ============= -->
-  <!-- accent burst (small, red) -->
+  <!-- ============= BAND 1 (y 0..200): brand ============= -->
+  <!-- accent burst on left -->
   <g transform="translate(110, 110)" stroke="#DC2626" stroke-linecap="round">
     <line x1="0" y1="0" x2="0"   y2="-65" stroke-width="9"/>
     <line x1="0" y1="0" x2="33"  y2="-56" stroke-width="9"/>
@@ -49,37 +49,36 @@
     <text x="0" y="0" font-size="78" font-weight="700" fill="#f1f5f9" letter-spacing="-2">claude</text>
     <text x="265" y="0" font-size="78" font-weight="700" fill="#DC2626" letter-spacing="-2">osint</text>
     <line x1="0" y1="16" x2="495" y2="16" stroke="#DC2626" stroke-width="3"/>
-    <text x="0" y="46" font-size="18" font-weight="400" fill="#94a3b8" letter-spacing="0.3">External red-team OSINT &amp; bug-bounty recon — Claude in god mode</text>
+    <text x="0" y="46" font-size="16" font-weight="400" fill="#94a3b8" letter-spacing="0.3">External red-team OSINT &amp; bug-bounty recon · Claude AI operator</text>
   </g>
 
-  <!-- top-right meta -->
-  <g transform="translate(1230, 105)" font-family="ui-monospace, 'SF Mono', Menlo, monospace">
+  <!-- top-right meta block -->
+  <g transform="translate(1235, 105)" font-family="ui-monospace, 'SF Mono', Menlo, monospace">
     <text x="0" y="0" text-anchor="end" font-size="13" fill="#64748b">v2.1.1 · MIT</text>
-    <text x="0" y="20" text-anchor="end" font-size="13" fill="#64748b">by ElementalSoul</text>
-    <text x="0" y="40" text-anchor="end" font-size="13" fill="#64748b">github.com/elementalsouls/Claude-OSINT</text>
+    <text x="0" y="22" text-anchor="end" font-size="13" fill="#64748b">by ElementalSoul</text>
+    <text x="0" y="44" text-anchor="end" font-size="13" fill="#64748b">github.com/elementalsouls/Claude-OSINT</text>
   </g>
 
-  <!-- ============= MIDDLE BAND: capability constellation ============= -->
-  <!-- subtle orbit ring -->
-  <circle cx="640" cy="375" r="205" fill="none" stroke="#dc2626" stroke-width="1" stroke-opacity="0.15"/>
-  <circle cx="640" cy="375" r="120" fill="none" stroke="#dc2626" stroke-width="1" stroke-opacity="0.10"/>
+  <!-- ============= BAND 2 (y 210..620): constellation ============= -->
+  <!-- subtle orbit rings -->
+  <circle cx="640" cy="415" r="180" fill="none" stroke="#dc2626" stroke-width="1" stroke-opacity="0.18"/>
+  <circle cx="640" cy="415" r="100" fill="none" stroke="#dc2626" stroke-width="1" stroke-opacity="0.10"/>
 
-  <!-- connecting lines from hub to each node (drawn behind nodes) -->
+  <!-- spokes (drawn behind nodes) -->
   <g stroke="#dc2626" stroke-width="1.5" stroke-opacity="0.45" stroke-dasharray="5,4">
-    <line x1="640" y1="375" x2="840" y2="375"/>
-    <line x1="640" y1="375" x2="785" y2="520"/>
-    <line x1="640" y1="375" x2="640" y2="580"/>
-    <line x1="640" y1="375" x2="495" y2="520"/>
-    <line x1="640" y1="375" x2="435" y2="375"/>
-    <line x1="640" y1="375" x2="495" y2="230"/>
-    <line x1="640" y1="375" x2="640" y2="170"/>
-    <line x1="640" y1="375" x2="785" y2="230"/>
+    <line x1="640" y1="415" x2="815" y2="415"/>
+    <line x1="640" y1="415" x2="763" y2="539"/>
+    <line x1="640" y1="415" x2="640" y2="590"/>
+    <line x1="640" y1="415" x2="517" y2="539"/>
+    <line x1="640" y1="415" x2="465" y2="415"/>
+    <line x1="640" y1="415" x2="517" y2="291"/>
+    <line x1="640" y1="415" x2="640" y2="240"/>
+    <line x1="640" y1="415" x2="763" y2="291"/>
   </g>
 
-  <!-- HUB: Claude AI brain -->
-  <g transform="translate(640, 375)" filter="url(#glow)">
+  <!-- HUB -->
+  <g transform="translate(640, 415)" filter="url(#glow)">
     <circle cx="0" cy="0" r="60" fill="url(#hubglow)" stroke="#dc2626" stroke-width="2"/>
-    <!-- 8-spoke asterisk (Claude/Anthropic visual) -->
     <g stroke="#ffffff" stroke-linecap="round" stroke-width="3.5">
       <line x1="0" y1="-30" x2="0" y2="30"/>
       <line x1="-30" y1="0" x2="30" y2="0"/>
@@ -88,72 +87,74 @@
     </g>
     <circle cx="0" cy="0" r="5" fill="#ffffff"/>
   </g>
-  <text x="640" y="465" text-anchor="middle" font-size="13" font-weight="700" fill="#f1f5f9" letter-spacing="3">CLAUDE</text>
-  <text x="640" y="482" text-anchor="middle" font-size="10" font-weight="400" fill="#94a3b8" letter-spacing="2">AI · OSINT operator</text>
+  <text x="640" y="498" text-anchor="middle" font-size="14" font-weight="700" fill="#f1f5f9" letter-spacing="3">CLAUDE</text>
+  <text x="640" y="516" text-anchor="middle" font-size="11" font-weight="400" fill="#94a3b8" letter-spacing="2">AI · OSINT operator</text>
 
-  <!-- 8 capability nodes (rounded rects) -->
-  <!-- 0° (E) -->
-  <g transform="translate(750, 345)">
+  <!-- 8 capability nodes around hub (rect 180×60, centered at point ± 90×30) -->
+  <!-- 0° (E) at (815,415) -->
+  <g transform="translate(725, 385)">
     <rect width="180" height="60" rx="10" fill="#0f172a" stroke="#dc2626" stroke-width="1.5"/>
     <text x="90" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#f1f5f9">M365 / Entra</text>
     <text x="90" y="46" text-anchor="middle" font-size="11" fill="#94a3b8">tenant GUID · SharePoint · OWA</text>
   </g>
-  <!-- 45° (SE) -->
-  <g transform="translate(695, 490)">
+  <!-- 45° (SE) at (763,539) -->
+  <g transform="translate(673, 509)">
     <rect width="180" height="60" rx="10" fill="#0f172a" stroke="#dc2626" stroke-width="1.5"/>
     <text x="90" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#f1f5f9">AWS</text>
     <text x="90" y="46" text-anchor="middle" font-size="11" fill="#94a3b8">STS · IAM enum · S3 buckets</text>
   </g>
-  <!-- 90° (S) -->
-  <g transform="translate(550, 550)">
+  <!-- 90° (S) at (640,590) -->
+  <g transform="translate(550, 560)">
     <rect width="180" height="60" rx="10" fill="#0f172a" stroke="#dc2626" stroke-width="1.5"/>
     <text x="90" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#f1f5f9">GitHub</text>
     <text x="90" y="46" text-anchor="middle" font-size="11" fill="#94a3b8">PAT scope · code dorks · secrets</text>
   </g>
-  <!-- 135° (SW) -->
-  <g transform="translate(405, 490)">
+  <!-- 135° (SW) at (517,539) -->
+  <g transform="translate(427, 509)">
     <rect width="180" height="60" rx="10" fill="#0f172a" stroke="#dc2626" stroke-width="1.5"/>
     <text x="90" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#f1f5f9">GraphQL</text>
     <text x="90" y="46" text-anchor="middle" font-size="11" fill="#94a3b8">introspection · field-suggestion</text>
   </g>
-  <!-- 180° (W) -->
-  <g transform="translate(345, 345)">
+  <!-- 180° (W) at (465,415) -->
+  <g transform="translate(375, 385)">
     <rect width="180" height="60" rx="10" fill="#0f172a" stroke="#dc2626" stroke-width="1.5"/>
     <text x="90" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#f1f5f9">Kubernetes</text>
     <text x="90" y="46" text-anchor="middle" font-size="11" fill="#94a3b8">kubelet · etcd · K8s API</text>
   </g>
-  <!-- 225° (NW) -->
-  <g transform="translate(405, 200)">
+  <!-- 225° (NW) at (517,291) -->
+  <g transform="translate(427, 261)">
     <rect width="180" height="60" rx="10" fill="#0f172a" stroke="#dc2626" stroke-width="1.5"/>
     <text x="90" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#f1f5f9">Citrix · F5 · Fortinet</text>
     <text x="90" y="46" text-anchor="middle" font-size="11" fill="#94a3b8">vendor fingerprint · KEV CVEs</text>
   </g>
-  <!-- 270° (N) -->
-  <g transform="translate(550, 140)">
+  <!-- 270° (N) at (640,240) -->
+  <g transform="translate(550, 210)">
     <rect width="180" height="60" rx="10" fill="#0f172a" stroke="#dc2626" stroke-width="1.5"/>
     <text x="90" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#f1f5f9">Anthropic · OpenAI</text>
     <text x="90" y="46" text-anchor="middle" font-size="11" fill="#94a3b8">key catalog · validators</text>
   </g>
-  <!-- 315° (NE) -->
-  <g transform="translate(695, 200)">
+  <!-- 315° (NE) at (763,291) -->
+  <g transform="translate(673, 261)">
     <rect width="180" height="60" rx="10" fill="#0f172a" stroke="#dc2626" stroke-width="1.5"/>
     <text x="90" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#f1f5f9">HudsonRock · Wayback</text>
     <text x="90" y="46" text-anchor="middle" font-size="11" fill="#94a3b8">breach corpus · CDX archive</text>
   </g>
 
-  <!-- secondary capability badges (small, outer ring hints) -->
+  <!-- margin badges left (secondary capabilities) -->
   <g font-size="11" fill="#475569" font-family="ui-monospace, monospace">
-    <text x="970" y="380" text-anchor="start">+ Slack · Discord</text>
-    <text x="970" y="400" text-anchor="start">+ Postman PMAK</text>
-    <text x="970" y="420" text-anchor="start">+ Atlassian · DataDog</text>
-
-    <text x="305" y="380" text-anchor="end">LinkedIn enum +</text>
-    <text x="305" y="400" text-anchor="end">Job posting analysis +</text>
-    <text x="305" y="420" text-anchor="end">Sat imagery +</text>
+    <text x="290" y="408" text-anchor="end">LinkedIn enum +</text>
+    <text x="290" y="428" text-anchor="end">Job posting analysis +</text>
+    <text x="290" y="448" text-anchor="end">Sat imagery +</text>
+  </g>
+  <!-- margin badges right -->
+  <g font-size="11" fill="#475569" font-family="ui-monospace, monospace">
+    <text x="990" y="408" text-anchor="start">+ Slack · Discord</text>
+    <text x="990" y="428" text-anchor="start">+ Postman PMAK</text>
+    <text x="990" y="448" text-anchor="start">+ Atlassian · DataDog</text>
   </g>
 
-  <!-- ============= BOTTOM BAND: stat ribbon ============= -->
-  <g transform="translate(0, 605)">
+  <!-- ============= BAND 3 (y 640..690): stat ribbon ============= -->
+  <g transform="translate(0, 640)">
     <rect x="40" y="0" width="1200" height="50" rx="10" fill="#0f172a" stroke="#dc2626" stroke-width="1" stroke-opacity="0.6"/>
     <g font-size="14" font-weight="500" fill="#f1f5f9">
       <text x="80"  y="32" font-size="20" font-weight="700" fill="#dc2626">90+</text>
@@ -176,6 +177,6 @@
     </g>
   </g>
 
-  <!-- footer tagline -->
-  <text x="640" y="670" text-anchor="middle" font-size="11" fill="#475569" letter-spacing="2">METHODOLOGY + ARSENAL · PAIRED · PRODUCTION-READY</text>
+  <!-- BAND 4 footer -->
+  <text x="640" y="708" text-anchor="middle" font-size="11" fill="#475569" letter-spacing="2">METHODOLOGY + ARSENAL · PAIRED · PRODUCTION-READY</text>
 </svg>
