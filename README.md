@@ -46,134 +46,134 @@ Each skill directory is self-contained. Drop into `~/.claude/skills/` and Claude
 
 ### Reconnaissance & Asset Discovery
 
-| Capability | Reference |
+| Capability | Skill |
 |---|---|
-| 5-stage external recon pipeline + time-budget profiles (1h / 4h / 1d / 1w) | methodology §7 |
-| Subdomain-source stack (crt.sh + 7-source fallback chain when crt.sh 502s) | arsenal §27, §27.0.1 |
-| Common-prefix subdomain sweep (100+ ordered prefixes, PowerShell + bash) | arsenal §16.24 |
-| Wayback CDX deep mining + legacy-app pivot (.asp/.php/.jsp/.cfm) | arsenal §16.23 |
-| WHOIS / RDAP / historical-WHOIS + reverse-WHOIS pivots | arsenal §16.21 |
-| Public records (OpenCorporates · SEC EDGAR · GSXT · Rusprofile · Companies House) | arsenal §14 |
-| Bulk IP → ASN (Cymru / RIPEstat / bgp.tools) | arsenal §28.1 |
+| 5-stage external recon pipeline + time-budget profiles (1h / 4h / 1d / 1w) | methodology |
+| Subdomain-source stack (crt.sh + 7-source fallback chain when crt.sh 502s) | arsenal |
+| Common-prefix subdomain sweep (100+ ordered prefixes, PowerShell + bash) | arsenal |
+| Wayback CDX deep mining + legacy-app pivot (.asp/.php/.jsp/.cfm) | arsenal |
+| WHOIS / RDAP / historical-WHOIS + reverse-WHOIS pivots | arsenal |
+| Public records (OpenCorporates · SEC EDGAR · GSXT · Rusprofile · Companies House) | arsenal |
+| Bulk IP → ASN (Cymru / RIPEstat / bgp.tools) | arsenal |
 
 ### Identity & SSO Mapping
 
-| Capability | Reference |
+| Capability | Skill |
 |---|---|
-| Microsoft Entra (Azure AD) tenant fingerprint + GUID extraction | arsenal §22.1 |
-| M365 deep enum (Teams federation · SharePoint · OneDrive · OAuth · device-code phishing) | arsenal §22.8 |
-| Autodiscover IP correlation (passive M365 confirm even when MX wrapped by Mimecast/Proofpoint) | arsenal §22.1, §16.22 |
-| Okta tenant slug + `/api/v1/authn` user-enum | arsenal §22.2 |
-| ADFS fingerprint + mex endpoint | arsenal §22.3 |
-| Google Workspace OIDC discovery | arsenal §22.4 |
-| Generic OIDC (Auth0 · Keycloak · Ping · OneLogin · Duo) | arsenal §22.5 |
-| SAML metadata (5 paths) | arsenal §16.6, §22.6 |
-| AWS account-ID extraction from headers + ARN regex | arsenal §22.7 |
+| Microsoft Entra (Azure AD) tenant fingerprint + GUID extraction | arsenal |
+| M365 deep enum (Teams federation · SharePoint · OneDrive · OAuth · device-code phishing) | arsenal |
+| Autodiscover IP correlation (passive M365 confirm even when MX wrapped by Mimecast/Proofpoint) | arsenal |
+| Okta tenant slug + `/api/v1/authn` user-enum | arsenal |
+| ADFS fingerprint + mex endpoint | arsenal |
+| Google Workspace OIDC discovery | arsenal |
+| Generic OIDC (Auth0 · Keycloak · Ping · OneLogin · Duo) | arsenal |
+| SAML metadata (5 paths) | arsenal |
+| AWS account-ID extraction from headers + ARN regex | arsenal |
 
 ### Web Application Attack Surface
 
-| Capability | Reference |
+| Capability | Skill |
 |---|---|
-| Swagger / OpenAPI discovery (28 paths) | arsenal §16.1 |
-| GraphQL discovery + introspection POST body (13 paths) | arsenal §16.2 |
-| GraphQL field-suggestion enum (when introspection disabled) + alias batching + depth bypass | arsenal §22.9 |
-| Always-on HTTP checks (15 paths: .git/.env/actuator/heapdump/etc.) | arsenal §16.5 |
-| Missing security header audit (HSTS/CSP/XFO/etc.) | arsenal §16.4 |
-| Endpoint extraction regex tiers (3 tiers) | arsenal §16.10 |
-| Endpoint interest score (0–100 rubric) | arsenal §20 |
-| JS deep analysis · sourcemap leakage · internal-host regex | arsenal §16.9, §16.11 |
-| Subdomain takeover fingerprints (27 providers) | arsenal §16.12 |
+| Swagger / OpenAPI discovery (28 paths) | arsenal |
+| GraphQL discovery + introspection POST body (13 paths) | arsenal |
+| GraphQL field-suggestion enum (when introspection disabled) + alias batching + depth bypass | arsenal |
+| Always-on HTTP checks (15 paths: .git/.env/actuator/heapdump/etc.) | arsenal |
+| Missing security header audit (HSTS/CSP/XFO/etc.) | arsenal |
+| Endpoint extraction regex tiers (3 tiers) | arsenal |
+| Endpoint interest score (0–100 rubric) | arsenal |
+| JS deep analysis · sourcemap leakage · internal-host regex | arsenal |
+| Subdomain takeover fingerprints (27 providers) | arsenal |
 
 ### Cloud & Container
 
-| Capability | Reference |
+| Capability | Skill |
 |---|---|
-| Cloud bucket arsenal (S3 / GCS / Azure · 6 prefixes × 15 suffixes × 47 stems) | arsenal §16.8 |
-| Cloud-native fingerprints (Lambda URLs · Cloud Run · Azure Functions · Vercel · Netlify · Workers) | arsenal §16.17 |
-| Kubernetes / etcd / kubelet exposure (12 ports + probes) | arsenal §16.18 |
-| Container registry leak hunting (Docker Hub · Quay · GHCR · ECR · GCR · ACR) | arsenal §16.18 |
-| CI/CD platform exposure (Jenkins · GitLab · TeamCity-KEV · Argo CD · Spinnaker · CircleCI) | arsenal §16.19 |
+| Cloud bucket arsenal (S3 / GCS / Azure · 6 prefixes × 15 suffixes × 47 stems) | arsenal |
+| Cloud-native fingerprints (Lambda URLs · Cloud Run · Azure Functions · Vercel · Netlify · Workers) | arsenal |
+| Kubernetes / etcd / kubelet exposure (12 ports + probes) | arsenal |
+| Container registry leak hunting (Docker Hub · Quay · GHCR · ECR · GCR · ACR) | arsenal |
+| CI/CD platform exposure (Jenkins · GitLab · TeamCity-KEV · Argo CD · Spinnaker · CircleCI) | arsenal |
 
 ### Secret & Credential Hunting
 
-| Capability | Reference |
+| Capability | Skill |
 |---|---|
-| 48-pattern secret-regex catalog (29 base + 19 modern) | arsenal §17 |
-| Modern AI API keys (Anthropic / OpenAI / HuggingFace / Cloudflare) | arsenal §17 (rows 30-36) |
-| Package-registry tokens (npm / PyPI / Docker Hub) | arsenal §17 (rows 38-40) |
-| GitHub code-search dorks (13 templates) | arsenal §19 |
-| 9 read-only credential validators (Postman / AWS / GitHub / Slack / Anthropic / OpenAI / npm / Atlassian / DataDog) | arsenal §23 |
-| Post-discovery enumeration workflows (IAM enum · repo enum · workspace enum · JWT triage) | arsenal §23.12 |
-| `secret_scan.py` runnable helper (stdlib-only, JSONL output) | arsenal §48 |
-| 80+ dork corpus across 9 categories | arsenal §18 |
+| 48-pattern secret-regex catalog (29 base + 19 modern) | arsenal |
+| Modern AI API keys (Anthropic / OpenAI / HuggingFace / Cloudflare) | arsenal (rows 30-36) |
+| Package-registry tokens (npm / PyPI / Docker Hub) | arsenal (rows 38-40) |
+| GitHub code-search dorks (13 templates) | arsenal |
+| 9 read-only credential validators (Postman / AWS / GitHub / Slack / Anthropic / OpenAI / npm / Atlassian / DataDog) | arsenal |
+| Post-discovery enumeration workflows (IAM enum · repo enum · workspace enum · JWT triage) | arsenal |
+| `secret_scan.py` runnable helper (stdlib-only, JSONL output) | arsenal |
+| 80+ dork corpus across 9 categories | arsenal |
 
 ### Breach Intelligence
 
-| Capability | Reference |
+| Capability | Skill |
 |---|---|
-| HudsonRock Cavalier direct API (free; FYI: web-UI wraps a public JSON endpoint) | arsenal §15.0.1 |
-| Domain-level breach severity mapping | arsenal §15.1 |
-| `SSO_EXPOSURE` finding + legacy-mail-decommissioned escalation pattern | arsenal §15.2 |
-| Breach × identity correlation (HudsonRock + HIBP + DeHashed + IntelX) | methodology §22 |
+| HudsonRock Cavalier direct API (free; FYI: web-UI wraps a public JSON endpoint) | arsenal |
+| Domain-level breach severity mapping | arsenal |
+| `SSO_EXPOSURE` finding + legacy-mail-decommissioned escalation pattern | arsenal |
+| Breach × identity correlation (HudsonRock + HIBP + DeHashed + IntelX) | methodology |
 
 ### Vendor & Edge-Appliance Fingerprinting
 
-| Capability | Reference |
+| Capability | Skill |
 |---|---|
-| Citrix Netscaler · F5 BIG-IP · Pulse Secure / Ivanti · FortiGate | arsenal §16.16 |
-| PaloAlto GlobalProtect · Cisco AnyConnect · VMware vCenter / ESXi / Horizon | arsenal §16.16 |
-| Microsoft Exchange OWA (ProxyShell / ProxyLogon / ProxyNotShell) | arsenal §16.16 |
-| KEV CVE enrichment + EPSS scoring + Metasploit availability | arsenal §29.2 |
-| WAF / CDN bypass + origin discovery (8 techniques) | methodology §27, arsenal §16.15 |
+| Citrix Netscaler · F5 BIG-IP · Pulse Secure / Ivanti · FortiGate | arsenal |
+| PaloAlto GlobalProtect · Cisco AnyConnect · VMware vCenter / ESXi / Horizon | arsenal |
+| Microsoft Exchange OWA (ProxyShell / ProxyLogon / ProxyNotShell) | arsenal |
+| KEV CVE enrichment + EPSS scoring + Metasploit availability | arsenal |
+| WAF / CDN bypass + origin discovery (8 techniques) | methodology, arsenal |
 
 ### Email Security
 
-| Capability | Reference |
+| Capability | Skill |
 |---|---|
-| SPF / DMARC / DKIM / BIMI / MTA-STS / TLS-RPT / DNSSEC audit (bash + PowerShell) | arsenal §16.14 |
-| DMARC reporting-vendor inference (Kratikal / dmarcian / Valimail / Agari / EasyDMARC) | arsenal §16.14 |
-| TXT verification token catalog (35+ SaaS tenants) | arsenal §16.22 |
-| MX → IdP / mail-host inference | arsenal §16.14 |
+| SPF / DMARC / DKIM / BIMI / MTA-STS / TLS-RPT / DNSSEC audit (bash + PowerShell) | arsenal |
+| DMARC reporting-vendor inference (Kratikal / dmarcian / Valimail / Agari / EasyDMARC) | arsenal |
+| TXT verification token catalog (35+ SaaS tenants) | arsenal |
+| MX → IdP / mail-host inference | arsenal |
 
 ### Human Intelligence
 
-| Capability | Reference |
+| Capability | Skill |
 |---|---|
-| LinkedIn employee enumeration (P0–P5 role tiers · sock-puppet hygiene) | arsenal §41 |
-| Job posting tech-stack analysis (Lever · Greenhouse · AshbyHQ · Workable) | arsenal §42 |
-| Slack / Discord / Telegram / Mattermost workspace discovery | arsenal §43 |
-| Sat imagery for physical recon (Google Earth · NearMap · Sentinel Hub) | arsenal §45 |
-| Email-pattern inference (8 templates) | arsenal §11 |
+| LinkedIn employee enumeration (P0–P5 role tiers · sock-puppet hygiene) | arsenal |
+| Job posting tech-stack analysis (Lever · Greenhouse · AshbyHQ · Workable) | arsenal |
+| Slack / Discord / Telegram / Mattermost workspace discovery | arsenal |
+| Sat imagery for physical recon (Google Earth · NearMap · Sentinel Hub) | arsenal |
+| Email-pattern inference (8 templates) | arsenal |
 
 ### Supply Chain
 
-| Capability | Reference |
+| Capability | Skill |
 |---|---|
-| Package-registry leak hunting (npm · PyPI · RubyGems · Cargo · Packagist · NuGet · Maven) | arsenal §44 |
-| Typosquat surveillance | arsenal §44.10 |
-| Postman public-workspace search (verified endpoint) | arsenal §24 |
-| Stack Exchange OSINT sweep (8 sites) | arsenal §25 |
+| Package-registry leak hunting (npm · PyPI · RubyGems · Cargo · Packagist · NuGet · Maven) | arsenal |
+| Typosquat surveillance | arsenal |
+| Postman public-workspace search (verified endpoint) | arsenal |
+| Stack Exchange OSINT sweep (8 sites) | arsenal |
 
 ### Reporting & Deliverables
 
-| Capability | Reference |
+| Capability | Skill |
 |---|---|
-| Findings rubric (CRITICAL/HIGH/MED/LOW/INFO + escalation) | methodology §9 |
-| Severity decision matrix (88 worked examples) | arsenal §40 |
-| Attack-path hint patterns (27 templates) | arsenal §39 |
-| Bug-bounty submission templates (HackerOne / Bugcrowd / Intigriti) | methodology §30 |
-| Client deliverable templates (exec summary · risk-translation matrix · cadence) | methodology §31 |
-| Reproduction package | methodology §3, §31 |
+| Findings rubric (CRITICAL/HIGH/MED/LOW/INFO + escalation) | methodology |
+| Severity decision matrix (88 worked examples) | arsenal |
+| Attack-path hint patterns (27 templates) | arsenal |
+| Bug-bounty submission templates (HackerOne / Bugcrowd / Intigriti) | methodology |
+| Client deliverable templates (exec summary · risk-translation matrix · cadence) | methodology |
+| Reproduction package | methodology |
 
 ### Sector-Specific
 
-| Capability | Reference |
+| Capability | Skill |
 |---|---|
-| Healthcare (DICOM · HL7 v2 · FHIR · Epic / Cerner / Allscripts) | arsenal §47.1 |
-| Finance (SWIFT · FIX · Bloomberg · Temenos / Finacle / FIS / Fiserv) | arsenal §47.2 |
-| ICS / SCADA (Modbus · BACnet · Siemens S7 · DNP3 · EtherNet/IP) | arsenal §47.3 |
-| IoT (MQTT · CoAP · UPnP · Hikvision / Dahua DVRs) | arsenal §47.4 |
-| Government (`.gov` / `.mil` · FedRAMP · FISMA · CUI · SAM.gov) | arsenal §47.5 |
+| Healthcare (DICOM · HL7 v2 · FHIR · Epic / Cerner / Allscripts) | arsenal |
+| Finance (SWIFT · FIX · Bloomberg · Temenos / Finacle / FIS / Fiserv) | arsenal |
+| ICS / SCADA (Modbus · BACnet · Siemens S7 · DNP3 · EtherNet/IP) | arsenal |
+| IoT (MQTT · CoAP · UPnP · Hikvision / Dahua DVRs) | arsenal |
+| Government (`.gov` / `.mil` · FedRAMP · FISMA · CUI · SAM.gov) | arsenal |
 
 ---
 
@@ -328,8 +328,8 @@ mindmap
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#1e293b','primaryTextColor':'#f1f5f9','primaryBorderColor':'#475569','lineColor':'#94a3b8'}}}%%
 flowchart TD
-    A["🎯 Target authorized<br/><i>RoE / BB scope / ASM contract</i>"] --> B[methodology §0-1<br/>scope check]
-    B --> C[methodology §7<br/>5-stage pipeline]
+    A["🎯 Target authorized<br/><i>RoE / BB scope / ASM contract</i>"] --> B[methodology<br/>scope check]
+    B --> C[methodology<br/>5-stage pipeline]
 
     C --> D1["🔍 Stage 1<br/>Seed Discovery"]
     C --> D2["🌐 Stage 2<br/>Asset Expansion"]
@@ -337,13 +337,13 @@ flowchart TD
     C --> D4["⚠️ Stage 4<br/>Exposure Analysis"]
     C --> D5["📋 Stage 5<br/>Reporting"]
 
-    D1 --> E1[arsenal §16.22 DNS catalog<br/>§16.21 WHOIS/RDAP<br/>§14 public records]
-    D2 --> E2[arsenal §27 subdomain stack<br/>§16.24 prefix sweep<br/>§16.23 Wayback CDX]
-    D3 --> E3[arsenal §16.16 vendor fp<br/>§22 identity fabric<br/>§28 infrastructure OSINT]
-    D4 --> E4[arsenal §17 secret catalog<br/>§16.5 always-on checks<br/>§16.18 K8s exposure<br/>§23 read-only validators<br/>§15 breach × identity]
-    D5 --> E5[methodology §9 severity rubric<br/>§30 BB submission<br/>§31 client deliverable]
+    D1 --> E1[DNS catalog<br/>WHOIS / RDAP<br/>public records]
+    D2 --> E2[subdomain stack<br/>prefix sweep<br/>Wayback CDX]
+    D3 --> E3[vendor fingerprint<br/>identity fabric<br/>infrastructure OSINT]
+    D4 --> E4[secret catalog<br/>always-on HTTP checks<br/>K8s exposure<br/>read-only validators<br/>breach × identity]
+    D5 --> E5[severity rubric<br/>BB submission<br/>client deliverable]
 
-    E1 --> F[methodology §8<br/>asset graph]
+    E1 --> F[methodology<br/>asset graph]
     E2 --> F
     E3 --> F
     E4 --> G["📋 Findings<br/>severity + confidence + evidence"]
