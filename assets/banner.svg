@@ -10,7 +10,7 @@
     </radialGradient>
     <radialGradient id="vignette" cx="50%" cy="50%" r="75%">
       <stop offset="0%" stop-color="#0a0a0a" stop-opacity="0"/>
-      <stop offset="100%" stop-color="#000000" stop-opacity="0.75"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.78"/>
     </radialGradient>
     <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
       <feGaussianBlur stdDeviation="6" result="blur"/>
@@ -19,6 +19,9 @@
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
+    <filter id="nodeshadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.5"/>
+    </filter>
   </defs>
 
   <!-- background -->
@@ -26,8 +29,8 @@
   <rect width="1280" height="720" fill="url(#grid)"/>
   <rect width="1280" height="720" fill="url(#vignette)"/>
 
-  <!-- ============= BAND 1 (y 0..200): brand ============= -->
-  <!-- accent burst on left -->
+  <!-- ============= BAND 1 (y 0..210): brand ============= -->
+  <!-- accent burst -->
   <g transform="translate(110, 110)" stroke="#DC2626" stroke-linecap="round">
     <line x1="0" y1="0" x2="0"   y2="-65" stroke-width="9"/>
     <line x1="0" y1="0" x2="33"  y2="-56" stroke-width="9"/>
@@ -45,40 +48,40 @@
   </g>
 
   <!-- wordmark -->
-  <g transform="translate(220, 135)">
+  <g transform="translate(220, 130)">
     <text x="0" y="0" font-size="78" font-weight="700" fill="#f1f5f9" letter-spacing="-2">claude</text>
     <text x="265" y="0" font-size="78" font-weight="700" fill="#DC2626" letter-spacing="-2">osint</text>
-    <line x1="0" y1="16" x2="495" y2="16" stroke="#DC2626" stroke-width="3"/>
-    <text x="0" y="46" font-size="16" font-weight="400" fill="#94a3b8" letter-spacing="0.3">External red-team OSINT &amp; bug-bounty recon · Claude AI operator</text>
+    <line x1="0" y1="14" x2="495" y2="14" stroke="#DC2626" stroke-width="3"/>
+    <text x="0" y="44" font-size="14" font-weight="400" fill="#94a3b8" letter-spacing="0.5">External red-team OSINT · bug-bounty recon</text>
   </g>
 
-  <!-- top-right meta block -->
+  <!-- top-right meta -->
   <g transform="translate(1235, 105)" font-family="ui-monospace, 'SF Mono', Menlo, monospace">
     <text x="0" y="0" text-anchor="end" font-size="13" fill="#64748b">v2.1.1 · MIT</text>
     <text x="0" y="22" text-anchor="end" font-size="13" fill="#64748b">by ElementalSoul</text>
     <text x="0" y="44" text-anchor="end" font-size="13" fill="#64748b">github.com/elementalsouls/Claude-OSINT</text>
   </g>
 
-  <!-- ============= BAND 2 (y 210..620): constellation ============= -->
+  <!-- ============= BAND 2 (y 230..630): constellation ============= -->
   <!-- subtle orbit rings -->
-  <circle cx="640" cy="415" r="180" fill="none" stroke="#dc2626" stroke-width="1" stroke-opacity="0.18"/>
-  <circle cx="640" cy="415" r="100" fill="none" stroke="#dc2626" stroke-width="1" stroke-opacity="0.10"/>
+  <circle cx="640" cy="420" r="160" fill="none" stroke="#dc2626" stroke-width="1" stroke-opacity="0.20"/>
+  <circle cx="640" cy="420" r="95"  fill="none" stroke="#dc2626" stroke-width="1" stroke-opacity="0.12"/>
 
-  <!-- spokes (drawn behind nodes) -->
+  <!-- spokes -->
   <g stroke="#dc2626" stroke-width="1.5" stroke-opacity="0.45" stroke-dasharray="5,4">
-    <line x1="640" y1="415" x2="815" y2="415"/>
-    <line x1="640" y1="415" x2="763" y2="539"/>
-    <line x1="640" y1="415" x2="640" y2="590"/>
-    <line x1="640" y1="415" x2="517" y2="539"/>
-    <line x1="640" y1="415" x2="465" y2="415"/>
-    <line x1="640" y1="415" x2="517" y2="291"/>
-    <line x1="640" y1="415" x2="640" y2="240"/>
-    <line x1="640" y1="415" x2="763" y2="291"/>
+    <line x1="640" y1="420" x2="800" y2="420"/>
+    <line x1="640" y1="420" x2="753" y2="533"/>
+    <line x1="640" y1="420" x2="640" y2="580"/>
+    <line x1="640" y1="420" x2="527" y2="533"/>
+    <line x1="640" y1="420" x2="480" y2="420"/>
+    <line x1="640" y1="420" x2="527" y2="307"/>
+    <line x1="640" y1="420" x2="640" y2="260"/>
+    <line x1="640" y1="420" x2="753" y2="307"/>
   </g>
 
   <!-- HUB -->
-  <g transform="translate(640, 415)" filter="url(#glow)">
-    <circle cx="0" cy="0" r="60" fill="url(#hubglow)" stroke="#dc2626" stroke-width="2"/>
+  <g transform="translate(640, 420)" filter="url(#glow)">
+    <circle cx="0" cy="0" r="58" fill="url(#hubglow)" stroke="#dc2626" stroke-width="2"/>
     <g stroke="#ffffff" stroke-linecap="round" stroke-width="3.5">
       <line x1="0" y1="-30" x2="0" y2="30"/>
       <line x1="-30" y1="0" x2="30" y2="0"/>
@@ -87,96 +90,98 @@
     </g>
     <circle cx="0" cy="0" r="5" fill="#ffffff"/>
   </g>
-  <text x="640" y="498" text-anchor="middle" font-size="14" font-weight="700" fill="#f1f5f9" letter-spacing="3">CLAUDE</text>
-  <text x="640" y="516" text-anchor="middle" font-size="11" font-weight="400" fill="#94a3b8" letter-spacing="2">AI · OSINT operator</text>
+  <text x="640" y="500" text-anchor="middle" font-size="14" font-weight="700" fill="#f1f5f9" letter-spacing="3">CLAUDE</text>
+  <text x="640" y="518" text-anchor="middle" font-size="11" font-weight="400" fill="#94a3b8" letter-spacing="2">AI · OSINT operator</text>
 
-  <!-- 8 capability nodes around hub (rect 180×60, centered at point ± 90×30) -->
-  <!-- 0° (E) at (815,415) -->
-  <g transform="translate(725, 385)">
+  <!-- 8 capability nodes (rect 180×60, centered at orbit point) -->
+  <!-- 0° (E) at (800,420) -->
+  <g transform="translate(710, 390)" filter="url(#nodeshadow)">
     <rect width="180" height="60" rx="10" fill="#0f172a" stroke="#dc2626" stroke-width="1.5"/>
     <text x="90" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#f1f5f9">M365 / Entra</text>
     <text x="90" y="46" text-anchor="middle" font-size="11" fill="#94a3b8">tenant GUID · SharePoint · OWA</text>
   </g>
-  <!-- 45° (SE) at (763,539) -->
-  <g transform="translate(673, 509)">
+  <!-- 45° (SE) at (753,533) -->
+  <g transform="translate(663, 503)" filter="url(#nodeshadow)">
     <rect width="180" height="60" rx="10" fill="#0f172a" stroke="#dc2626" stroke-width="1.5"/>
     <text x="90" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#f1f5f9">AWS</text>
     <text x="90" y="46" text-anchor="middle" font-size="11" fill="#94a3b8">STS · IAM enum · S3 buckets</text>
   </g>
-  <!-- 90° (S) at (640,590) -->
-  <g transform="translate(550, 560)">
+  <!-- 90° (S) at (640,580) -->
+  <g transform="translate(550, 550)" filter="url(#nodeshadow)">
     <rect width="180" height="60" rx="10" fill="#0f172a" stroke="#dc2626" stroke-width="1.5"/>
     <text x="90" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#f1f5f9">GitHub</text>
     <text x="90" y="46" text-anchor="middle" font-size="11" fill="#94a3b8">PAT scope · code dorks · secrets</text>
   </g>
-  <!-- 135° (SW) at (517,539) -->
-  <g transform="translate(427, 509)">
+  <!-- 135° (SW) at (527,533) -->
+  <g transform="translate(437, 503)" filter="url(#nodeshadow)">
     <rect width="180" height="60" rx="10" fill="#0f172a" stroke="#dc2626" stroke-width="1.5"/>
     <text x="90" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#f1f5f9">GraphQL</text>
     <text x="90" y="46" text-anchor="middle" font-size="11" fill="#94a3b8">introspection · field-suggestion</text>
   </g>
-  <!-- 180° (W) at (465,415) -->
-  <g transform="translate(375, 385)">
+  <!-- 180° (W) at (480,420) -->
+  <g transform="translate(390, 390)" filter="url(#nodeshadow)">
     <rect width="180" height="60" rx="10" fill="#0f172a" stroke="#dc2626" stroke-width="1.5"/>
     <text x="90" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#f1f5f9">Kubernetes</text>
     <text x="90" y="46" text-anchor="middle" font-size="11" fill="#94a3b8">kubelet · etcd · K8s API</text>
   </g>
-  <!-- 225° (NW) at (517,291) -->
-  <g transform="translate(427, 261)">
+  <!-- 225° (NW) at (527,307) -->
+  <g transform="translate(437, 277)" filter="url(#nodeshadow)">
     <rect width="180" height="60" rx="10" fill="#0f172a" stroke="#dc2626" stroke-width="1.5"/>
     <text x="90" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#f1f5f9">Citrix · F5 · Fortinet</text>
     <text x="90" y="46" text-anchor="middle" font-size="11" fill="#94a3b8">vendor fingerprint · KEV CVEs</text>
   </g>
-  <!-- 270° (N) at (640,240) -->
-  <g transform="translate(550, 210)">
+  <!-- 270° (N) at (640,260) -->
+  <g transform="translate(550, 230)" filter="url(#nodeshadow)">
     <rect width="180" height="60" rx="10" fill="#0f172a" stroke="#dc2626" stroke-width="1.5"/>
     <text x="90" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#f1f5f9">Anthropic · OpenAI</text>
     <text x="90" y="46" text-anchor="middle" font-size="11" fill="#94a3b8">key catalog · validators</text>
   </g>
-  <!-- 315° (NE) at (763,291) -->
-  <g transform="translate(673, 261)">
+  <!-- 315° (NE) at (753,307) -->
+  <g transform="translate(663, 277)" filter="url(#nodeshadow)">
     <rect width="180" height="60" rx="10" fill="#0f172a" stroke="#dc2626" stroke-width="1.5"/>
     <text x="90" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#f1f5f9">HudsonRock · Wayback</text>
     <text x="90" y="46" text-anchor="middle" font-size="11" fill="#94a3b8">breach corpus · CDX archive</text>
   </g>
 
-  <!-- margin badges left (secondary capabilities) -->
+  <!-- margin badges left -->
   <g font-size="11" fill="#475569" font-family="ui-monospace, monospace">
-    <text x="290" y="408" text-anchor="end">LinkedIn enum +</text>
-    <text x="290" y="428" text-anchor="end">Job posting analysis +</text>
-    <text x="290" y="448" text-anchor="end">Sat imagery +</text>
+    <text x="305" y="408" text-anchor="end">LinkedIn enum +</text>
+    <text x="305" y="428" text-anchor="end">Job posting analysis +</text>
+    <text x="305" y="448" text-anchor="end">Sat imagery +</text>
   </g>
   <!-- margin badges right -->
   <g font-size="11" fill="#475569" font-family="ui-monospace, monospace">
-    <text x="990" y="408" text-anchor="start">+ Slack · Discord</text>
-    <text x="990" y="428" text-anchor="start">+ Postman PMAK</text>
-    <text x="990" y="448" text-anchor="start">+ Atlassian · DataDog</text>
+    <text x="975" y="408" text-anchor="start">+ Slack · Discord</text>
+    <text x="975" y="428" text-anchor="start">+ Postman PMAK</text>
+    <text x="975" y="448" text-anchor="start">+ Atlassian · DataDog</text>
   </g>
 
-  <!-- ============= BAND 3 (y 640..690): stat ribbon ============= -->
-  <g transform="translate(0, 640)">
+  <!-- ============= BAND 3 (y 645..695): stat ribbon ============= -->
+  <g transform="translate(0, 645)">
     <rect x="40" y="0" width="1200" height="50" rx="10" fill="#0f172a" stroke="#dc2626" stroke-width="1" stroke-opacity="0.6"/>
-    <g font-size="14" font-weight="500" fill="#f1f5f9">
-      <text x="80"  y="32" font-size="20" font-weight="700" fill="#dc2626">90+</text>
-      <text x="128" y="32">MODULES</text>
-
-      <text x="265" y="32" font-size="20" font-weight="700" fill="#dc2626">48</text>
-      <text x="295" y="32">SECRET PATTERNS</text>
-
-      <text x="475" y="32" font-size="20" font-weight="700" fill="#dc2626">80+</text>
-      <text x="523" y="32">DORKS</text>
-
-      <text x="615" y="32" font-size="20" font-weight="700" fill="#dc2626">9</text>
-      <text x="640" y="32">VALIDATORS</text>
-
-      <text x="775" y="32" font-size="20" font-weight="700" fill="#dc2626">27</text>
-      <text x="810" y="32">ATTACK PATHS</text>
-
-      <text x="965" y="32" font-size="20" font-weight="700" fill="#dc2626">5,500+</text>
-      <text x="1055" y="32">LINES OF TRADECRAFT</text>
+    <!-- 6 evenly-spaced stat groups, 200px slots, anchor middle -->
+    <g font-size="14" font-weight="500">
+      <!-- slot 1: 40..240, center 140 -->
+      <text x="100" y="32" text-anchor="middle" font-size="20" font-weight="700" fill="#dc2626">90+</text>
+      <text x="160" y="32" text-anchor="middle" fill="#f1f5f9">MODULES</text>
+      <!-- slot 2: 240..440, center 340 -->
+      <text x="305" y="32" text-anchor="middle" font-size="20" font-weight="700" fill="#dc2626">48</text>
+      <text x="365" y="32" text-anchor="middle" fill="#f1f5f9">PATTERNS</text>
+      <!-- slot 3: 440..640, center 540 -->
+      <text x="510" y="32" text-anchor="middle" font-size="20" font-weight="700" fill="#dc2626">80+</text>
+      <text x="565" y="32" text-anchor="middle" fill="#f1f5f9">DORKS</text>
+      <!-- slot 4: 640..840, center 740 -->
+      <text x="710" y="32" text-anchor="middle" font-size="20" font-weight="700" fill="#dc2626">9</text>
+      <text x="775" y="32" text-anchor="middle" fill="#f1f5f9">VALIDATORS</text>
+      <!-- slot 5: 840..1040, center 940 -->
+      <text x="895" y="32" text-anchor="middle" font-size="20" font-weight="700" fill="#dc2626">27</text>
+      <text x="975" y="32" text-anchor="middle" fill="#f1f5f9">ATTACK PATHS</text>
+      <!-- slot 6: 1040..1240, center 1140 -->
+      <text x="1100" y="32" text-anchor="middle" font-size="20" font-weight="700" fill="#dc2626">5,500+</text>
+      <text x="1180" y="32" text-anchor="middle" fill="#f1f5f9">LINES</text>
     </g>
   </g>
 
   <!-- BAND 4 footer -->
-  <text x="640" y="708" text-anchor="middle" font-size="11" fill="#475569" letter-spacing="2">METHODOLOGY + ARSENAL · PAIRED · PRODUCTION-READY</text>
+  <text x="640" y="710" text-anchor="middle" font-size="11" fill="#475569" letter-spacing="2">METHODOLOGY + ARSENAL · PAIRED · PRODUCTION-READY</text>
 </svg>
