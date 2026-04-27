@@ -2,7 +2,7 @@
 
 # claude-osint
 
-> 2 production-ready offensive OSINT skills for Claude — drop-in `SKILL.md` files that turn Claude into a context-aware external recon operator for authorized red-team and bug-bounty engagements.
+> 2 paired Claude skills · **90+ recon modules** · 48 secret-regex patterns · 80+ dorks · 9 read-only credential validators · 27 attack-path templates · 5,500+ lines of structured tradecraft. Drop-in `SKILL.md` files that turn Claude into a god-mode external recon operator for authorized red-team and bug-bounty engagements.
 
 Built by **[ElementalSoul](https://github.com/elementalsouls)** — extracted from the operational tradecraft of the [Falcon-Recon](https://github.com/elementalsouls/falcon-recon) external attack-surface management platform.
 
