@@ -33,7 +33,7 @@ claude-osint/
 ├── docs/                              # architecture · coverage · install · usage
 ├── examples/                          # 4 end-to-end engagement walk-throughs
 ├── tests/smoke-test-prompts.md        # 32-prompt self-evaluation
-└── assets/banner.svg
+└── assets/banner.png
 ```
 
 Each skill directory is self-contained. Drop into `~/.claude/skills/` and Claude auto-triggers on relevant phrases.
