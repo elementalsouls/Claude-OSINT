@@ -1,4 +1,4 @@
-![claude-osint banner](assets/banner.svg)
+![claude-osint banner](assets/banner.png)
 
 # claude-osint
 
