@@ -7,6 +7,20 @@ and the project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [Unreleased]
+
+### `osint-methodology` — refactor: trimmed from 1,694 to 455 lines (v2.2)
+
+- Removed duplicate implementation content already covered by `offensive-osint` (§11–§15, §27–§29 original).
+- Compressed 9 implementation-detail sections (Identity Fabric, API, JS, Mobile, Cloud, WAF/CDN, Vuln Prioritization, Phishing) into a single §11 pointer block — each now a 2-sentence description + companion skill reference.
+- Collapsed §16–§21 (Cryptocurrency, Image/Video/Chronolocation, Threat Actor, People, Infrastructure OSINT, Automation, Synthetic Media) into a single §13 specialty domains section (~20 lines total).
+- Retained full methodology core: confidence levels + upgrade workflows (§2), 5-stage pipeline + priority order + time budgets (§7), asset graph taxonomy + triage rules (§8), severity rubric + escalation rules (§9), OpSec + detectability + back-off (§6), breach × identity correlation (§12), anti-patterns (§14).
+- Trimmed §30 Bug Bounty Submission (~90 lines → ~15) and §31 Client Deliverable Templates (~150 lines → ~20); retained essential structures (report skeleton, risk translation matrix).
+- Renumbered: §26 Anti-Patterns → §14; §30 Bug Bounty → §15; §31 Deliverables → §16; §32 Self-Test → §17; §33 Changelog → §18.
+- Updated skill self-test to 12 prompts aligned with new section numbers.
+
+---
+
 ## [2.1] — 2026-04-27
 
 Comprehensive expansion based on a 32-prompt smoke-test gap analysis. PASS rate moved from C-grade (1 PASS / 9 PARTIAL / 22 FAIL) to A-grade (31 PASS / 1 PARTIAL / 0 FAIL).
