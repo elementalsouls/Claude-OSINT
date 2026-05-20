@@ -4130,7 +4130,7 @@ Drop these prompts into a fresh Claude session to verify the skill loads correct
 11. *"Curl one-liner to test for `/actuator/env`."* → §16.13.
 12. *"Show me the GraphQL field-suggestion enumeration trick when introspection is disabled."* → §22.9.
 13. *"Found a hard-coded JWT in JS. Walk me through full triage."* → §23.12 (JWT workflow).
-14. *"Generate cloud bucket candidates for `redacted-client` with subdomains api/billing/hr."* → §16.8.
+14. *"Generate cloud bucket candidates for `Target` with subdomains api/billing/hr."* → §16.8.
 15. *"How do I find Microsoft 365 Teams federation status + SharePoint subdomains?"* → §22.8.
 16. *"Probe paths for Citrix Netscaler / F5 BIG-IP / Pulse Secure."* → §16.16.
 17. *"Find the origin behind Cloudflare on `target.example`."* → §16.15 + companion methodology §27.
