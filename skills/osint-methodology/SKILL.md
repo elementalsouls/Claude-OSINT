@@ -104,7 +104,7 @@ Every assertion carries a confidence level.
 | IP | ≥2 sources (passive DNS, ASN, Shodan) | TCP SYN-ACK or ICMP reply |
 | WebApp | URL extracted but not yet hit | HTTP returns 2xx/3xx/4xx AND content-length > 0 |
 | Email | Name-pattern inferred OR snippet-only | Listed in Hunter/IntelX/breach, OR SMTP 250 (abort at DATA) |
-| Bucket | Permutation candidate | HEAD returns 200/301/403 (exists); GET listing = CONFIRMED |
+| Bucket | Permutation candidate + HEAD returns 200/301/403 (exists) | GET listing = CONFIRMED |
 | Credential / secret | Regex match in captured text | Read-only validator returns success (scope + account-ID documented) |
 | Person | Name from single source | Confirmed by second independent source |
 | SSO tenant | OIDC discovery endpoint returns metadata | Tenant GUID extracted AND domain ties back via MX/autodiscover/SP record |
