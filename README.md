@@ -2,7 +2,7 @@
 
 # claude-osint
 
-> 2 paired Claude skills · **90+ recon modules** · 48 secret-regex patterns · 80+ dorks · 9 read-only credential validators · 27 attack-path templates · 5,500+ lines of structured tradecraft. Drop-in `SKILL.md` files that turn Claude into a god-mode external recon operator for authorized red-team and bug-bounty engagements.
+> 2 paired Claude skills · **90+ recon modules** · 48 secret-regex patterns · 80+ dorks · 9 read-only credential validators · 27 attack-path templates · 4,600+ lines of structured tradecraft. Drop-in `SKILL.md` files that turn Claude into a god-mode external recon operator for authorized red-team and bug-bounty engagements.
 
 Built by **[ElementalSoul](https://github.com/elementalsouls)** — GenAI Security Research.
 
@@ -17,7 +17,7 @@ Built by **[ElementalSoul](https://github.com/elementalsouls)** — GenAI Securi
 
 Drop both into your Claude environment and it behaves like a senior recon analyst: it knows the techniques, the tooling, the edge cases, and the escalation paths — and it stays in scope.
 
-~5,500 lines of structured tradecraft · 96.9% PASS on a 32-prompt self-evaluation · ~85–90% practitioner coverage for the recon phase of authorized engagements.
+~4,600 lines of structured tradecraft · 96.9% PASS on a 32-prompt self-evaluation · ~85–90% practitioner coverage for the recon phase of authorized engagements.
 
 ---
 
@@ -26,10 +26,11 @@ Drop both into your Claude environment and it behaves like a senior recon analys
 ```
 claude-osint/
 ├── skills/
-│   ├── osint-methodology/SKILL.md     # how to think  (1,694 lines)
+│   ├── osint-methodology/SKILL.md     # how to think  (455 lines)
 │   └── offensive-osint/
 │       ├── SKILL.md                   # what to reach for (4,168 lines)
-│       └── scripts/secret_scan.py     # stdlib-only secret scanner
+│       ├── scripts/secret_scan.py     # stdlib-only secret scanner
+│       └── scripts/h1_reference.py    # HackerOne disclosed-reports reference agent
 ├── docs/                              # architecture · coverage · install · usage
 ├── examples/                          # 4 end-to-end engagement walk-throughs
 ├── tests/smoke-test-prompts.md        # 32-prompt self-evaluation
@@ -105,6 +106,7 @@ Each skill directory is self-contained. Drop into `~/.claude/skills/` and Claude
 | 9 read-only credential validators (Postman / AWS / GitHub / Slack / Anthropic / OpenAI / npm / Atlassian / DataDog) | arsenal |
 | Post-discovery enumeration workflows (IAM enum · repo enum · workspace enum · JWT triage) | arsenal |
 | `secret_scan.py` runnable helper (stdlib-only, JSONL output) | arsenal |
+| `h1_reference.py` — HackerOne disclosed-reports reference agent (no API key, top-voted / top-bounty / keyword / program filter) | arsenal |
 | 80+ dork corpus across 9 categories | arsenal |
 
 ### Breach Intelligence
