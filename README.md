@@ -29,7 +29,8 @@ claude-osint/
 │   ├── osint-methodology/SKILL.md     # how to think  (455 lines)
 │   └── offensive-osint/
 │       ├── SKILL.md                   # what to reach for (4,168 lines)
-│       └── scripts/secret_scan.py     # stdlib-only secret scanner
+│       ├── scripts/secret_scan.py     # stdlib-only secret scanner
+│       └── scripts/h1_reference.py    # HackerOne disclosed-reports reference agent
 ├── docs/                              # architecture · coverage · install · usage
 ├── examples/                          # 4 end-to-end engagement walk-throughs
 ├── tests/smoke-test-prompts.md        # 32-prompt self-evaluation
@@ -105,6 +106,7 @@ Each skill directory is self-contained. Drop into `~/.claude/skills/` and Claude
 | 9 read-only credential validators (Postman / AWS / GitHub / Slack / Anthropic / OpenAI / npm / Atlassian / DataDog) | arsenal |
 | Post-discovery enumeration workflows (IAM enum · repo enum · workspace enum · JWT triage) | arsenal |
 | `secret_scan.py` runnable helper (stdlib-only, JSONL output) | arsenal |
+| `h1_reference.py` — HackerOne disclosed-reports reference agent (no API key, top-voted / top-bounty / keyword / program filter) | arsenal |
 | 80+ dork corpus across 9 categories | arsenal |
 
 ### Breach Intelligence

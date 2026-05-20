@@ -124,6 +124,12 @@ triggers:
   - Teams federation
   - SharePoint enum
   - OneDrive enum
+  - hackerone reference
+  - h1 hacktivity
+  - disclosed reports
+  - community bug reports
+  - prior disclosures
+  - bug bounty reference
 ---
 
 # Offensive OSINT — External Red-Team Arsenal
@@ -3071,30 +3077,30 @@ done < cves.txt | sort -t: -k2 -nr
 
 ### 29.3 HackerOne Disclosed Reports Reference
 
-Use `scripts/h1_reference.py` (no API key required, public GraphQL) to pull community-validated findings as reference while testing. Run it at session start for the target's tech stack or attack type.
+Use `skills/offensive-osint/scripts/h1_reference.py` (no API key required, public GraphQL) to pull community-validated findings as reference while testing. Run it at session start for the target's tech stack or attack type.
 
 **Key modes:**
 ```bash
 # Top voted community reports — best validated techniques
-python3 scripts/h1_reference.py --top-voted --limit 25
+python3 skills/offensive-osint/scripts/h1_reference.py --top-voted --limit 25
 
 # Highest bounty reports — business-impact framing reference
-python3 scripts/h1_reference.py --top-bounty --limit 10
+python3 skills/offensive-osint/scripts/h1_reference.py --top-bounty --limit 10
 
 # Keyword search across pages (50 results/page)
-python3 scripts/h1_reference.py --top-voted --query "SSRF" --pages 10
-python3 scripts/h1_reference.py --top-voted --query "auth bypass|OAuth|OIDC" --pages 5
-python3 scripts/h1_reference.py --top-voted --query "open redirect" --pages 5
+python3 skills/offensive-osint/scripts/h1_reference.py --top-voted --query "SSRF" --pages 10
+python3 skills/offensive-osint/scripts/h1_reference.py --top-voted --query "auth bypass|OAuth|OIDC" --pages 5
+python3 skills/offensive-osint/scripts/h1_reference.py --top-voted --query "open redirect" --pages 5
 
 # Filter by severity (client-side)
-python3 scripts/h1_reference.py --top-bounty --severity critical high --pages 3
+python3 skills/offensive-osint/scripts/h1_reference.py --top-bounty --severity critical high --pages 3
 
 # Program-specific disclosures (requires program handle)
-python3 scripts/h1_reference.py --program taxact --pages 5
-python3 scripts/h1_reference.py --lookup-program taxact   # resolve handle → team ID
+python3 skills/offensive-osint/scripts/h1_reference.py --program taxact --pages 5
+python3 skills/offensive-osint/scripts/h1_reference.py --lookup-program taxact   # resolve handle → team ID
 
 # JSON output for piping / jq
-python3 scripts/h1_reference.py --top-voted --query "XSS" --pages 5 --json | jq '.[].report.url'
+python3 skills/offensive-osint/scripts/h1_reference.py --top-voted --query "XSS" --pages 5 --json | jq '.[].report.url'
 ```
 
 **When to run:**
