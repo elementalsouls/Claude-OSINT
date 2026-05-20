@@ -26,6 +26,17 @@ stealer-logs/
 # Claude Code local config (contains operational/engagement details)
 CLAUDE.md
 
+# Engagement findings — contain real vuln details, credentials, internal infra
+findings/
+
+# Captured engagement artifacts
+refreshSession.js
+mcp-proxy.jar
+
+# Local-only skills (engagement/program specific)
+skills/hackerone/
+skills/report-template/
+
 # API keys / config that shouldn't ship
 .env
 .env.local
