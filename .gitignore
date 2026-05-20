@@ -23,6 +23,9 @@ secrets-found.*
 breach-data/
 stealer-logs/
 
+# Claude Code local config (contains operational/engagement details)
+CLAUDE.md
+
 # API keys / config that shouldn't ship
 .env
 .env.local
