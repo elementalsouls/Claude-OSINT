@@ -9,6 +9,15 @@ and the project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### `offensive-osint` — feat: HackerOne hacktivity reference agent (§29.3)
+
+- Added `skills/offensive-osint/scripts/h1_reference.py` — stdlib-only Python script (no API key required) that queries HackerOne's public GraphQL API for disclosed reports, surfacing community-validated findings during recon.
+- Supports: top-voted sort (community-validated techniques), top-bounty sort (business-impact framing), keyword search with cursor pagination (50 results/page), client-side severity and CWE filters, program-specific lookups, JSON output for piping.
+- Documents three empirically discovered H1 GraphQL server crashes worked around in the script: named variables + substate filter + report fields, `disclosed_at` field + substate filter, sort + substate filter + report fields.
+- Added §29.3 "HackerOne Disclosed Reports Reference" to `offensive-osint` with usage recipes for session-start baseline loading, tech-stack keyword search, pre-probe attack-class reference, and report-writing comparables.
+- Added trigger phrases: `hackerone reference`, `h1 hacktivity`, `disclosed reports`, `community bug reports`, `prior disclosures`, `bug bounty reference`.
+- Added smoke-test prompt #33.
+
 ### `osint-methodology` — refactor: trimmed from 1,694 to 455 lines (v2.2)
 
 - Removed duplicate implementation content already covered by `offensive-osint` (§11–§15, §27–§29 original).
