@@ -26,7 +26,7 @@ Usage examples:
   python3 h1_reference.py --program shopify --pages 3
 
   # Lookup a program's numeric team ID
-  python3 h1_reference.py --lookup-program taxact
+  python3 h1_reference.py --lookup-program gitlab
 
   # Full combo: top-bounty SSRF reports, critical/high only
   python3 h1_reference.py --top-bounty --query "SSRF" --severity critical high --pages 10

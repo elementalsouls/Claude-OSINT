@@ -3096,8 +3096,8 @@ python3 skills/offensive-osint/scripts/h1_reference.py --top-voted --query "open
 python3 skills/offensive-osint/scripts/h1_reference.py --top-bounty --severity critical high --pages 3
 
 # Program-specific disclosures (requires program handle)
-python3 skills/offensive-osint/scripts/h1_reference.py --program taxact --pages 5
-python3 skills/offensive-osint/scripts/h1_reference.py --lookup-program taxact   # resolve handle → team ID
+python3 skills/offensive-osint/scripts/h1_reference.py --program gitlab --pages 5
+python3 skills/offensive-osint/scripts/h1_reference.py --lookup-program gitlab   # resolve handle → team ID
 
 # JSON output for piping / jq
 python3 skills/offensive-osint/scripts/h1_reference.py --top-voted --query "XSS" --pages 5 --json | jq '.[].report.url'
