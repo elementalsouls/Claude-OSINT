@@ -273,11 +273,15 @@ flowchart TD
 ```bash
 # Install both skills (one-time, after clone)
 git clone https://github.com/elementalsouls/Claude-OSINT.git
+cd Claude-OSINT
+./scripts/sync-skill-content.sh
 mkdir -p ~/.claude/skills
-cp -r Claude-OSINT/skills/* ~/.claude/skills/
+cp -r skills/osint-methodology ~/.claude/skills/
+cp -r skills/offensive-osint   ~/.claude/skills/
+ls ~/.claude/skills/
 ```
 
-Then in any Claude Code session, ask an OSINT question — both skills auto-load and trigger on relevant phrases (50+ trigger phrases each).
+Then, in any Claude Code session, ask an OSINT question — both skills auto-load and trigger on relevant phrases (50+ trigger phrases each).
 
 ### With the Claude Skills System
 
