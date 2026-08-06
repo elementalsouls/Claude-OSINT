@@ -140,7 +140,7 @@ independent-evidence formula (full mechanics in §8.4):
 | 0 | `NONE` | No signal fired. |
 | 0–39 | `WEAK` | One low-weight signal (e.g. shared nameserver) — a lead, not attribution. |
 | 40–69 | `MODERATE` | Multiple weak signals, or one medium signal — worth an operator's eyeball. |
-| 70–89 | `STRONG` | Multiple independent signals, or one high-confidence signal — an active-scan-eligible score in Falcon-Recon's own gate. |
+| 70–89 | `STRONG` | Multiple independent signals, or one high-confidence signal — an active-scan-eligible score in a typical ASM promotion gate. |
 | 90–100 | `CONFIRMED` | Independent corroboration close to certainty, or a **confirming** signal (e.g. the seed domain itself) that forces 100 directly. |
 
 **A `NOT_OWNED` (stranger-lock) signal caps the score at 20 regardless of how many weak positives
@@ -393,7 +393,7 @@ $r.hits.hits | ForEach-Object { $_._source.display_names }
   **Exhibit 21** document, which you fetch separately from the filing (not from the search index).
   Verify the field against a live response before trusting a parse.
 - SEC requires a **descriptive User-Agent identifying you** (name + contact) on every request — a
-  bare `curl` UA gets throttled/blocked. This is SEC's own fair-access policy, not a Falcon-Recon
+  bare `curl` UA gets throttled/blocked. This is SEC's own fair-access policy, not a tooling
   quirk.
 - **US-SEC-filer-only.** Empty for any org that doesn't file 10-Ks (non-US, private, or a subsidiary
   itself rather than the filer). Treat a null result as "not applicable," not "no subsidiaries."
@@ -1044,7 +1044,7 @@ Drop these into a fresh session to verify the skill loads correctly.
   exact-slug gated, "dark netblock" recovery), bottom-up ASN discovery, the hyperscaler-scope guard,
   and org-identity-seeded internet-scan-index search (§9); promote-to-scan exposure triage (§10);
   attribution confidence rubric + anti-pattern catalog (§11); end-to-end workflow with time budget
-  (§12); 16-prompt self-test (§13). Grounded directly in the Falcon-Recon production implementation
+  (§12); 16-prompt self-test (§13). Grounded directly in the reference production implementation
   (`modules/subsidiary.py`, `modules/rir_org.py`, `modules/org_index_search.py`, `modules/asn.py`,
   `modules/promote_triage.py`, `connectors/gleif.py`, `connectors/org_registry/*`,
   `connectors/ct_org/crtsh_org.py`, `connectors/reverse_whois/*`, `model/attribution.py`,

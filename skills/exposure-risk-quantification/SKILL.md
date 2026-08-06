@@ -60,7 +60,7 @@ triggers:
 ## 0. When to Use / When NOT
 
 **Use this skill when:** you have a completed set of recon findings (from any engagement,
-not just Falcon-Recon output) and need to (a) compute a defensible 0–100 + A–F risk score,
+not just one tool's output) and need to (a) compute a defensible 0–100 + A–F risk score,
 (b) estimate a $-denominated loss range, (c) rank attack-path chains by exploitability, or
 (d) assemble a board/exec one-pager. Also use it to *explain* a score — "why did this grade
 come out D and not F" is exactly what §7 is for.
@@ -76,7 +76,7 @@ and (ideally) ownership/proof annotations.
 
 Every computation in this skill is a **pure function over findings + assets you already
 hold** — no network calls, no new probes, no target traffic. The reference implementation
-(`falcon_recon/reporting/{risk_score,loss_model,board_report,board_render,attack_paths,
+(`reporting/{risk_score,loss_model,board_report,board_render,attack_paths,
 attack_graph,owner_confidence,proof}.py`) is explicit about this: `risk_score.py` docstring
 calls itself "Pure compute over `scan.db` — no network, no schema change"; `loss_model.py`
 calls itself "Pure, no network"; `attack_graph.py` calls itself "Pure + offline."
@@ -628,7 +628,7 @@ weeks."** — a standing reminder that a one-time external-surface snapshot deca
 ### 10.5 One-pager layout
 
 ```
-[brand bar] Falcon-Recon · external risk intelligence      Confidential · Board Summary
+[brand bar] <your-firm> · external risk intelligence      Confidential · Board Summary
 [H1] External Attack Surface — Board Summary
 Target: <target>
 [hero]  $ band + grade block, side by side  ->  [trend sparkline + delta badge]
@@ -736,7 +736,7 @@ Drop these into a fresh session to verify the skill loads correctly.
 ## 14. Changelog
 
 - **v1.0 (2026-08-06)** — initial release. Reproduces the exact factor weights, formulae,
-  and constants from the Falcon-Recon reference implementation:
+  and constants from the reference implementation:
   `reporting/risk_score.py` (three-factor Exposure/Threat/Impact model, independent-evidence
   combiner, A–F banding), `reporting/loss_model.py` (IBM/Ponemon cost bands, cross-source
   record dedup, Threat-factor annualization), `reporting/board_report.py` +

@@ -112,7 +112,7 @@ interval until someone notices and tears it down.
 **Always-on guardrail specific to this skill:** a monitoring loop must never silently escalate its
 own authorization tier. The `monitor` CLI command's flag surface only exposes `--only`/`--exclude`
 module filters — it has no path to enable `--validate` (the credential/token-submission tier), so a
-scheduled `falcon-recon monitor` loop cannot accidentally re-arm that tier. The dashboard job
+scheduled `asm-cli monitor` loop cannot accidentally re-arm that tier. The dashboard job
 scheduler is different: a job's `flags` field accepts the same flags a manual scan does, so an
 operator *can* configure a recurring job with `--validate`/`--validate-creds` set. Treat that as a
 standing-authorization decision that needs its own explicit sign-off, not a monitoring-cadence
@@ -228,16 +228,16 @@ alerts on run #1 by design.
 
 ### 6.2 Two implementations
 
-Falcon-Recon ships two ways to run this loop — pick based on scope:
+A mature ASM implementation ships two ways to run this loop — pick based on scope:
 
 | | CLI foreground daemon | Dashboard job scheduler |
 |---|---|---|
-| Entry point | `falcon-recon monitor <target> ...` | `monitor_scheduler.scheduler_daemon_loop` |
+| Entry point | `asm-cli monitor <target> ...` | `monitor_scheduler.scheduler_daemon_loop` |
 | Scope | one target per process | many jobs, persisted in `MonitorJobStore` |
 | Visibility | own stdout only | dispatched via `ScanManager.launch()` — appears in the live dashboard scan list |
 | Poll/dispatch cadence | the loop's own `--interval` | polls for due jobs every 30s (`_POLL_SECONDS`) |
 | Per-run safety cap | none — interval only | 7200s (2h) `_SCAN_MAX_SECONDS`; a wedged scan is cancelled and the loop moves on (already rescheduled) |
-| Disable | Ctrl-C | `FALCON_DISABLE_MONITOR_SCHEDULER=1` |
+| Disable | Ctrl-C | `ASM_DISABLE_MONITOR_SCHEDULER=1` |
 | `--validate` reachable? | **No** — the CLI's flag surface is `--only`/`--exclude` only | **Yes** — job `flags` accepts the same flags a manual scan does; see §1 |
 
 Both funnel through the same diff-and-alert logic (`monitor._maybe_alert`) — the scheduler literally
@@ -319,7 +319,7 @@ pushed to a webhook.
 | `hackernews` | forum | `https://hn.algolia.com/api/v1/search` (Algolia HN search) | 600s (10 min) | none |
 | `reddit` | forum | `https://www.reddit.com/r/<sub>/.rss` across `cybersecurity`, `netsec`, `InfoSecNews`, `blueteamsec`, `Pwned`, `AskNetsec`, `sysadmin` | 600s | none |
 | `paste:gist` | paste | `https://api.github.com/search/code` (filtered to `gist.github.com` results) | 900s (15 min) | `GITHUB_TOKEN` |
-| `telegram` | telegram | `https://t.me/s/<channel>` public web preview | 1800s (30 min) | none, but needs channels configured under `market_intel.telegram.channels` (seed with `falcon-recon breach discover --kind telegram`) |
+| `telegram` | telegram | `https://t.me/s/<channel>` public web preview | 1800s (30 min) | none, but needs channels configured under `market_intel.telegram.channels` (seed with `asm-cli breach discover --kind telegram`) |
 
 The two leak-site sources (`ransomwatch`, `ransomware_live`) each poll their full feed on **every**
 cycle and persist **every** row to a local `ransomware_corpus` table — not just watchlist matches.
@@ -346,12 +346,12 @@ A glob or regex pattern that fails to compile falls back to literal match with a
 bad pattern can never wedge the whole collection cycle. Add a pattern:
 
 ```bash
-falcon-recon chatter watchlist add "acme*.com" --kind domain --pattern-type glob \
+asm-cli chatter watchlist add "acme*.com" --kind domain --pattern-type glob \
   --priority high --notes "primary + all TLD variants"
 ```
 
 ```powershell
-falcon-recon chatter watchlist add "acme*.com" --kind domain --pattern-type glob `
+asm-cli chatter watchlist add "acme*.com" --kind domain --pattern-type glob `
   --priority high --notes "primary + all TLD variants"
 ```
 
@@ -446,12 +446,12 @@ tables, mirroring the dorking-results promotion pattern:
 ### 7.7 Running it
 
 ```bash
-falcon-recon chatter watch --webhook https://hooks.slack.com/services/XXX/YYY/ZZZ \
+asm-cli chatter watch --webhook https://hooks.slack.com/services/XXX/YYY/ZZZ \
   --threshold high --tick 30
 ```
 
 ```powershell
-falcon-recon chatter watch --webhook https://hooks.slack.com/services/XXX/YYY/ZZZ `
+asm-cli chatter watch --webhook https://hooks.slack.com/services/XXX/YYY/ZZZ `
   --threshold high --tick 30
 ```
 
@@ -464,7 +464,7 @@ does not itself poll every tick.
 
 ## 8. Infrastructure Tracking Over Time
 
-Falcon-Recon does not run a push/streaming CT-log feed — every signal in this section is **poll +
+This methodology assumes no push/streaming CT-log feed — every signal in this section is **poll +
 diff**: re-run the relevant module on the loop's cadence (§6.4) and read the delta out of §6.3's
 asset diff. What follows is which module produces which tracked-attribute signal, and what it means
 when it fires.
@@ -488,12 +488,12 @@ Either let the loop do it automatically (§6, §11) or run it by hand:
 
 ```bash
 # Last week's scan id vs. this week's, most-recent-first in scans/
-falcon-recon diff acme_com_20260730 acme_com_20260806 \
+asm-cli diff acme_com_20260730 acme_com_20260806 \
   --scans-root scans --out reports/weekly-diff.md --json reports/weekly-diff.json
 ```
 
 ```powershell
-falcon-recon diff acme_com_20260730 acme_com_20260806 `
+asm-cli diff acme_com_20260730 acme_com_20260806 `
   --scans-root scans --out reports/weekly-diff.md --json reports/weekly-diff.json
 ```
 
@@ -681,14 +681,14 @@ the channel.
 
 ## 11. Scheduler Recipes
 
-Falcon-Recon ships three native alternatives to a bare cron loop — prefer these where they fit
+A mature ASM implementation ships three native alternatives to a bare cron loop — prefer these where they fit
 before reaching for external scheduling:
 
-- **`falcon-recon monitor <target> --interval N --webhook <url> --threshold <sev>`** — single-target
+- **`asm-cli monitor <target> --interval N --webhook <url> --threshold <sev>`** — single-target
   foreground daemon; does baseline + loop + diff + alert natively (§6).
 - **Dashboard job scheduler** — multi-target, appears in the live dashboard, has the 2h per-run
   safety cap (§6.2); configure through the dashboard's monitoring page.
-- **`falcon-recon chatter watch --webhook <url> --threshold high`** — the adversary-chatter daemon
+- **`asm-cli chatter watch --webhook <url> --threshold high`** — the adversary-chatter daemon
   (§7.7).
 
 A bare cron/Task-Scheduler loop is still the right call for: ad-hoc periodic reports without wanting
@@ -700,12 +700,12 @@ box where a long-running unsupervised Python daemon isn't operationally convenie
 ```bash
 # crontab -e  (or drop a file under /etc/cron.d/)
 # Every Monday 03:00 — re-scan, diff against last week's scan, write both Markdown + JSON.
-0 3 * * 1 cd /opt/falcon-recon && \
+0 3 * * 1 cd /opt/asm-cli && \
   OLD_SCAN=$(ls -1t scans | grep '^acme_com_' | sed -n 1p) && \   # newest EXISTING dir = last run; captured before the new scan below is created
   NEW_SCAN="acme_com_$(date +%Y%m%d)" && \
-  falcon-recon scan acme.com --scan-id "$NEW_SCAN" --scans-root scans \
+  asm-cli scan acme.com --scan-id "$NEW_SCAN" --scans-root scans \
     >> logs/weekly.log 2>&1 && \
-  falcon-recon diff "$OLD_SCAN" "$NEW_SCAN" --scans-root scans \
+  asm-cli diff "$OLD_SCAN" "$NEW_SCAN" --scans-root scans \
     --out "reports/diff_$(date +%F).md" --json "reports/diff_$(date +%F).json" \
     >> logs/weekly.log 2>&1
 ```
@@ -717,21 +717,21 @@ scan-id prefixes).
 ### 11.2 PowerShell Scheduled Task — same recipe on Windows
 
 ```powershell
-# Register once (run as the service account that owns the falcon-recon install):
+# Register once (run as the service account that owns the asm-cli install):
 $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument `
-  '-NoProfile -ExecutionPolicy Bypass -File C:\falcon-recon\weekly-diff.ps1'
+  '-NoProfile -ExecutionPolicy Bypass -File C:\asm-cli\weekly-diff.ps1'
 $trigger = New-ScheduledTaskTrigger -Weekly -DaysOfWeek Monday -At 3am
-Register-ScheduledTask -TaskName "FalconReconWeeklyDiff" -Action $action -Trigger $trigger
+Register-ScheduledTask -TaskName "AsmWeeklyDiff" -Action $action -Trigger $trigger
 ```
 
 ```powershell
-# C:\falcon-recon\weekly-diff.ps1
-Set-Location C:\falcon-recon
+# C:\asm-cli\weekly-diff.ps1
+Set-Location C:\asm-cli
 $old = (Get-ChildItem scans -Directory | Where-Object Name -like "acme_com_*" |
         Sort-Object LastWriteTime -Descending | Select-Object -First 1).Name  # newest EXISTING = last run; captured before $new is created
 $new = "acme_com_$(Get-Date -Format yyyyMMdd)"
-falcon-recon scan acme.com --scan-id $new --scans-root scans *>> logs\weekly.log
-falcon-recon diff $old $new --scans-root scans `
+asm-cli scan acme.com --scan-id $new --scans-root scans *>> logs\weekly.log
+asm-cli diff $old $new --scans-root scans `
   --out "reports\diff_$(Get-Date -Format yyyy-MM-dd).md" `
   --json "reports\diff_$(Get-Date -Format yyyy-MM-dd).json" *>> logs\weekly.log
 ```
@@ -744,7 +744,7 @@ generic JSON-accepting webhook handler can read. The `monitor` shape:
 
 ```json
 {
-  "text": ":rotating_light: *Falcon-Recon monitor: delta on acme.com*\n_scan-A_ `acme_com_20260730` → _scan-B_ `acme_com_20260806`\n\n*NEW FINDINGS ≥ MEDIUM: 3*\n• `HIGH` — Exposed .git/config _(asset: webapp:dev.acme.com)_\n\nTotals: +4 assets, +3 findings, -1 resolved.",
+  "text": ":rotating_light: *ASM monitor: delta on acme.com*\n_scan-A_ `acme_com_20260730` → _scan-B_ `acme_com_20260806`\n\n*NEW FINDINGS ≥ MEDIUM: 3*\n• `HIGH` — Exposed .git/config _(asset: webapp:dev.acme.com)_\n\nTotals: +4 assets, +3 findings, -1 resolved.",
   "target": "acme.com",
   "scan_a": {"id": "acme_com_20260730", "target": "acme.com", "time": "2026-07-30T03:00:04+00:00"},
   "scan_b": {"id": "acme_com_20260806", "target": "acme.com", "time": "2026-08-06T03:00:11+00:00"},
@@ -772,7 +772,7 @@ everything else still renders something legible.
 Drop these into a fresh session to verify the skill loads and routes correctly.
 
 1. *"Set up ongoing monitoring for acme.com — new subdomains, certs, and ransomware chatter, cheaply."* → §6.4 (stage 1/2 daily), §7.7.
-2. *"What's the difference between `falcon-recon monitor` and the dashboard job scheduler?"* → §6.2.
+2. *"What's the difference between `asm-cli monitor` and the dashboard job scheduler?"* → §6.2.
 3. *"A subdomain's IP address changed between two scans. Does the diff show that as 'changed'?"* → §6.3 (no — paired removed+new `ip` asset, existence-only types don't track attrs).
 4. *"Which asset types alert regardless of severity threshold?"* → §6.5, §8 (credential, typosquat_domain, bucket, repo).
 5. *"What real endpoint does the ransomware.live source hit, and how often?"* → §7.1.
@@ -807,6 +807,5 @@ Drop these into a fresh session to verify the skill loads and routes correctly.
   the "queued is not delivered" distinction, backoff/dead-letter numbers, dedup key, and retention
   (§10); and copy-paste bash-cron + PowerShell-Scheduled-Task recipes plus the Slack-compatible
   webhook payload shape for all three alert senders (§11). Every number, endpoint, cadence, and
-  rule in this skill is transcribed from Falcon-Recon's shipped `chatter/`, `monitor.py`,
-  `web/monitor_scheduler.py`, `reporting/diff.py`, `fleet/`, `findings_watchlist/`, and `alerts/`
-  modules — not invented.
+  rule in this skill is transcribed from a production ASM implementation's shipped monitoring,
+  chatter, scan-diff, fleet, findings-watchlist, and alert-outbox modules — not invented.

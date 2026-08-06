@@ -29,7 +29,7 @@ Full trigger list in the SKILL.md frontmatter.
 ## What's in it
 
 - **§6 — The monitoring loop model.** The canonical five-step loop (baseline → sleep → re-scan → diff
-  → threshold-gated alert), the two native implementations (`falcon-recon monitor` single-target CLI
+  → threshold-gated alert), the two native implementations (`asm-cli monitor` single-target CLI
   daemon vs. the dashboard's multi-target job scheduler — including why only the latter can reach
   the `--validate` tier), the diff engine's tracked-attribute table (what counts as a meaningful
   "changed" asset vs. noise), a stage-by-stage re-scan cadence guide, and the exact hot-asset-type

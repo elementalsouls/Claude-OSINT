@@ -1,6 +1,6 @@
 ---
 name: cloud-saas-exposure
-description: "Organization-grade cloud and supply-chain attack-surface discovery: S3/GCS/Azure Blob bucket discovery via observed-name mining (CNAME/cert-SAN/Wayback) and bounded two-class permutation (6 prefixes x 15 suffixes on trusted tokens, bounded target-bound expansion on subdomain stems), existence (HEAD/GET) vs public-listing confirmation, object-key triage into 9 value tiers (database dumps, credentials, IaC state, kubeconfig, VCS dirs, config, archives, PII, logs), dangling-CNAME bucket-takeover detection, and the ownership-gated severity model that stops an unattributable public bucket from becoming a false CRITICAL; the fully offline AWS-account-ID recovery from a leaked AKIA/ASIA/AROA access key (base32 decode, runnable stdlib Python, canonical test vector, AWS-documentation-example-ID screening); dependency-confusion confirmation for npm/PyPI (internal-signal classifier -- private-registry binding vs org-namespace match -- paired with a read-only public-registry 404 check and the npm scope-claimability nuance the public search API misses); and passive cloud-native/container/Kubernetes/CI control-plane fingerprinting (Lambda URLs, API Gateway, Cloud Run, App Service, kubelet/etcd/K8s API/dashboard, Jenkins/GitLab/Argo CD) as an org-attribution and exposure surface. Passive/discovery only -- no exploitation, no credential submission, no active control-plane confirmation (Falcon-Recon's stage-6 validate_cloud tier is described but out of scope). Use when enumerating a target's cloud storage footprint, recovering an AWS account ID from a leaked key, confirming a supply-chain dependency-confusion vector, or fingerprinting cloud-native/K8s/CI infrastructure for an authorized external recon engagement."
+description: "Organization-grade cloud and supply-chain attack-surface discovery: S3/GCS/Azure Blob bucket discovery via observed-name mining (CNAME/cert-SAN/Wayback) and bounded two-class permutation (6 prefixes x 15 suffixes on trusted tokens, bounded target-bound expansion on subdomain stems), existence (HEAD/GET) vs public-listing confirmation, object-key triage into 9 value tiers (database dumps, credentials, IaC state, kubeconfig, VCS dirs, config, archives, PII, logs), dangling-CNAME bucket-takeover detection, and the ownership-gated severity model that stops an unattributable public bucket from becoming a false CRITICAL; the fully offline AWS-account-ID recovery from a leaked AKIA/ASIA/AROA access key (base32 decode, runnable stdlib Python, canonical test vector, AWS-documentation-example-ID screening); dependency-confusion confirmation for npm/PyPI (internal-signal classifier -- private-registry binding vs org-namespace match -- paired with a read-only public-registry 404 check and the npm scope-claimability nuance the public search API misses); and passive cloud-native/container/Kubernetes/CI control-plane fingerprinting (Lambda URLs, API Gateway, Cloud Run, App Service, kubelet/etcd/K8s API/dashboard, Jenkins/GitLab/Argo CD) as an org-attribution and exposure surface. Passive/discovery only -- no exploitation, no credential submission, no active control-plane confirmation (a stage-6 validate_cloud active tier is described but out of scope). Use when enumerating a target's cloud storage footprint, recovering an AWS account ID from a leaked key, confirming a supply-chain dependency-confusion vector, or fingerprinting cloud-native/K8s/CI infrastructure for an authorized external recon engagement."
 version: 1.0
 triggers:
   - cloud attack surface
@@ -82,7 +82,7 @@ cloud-native URL pattern table, or container/K8s/CI path list with no reasoning 
 straight to `offensive-osint` §16.8/§16.17–16.19/§44. Do NOT use it for anything past
 discovery/confirmation: registering an unclaimed package, submitting AWS credentials,
 authenticating to a Kubernetes API, or confirming a fingerprinted control plane actually
-answers unauthenticated (that's Falcon-Recon's stage-6 `--validate --validate-cloud` tier —
+answers unauthenticated (that's a stage-6 `--validate --validate-cloud` active tier —
 described, never performed, §5/§9.4).
 
 ---
@@ -162,7 +162,7 @@ that can flip the moment someone else registers the name.
 
 - Do NOT fetch or download the contents of any object inside a bucket. Listing keys /
   sampling object names from the listing response is in scope (§6.3); retrieving an object's
-  body is not — Falcon-Recon gates raw object reads behind `--validate`.
+  body is not — the reference implementation gates raw object reads behind `--validate`.
 - Do NOT claim CRITICAL severity for a bucket, endpoint, or account hit that isn't
   ownership-verified. An unattributable public hit is not the client's risk — see the
   ownership-gated model, §6.3.
@@ -175,7 +175,7 @@ that can flip the moment someone else registers the name.
   scope entirely — describe the pivot value (§7.1), never perform it.
 - Do NOT actively probe or authenticate against a fingerprinted Kubernetes API, etcd,
   kubelet, or Docker daemon endpoint to confirm its auth posture. Passive fingerprint only —
-  live confirmation is Falcon-Recon's stage-6 `--validate --validate-cloud`, out of scope.
+  live confirmation is a stage-6 `--validate --validate-cloud` active tier, out of scope.
 - Do NOT single-source attribute a bucket/account/dependency/endpoint to the target — apply
   the rule of three (`osint-methodology` §2) or the explicit ownership signals in §6.3/§7.7/§9.1.
 
@@ -745,8 +745,8 @@ go further under their own authority.
 ### 9.4 What's out of scope here
 
 Any GET/HEAD issued specifically to confirm a fingerprinted cloud-native endpoint or
-control-plane port is reachable/unauthenticated is Falcon-Recon's stage-6
-`--validate --validate-cloud` tier — hard-gated behind explicit `--validate` plus per-target
+control-plane port is reachable/unauthenticated is a stage-6
+`--validate --validate-cloud` active tier — hard-gated behind explicit `--validate` plus per-target
 scope confirmation, default OFF. This skill's ceiling is the passive fingerprint and the
 "likely exposed, auth posture unconfirmed" flag; describe the confirmation step, never
 perform it.
@@ -789,7 +789,7 @@ Drop these into a fresh session to verify the skill loads and routes correctly.
 
 ## 12. Changelog
 
-- **v1.0 (2026-08-06)** — initial release. Reproduces exact logic from the Falcon-Recon
+- **v1.0 (2026-08-06)** — initial release. Reproduces exact logic from the
   reference implementation: `modules/cloud_buckets.py` (two-class candidate generation,
   HEAD/GET→listing probe technique, the ownership-gated severity model, 9-tier object-key
   triage, dangling-CNAME takeover), `core/aws_account.py` + `modules/aws_account_enum.py`

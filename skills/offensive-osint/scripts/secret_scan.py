@@ -115,13 +115,13 @@ PATTERNS = [
     ("DISCORD_BOT",          SEV_HIGH,     "bot_token",   r"\b[MN][A-Za-z\d]{23}\.[\w\-]{6}\.[\w\-]{27}\b"),
     ("TELEGRAM_BOT",         SEV_HIGH,     "bot_token",   r"\b\d{8,10}:[A-Za-z0-9_\-]{35}\b"),
 
-    # Provider expansion (v2.2) — §17 #49-80. Falcon-Recon-grounded (PMAK from
-    # modules/secrets_beyond_github.py) plus well-known, distinctive-prefix
-    # provider token formats not covered above. Every entry here is either a
-    # standalone distinctive-prefix regex or context-anchored exactly like
-    # CLOUDFLARE_API_TOKEN above, so a bare generic token can't FP-flood.
+    # Provider expansion (v2.2) — §17 #49-80. A real-world Postman PMAK detector
+    # plus well-known, distinctive-prefix provider token formats not covered
+    # above. Every entry here is either a standalone distinctive-prefix regex or
+    # context-anchored exactly like CLOUDFLARE_API_TOKEN above, so a bare generic
+    # token can't FP-flood.
 
-    # Postman (grounded in Falcon-Recon modules/secrets_beyond_github.py _RE_PMAK)
+    # Postman (real-world PMAK detection regex)
     ("POSTMAN_PMAK",         SEV_CRITICAL, "postman",     r"\bPMAK-[A-Za-z0-9]{24,64}\b"),
 
     # GitLab

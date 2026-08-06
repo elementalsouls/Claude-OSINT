@@ -1,6 +1,6 @@
 ---
 name: identity-provider-recon
-description: "Organization-grade identity-fabric mapping: tenant/federation fingerprinting and the pre-auth user-ENUMERATION oracle methodology — enumeration and fingerprint only, never credential submission. Covers domain-to-tenant resolution (Microsoft getuserrealm.srf Managed/Federated namespace check, Entra OIDC metadata tenant-GUID extraction, Autodiscover v2), keyless Microsoft tenant-federation mapping (GetFederationInformation SOAP -> sibling-domain discovery, discover-only ROE, FEDERATED_WITH provenance edge held out of attack-path pivoting), Okta org-slug derivation + OIDC fingerprint + governed custom-domain enumeration, ADFS passive/active fingerprint + version inference, Google Workspace MX-correlated detection, generic OIDC (Auth0/Keycloak/Ping Identity/OneLogin/Duo) discovery, SAML metadata (5 paths), Azure AD Seamless-SSO Negotiate-challenge detection, Microsoft Defender for Identity (MDI) sensor-API presence check, the user-enumeration oracle methodology for Microsoft GetCredentialType (IfExistsResult semantics: exists / doesn't-exist / exists-in-federated-tenant / throttled) and Okta /api/v1/authn (errorCode differential), Medium-detectability discipline with a hard 20-candidate-per-tenant cap and admin/role interest-based ranking, and name x confirmed-email-pattern login-candidate synthesis that FAILS CLOSED with zero output when no org pattern is confirmed. Grounded directly in Falcon-Recon's sso_idp.py, tenant_recon.py, and core/email_patterns.py production modules. Deepens — does not duplicate — offensive-osint skill's Identity Fabric endpoint reference with the tenant-federation MAP, the oracle WORKFLOW, and the candidate-SYNTHESIS methodology that reference lacks. Use when fingerprinting an organization's identity provider, mapping its tenant/federation boundary, running an authorized pre-auth user-enumeration pass, or synthesizing login candidates from harvested names to feed that oracle — never for password spray, credential submission, or auth bypass."
+description: "Organization-grade identity-fabric mapping: tenant/federation fingerprinting and the pre-auth user-ENUMERATION oracle methodology — enumeration and fingerprint only, never credential submission. Covers domain-to-tenant resolution (Microsoft getuserrealm.srf Managed/Federated namespace check, Entra OIDC metadata tenant-GUID extraction, Autodiscover v2), keyless Microsoft tenant-federation mapping (GetFederationInformation SOAP -> sibling-domain discovery, discover-only ROE, FEDERATED_WITH provenance edge held out of attack-path pivoting), Okta org-slug derivation + OIDC fingerprint + governed custom-domain enumeration, ADFS passive/active fingerprint + version inference, Google Workspace MX-correlated detection, generic OIDC (Auth0/Keycloak/Ping Identity/OneLogin/Duo) discovery, SAML metadata (5 paths), Azure AD Seamless-SSO Negotiate-challenge detection, Microsoft Defender for Identity (MDI) sensor-API presence check, the user-enumeration oracle methodology for Microsoft GetCredentialType (IfExistsResult semantics: exists / doesn't-exist / exists-in-federated-tenant / throttled) and Okta /api/v1/authn (errorCode differential), Medium-detectability discipline with a hard 20-candidate-per-tenant cap and admin/role interest-based ranking, and name x confirmed-email-pattern login-candidate synthesis that FAILS CLOSED with zero output when no org pattern is confirmed. Grounded directly in a production ASM implementation's sso_idp.py, tenant_recon.py, and core/email_patterns.py modules. Deepens — does not duplicate — offensive-osint skill's Identity Fabric endpoint reference with the tenant-federation MAP, the oracle WORKFLOW, and the candidate-SYNTHESIS methodology that reference lacks. Use when fingerprinting an organization's identity provider, mapping its tenant/federation boundary, running an authorized pre-auth user-enumeration pass, or synthesizing login candidates from harvested names to feed that oracle — never for password spray, credential submission, or auth bypass."
 version: 1.0
 triggers:
   - identity fabric
@@ -147,7 +147,7 @@ needs the same corroboration discipline as `org-attack-surface` §2.
 ## 3. Output Format
 
 Standard Finding schema (companion skill §3), with `category: SSO_EXPOSURE` for every identity-fabric
-finding in this skill — that is the category the Falcon-Recon implementation this skill is grounded
+finding in this skill — that is the category the reference implementation this skill is grounded
 in uses uniformly, from an INFO tenant-identified breadcrumb through a LOW confirmed-user-enumeration
 result:
 
@@ -867,7 +867,7 @@ candidate synthesis.
 - **Token forging or replay** — JWT forgery, SAML golden-ticket construction, Kerberos silver-ticket
   use against a Seamless-SSO computer account this skill merely *detected* the presence of (§10.1).
 - **Auth-bypass confirmation** — MFA bypass, conditional-access bypass, legacy-auth-door exploitation.
-- Anything corresponding to Falcon-Recon's own stage-6 `--validate` intrusive tier
+- Anything corresponding to a mature ASM platform's own stage-6 `--validate` intrusive tier
   (`validate_creds`, `validate_sso`, `jwt_forge_confirm`) or any equivalent authenticated-confirmation
   step in another toolchain.
 
@@ -961,7 +961,7 @@ Drop these into a fresh session to verify the skill loads and routes correctly.
   the load-bearing precision decision (§12); end-to-end workflow (§13); the hard boundary separating
   enumeration from password spray / credential submission / auth bypass (§14); anti-pattern catalog
   (§15); 16-prompt self-test including two explicit negatives (§16). Grounded directly in the
-  Falcon-Recon production implementation (`modules/sso_idp.py`, `modules/tenant_recon.py`,
+  reference production implementation (`modules/sso_idp.py`, `modules/tenant_recon.py`,
   `core/email_patterns.py`) — every endpoint, response-field semantic, cap, and severity/confidence
   choice in this skill matches a shipped, tested value, not an invented placeholder. Deepens
   `offensive-osint` §22's endpoint reference rather than duplicating it; companion to

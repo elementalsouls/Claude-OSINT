@@ -64,9 +64,9 @@ Full trigger list in the SKILL.md frontmatter.
 - **§13 — End-to-end workflow** tying §7–§12 into one run order, with the re-authorization checkpoint
   called out explicitly between the passive and active halves.
 - **§14 — The hard boundary.** A dedicated section enumerating exactly what's OUT of scope: password
-  spray, credential submission, token forge/replay, auth-bypass confirmation — and Falcon-Recon's own
-  stage-6 `--validate` tier as the concrete analog for "this belongs to a different authorization
-  phase."
+  spray, credential submission, token forge/replay, auth-bypass confirmation — and a mature ASM
+  platform's own stage-6 `--validate` tier as the concrete analog for "this belongs to a different
+  authorization phase."
 - **§16 — 16-prompt self-test** including two explicit negatives (synthesizing without a confirmed
   pattern; spraying enumerated accounts).
 
@@ -93,14 +93,14 @@ Every endpoint, response-field semantic (`NameSpaceType`, `IfExistsResult`, Okta
 values), cap (20 candidates/tenant, 40-candidate synthesis ceiling), and severity/confidence choice
 in this skill is transcribed from a shipped, tested implementation:
 
-- `falcon_recon/modules/sso_idp.py` — IdP/federation fingerprint across Entra, Okta, ADFS, Google
+- `modules/sso_idp.py` — IdP/federation fingerprint across Entra, Okta, ADFS, Google
   Workspace, generic OIDC, SAML metadata; the `--deep` active user-enumeration oracle
   (`GetCredentialType` / Okta `/api/v1/authn`); interest-based candidate ranking and the 20/tenant
   cap.
-- `falcon_recon/modules/tenant_recon.py` — keyless `GetFederationInformation` federation mapping,
+- `modules/tenant_recon.py` — keyless `GetFederationInformation` federation mapping,
   Seamless-SSO Negotiate check, MDI presence detection; the discover-only ROE and
   `FEDERATED_WITH` pivot-exclusion.
-- `falcon_recon/core/email_patterns.py` — the passive 8-permutation enrichment helper vs. the
+- `core/email_patterns.py` — the passive 8-permutation enrichment helper vs. the
   pattern-required, fail-closed `synthesize_login_candidates` used to feed the oracle.
 
 Nothing here is invented for the skill — see the Changelog in SKILL.md §17 for the exact source

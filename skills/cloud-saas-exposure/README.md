@@ -65,13 +65,13 @@ Every candidate-generation rule, probe-response classification, severity/confide
 and algorithm constant in this skill is reproduced from a shipped, tested implementation —
 not invented for the skill:
 
-- `falcon_recon/modules/cloud_buckets.py` — bucket candidate generation, probe technique,
+- `modules/cloud_buckets.py` — bucket candidate generation, probe technique,
   ownership-gated severity model, object-key triage, dangling-CNAME takeover
-- `falcon_recon/core/aws_account.py` + `falcon_recon/modules/aws_account_enum.py` — offline
+- `core/aws_account.py` + `modules/aws_account_enum.py` — offline
   AWS account-ID decode, test vector, example-ID screening, ownership mapping
-- `falcon_recon/core/dep_confusion.py` + `falcon_recon/modules/dependency_confusion.py` —
+- `core/dep_confusion.py` + `modules/dependency_confusion.py` —
   manifest parsing, internal-signal classifier, two-part confirmation contract
-- `falcon_recon/modules/cloud_exposure.py` — cloud-native endpoint fingerprint, passive
+- `modules/cloud_exposure.py` — cloud-native endpoint fingerprint, passive
   container/K8s/CI exposure flags
 
 A hand-computed result from this skill's tables (a candidate list, a decoded account ID, a
@@ -96,7 +96,7 @@ traffic), and passive cloud-native/K8s/CI fingerprinting from already-collected 
 of scope, described but never performed: submitting AWS credentials or calling AWS APIs with
 a decoded account ID, registering an unclaimed dependency name, and confirming a
 fingerprinted cloud-native endpoint or control-plane port actually answers unauthenticated
-(Falcon-Recon's stage-6 `--validate --validate-cloud` tier).
+(a stage-6 `--validate --validate-cloud` active tier).
 
 ## Loading
 
