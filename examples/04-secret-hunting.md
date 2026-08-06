@@ -7,6 +7,8 @@
 
 End-to-end walk-through from secret discovery → validation → scope enumeration → disclosure.
 
+> When the leaked secret is an AWS access key, the **`cloud-saas-exposure`** skill recovers the 12-digit account ID **offline** from the key itself (base32 decode, zero network, zero AWS API calls) — and never submits the credential. It also covers ownership-gated bucket triage and dependency-confusion confirmation for the broader cloud/supply-chain surface.
+
 ---
 
 ## Step 1: Discovery
@@ -144,7 +146,7 @@ Account ID `123456789012` — does it belong to your target?
 
 > AWS account 123456789012 returned. Confirm it belongs to acme.example.
 
-**Claude pulls:** `osint-methodology` §11.8 + `offensive-osint` §22.7 (AWS account-ID extraction).
+**Claude pulls:** `cloud-saas-exposure` §7 (offline AWS account-ID decode, test vector `ASIAY34FZKBOKMUTVV7A → 609629065308`) + `offensive-osint` §22.7 (AWS account-ID extraction).
 
 **Cross-reference:**
 - HEAD known target S3 buckets — does `x-amz-bucket-region` correlate with this account's likely region?
@@ -228,7 +230,7 @@ Score the finding using `offensive-osint` §40 + impact context:
 
 > Write the per-finding report card.
 
-**Claude pulls:** `osint-methodology` §31.2 (per-finding template).
+**Claude pulls:** `osint-methodology` §16 (per-finding template).
 
 ```
 ═══════════════════════════════════════════════════════════
@@ -301,7 +303,7 @@ might miss other leak locations).
 ## Step 8: Disclosure
 
 **Path A — bug-bounty program in scope:**
-- Submit to the program (HackerOne / Bugcrowd / etc.) using `osint-methodology` §30.2 report structure.
+- Submit to the program (HackerOne / Bugcrowd / etc.) using `osint-methodology` §15 report structure.
 - Severity: per program's CVSS-mapping (likely CRITICAL).
 
 **Path B — no program but ROE includes responsible disclosure:**
@@ -328,11 +330,11 @@ might miss other leak locations).
 
 This example follows:
 - `osint-methodology` §6.3 (validator discipline)
-- `osint-methodology` §11.8 (AWS account-ID extraction)
-- `osint-methodology` §22 (breach × identity correlation)
-- `osint-methodology` §28.3 (validation discipline)
-- `osint-methodology` §30.5 (cloud provider disclosure channels)
-- `osint-methodology` §31.2 (per-finding report card)
+- `cloud-saas-exposure` §7 (offline AWS account-ID decode — keyless, zero network)
+- `osint-methodology` §12 (breach × identity correlation)
+- `osint-methodology` §2.1 (confidence upgrade before you report)
+- `osint-methodology` §15 (cloud provider disclosure channels)
+- `osint-methodology` §16 (per-finding report card)
 - `offensive-osint` §17 row 1 (AWS_ACCESS_KEY pattern)
 - `offensive-osint` §19 (GitHub code-search dorks)
 - `offensive-osint` §23.2 (AWS validator)

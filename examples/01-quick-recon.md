@@ -5,7 +5,7 @@
 > Authorization: in-scope bug-bounty asset
 > Target: `acme.example` (fictional)
 
-This walk-through follows `osint-methodology` §7.6 → 1-hour rapid recon profile.
+This walk-through follows `osint-methodology` §7.2 → 1-hour rapid recon profile.
 
 ## Hour breakdown
 
@@ -84,7 +84,7 @@ for ip in $(cat evidence/ips.txt); do
 done | tee evidence/internetdb.jsonl
 ```
 
-**Look for:** open ports per `osint-methodology` §7.5 priority — RDP/3389, SMB/445, Redis/6379, ES/9200, Mongo/27017, kubelet/10250, etcd/2379.
+**Look for:** open ports per `osint-methodology` §7.1 priority — RDP/3389, SMB/445, Redis/6379, ES/9200, Mongo/27017, kubelet/10250, etcd/2379.
 
 ---
 
@@ -115,7 +115,7 @@ cat evidence/emails-*.txt | sort -u > evidence/all-emails.txt
 
 > I have 23 emails for acme.example. Highest-ROI next step?
 
-**Claude pulls:** `osint-methodology` §7.5 priority order + §22 breach × identity correlation + arsenal §15.
+**Claude pulls:** `osint-methodology` §7.1 priority order + §12 breach × identity correlation + arsenal §15.
 
 **You run:**
 
@@ -152,7 +152,7 @@ done > evidence/hibp.jsonl 2>/dev/null
 > - DMARC `p=none` (MEDIUM)
 > - Sourcemaps accessible on app.acme.example (HIGH)
 
-**Claude pulls:** `osint-methodology` §31.1 exec summary template + §31.3 risk translation matrix.
+**Claude pulls:** `osint-methodology` §16 exec summary template + risk-translation matrix. (For a board-ready 0–100 + A–F score and $-denominated loss range, hand the same findings to `exposure-risk-quantification`.)
 
 **Output:** Filled-in 1-page exec summary with business-language impact statements + recommended next steps + reporting cadence note.
 
@@ -178,8 +178,9 @@ If your 1-hour quick recon found enough to warrant deeper work, propose to the e
 ## Citation
 
 This example follows the methodology defined in:
-- `osint-methodology` §7.6 (1-hour rapid recon engagement profile)
-- `osint-methodology` §7.5 (pipeline priority order)
-- `osint-methodology` §22 (breach × identity correlation)
-- `osint-methodology` §31.1 (executive summary template)
+- `osint-methodology` §7.2 (1-hour rapid recon engagement profile)
+- `osint-methodology` §7.1 (pipeline priority order)
+- `osint-methodology` §12 (breach × identity correlation)
+- `osint-methodology` §16 (executive summary template)
+- `exposure-risk-quantification` (optional — 0–100 + A–F score + $ loss range + board one-pager)
 - `offensive-osint` §16.13 (curl probes), §16.21 (WHOIS), §16.22 (DNS catalog), §15.1 (breach severity)

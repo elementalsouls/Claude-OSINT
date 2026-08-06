@@ -15,7 +15,7 @@ End-to-end walkthrough from program selection through report submission.
 
 > I'm picking a new HackerOne program. Walk me through how to read the scope quickly to find the highest-value attack surface.
 
-**Claude pulls:** `osint-methodology` §10 (bug-bounty pivot mode) + §30.1 (HackerOne basics).
+**Claude pulls:** `osint-methodology` §10 (bug-bounty pivot mode) + §15 (HackerOne basics).
 
 **Process:**
 
@@ -36,7 +36,7 @@ End-to-end walkthrough from program selection through report submission.
 
 > Authorized H1 program: scope is `*.acme.example` excluding `legacy.acme.example` and `*.staff-only.acme.example`. Plan a 1-day standard recon with H1 reporting in mind.
 
-**Claude pulls:** `osint-methodology` §7.6 (1-day standard profile) + §7.5 (priority order) + §10.1 (medium-org tactics).
+**Claude pulls:** `osint-methodology` §7.2 (1-day standard profile) + §7.1 (priority order) + §10 (medium-org tactics).
 
 **Run:** Stage 1–3 of the standard pipeline (see [`01-quick-recon.md`](01-quick-recon.md) for the rapid version; expand scope here).
 
@@ -61,7 +61,7 @@ Asset graph:
 
 > Triage these assets for highest-ROI bug-bounty value. Show priority order.
 
-**Claude pulls:** `osint-methodology` §8.5 (asset-level triage rules) + §7.5 (priority order).
+**Claude pulls:** `osint-methodology` §8.2 (asset-level triage rules) + §7.1 (priority order).
 
 **Output:**
 
@@ -114,7 +114,7 @@ If verb tampering or schema leak adds → could push to ≥70 → HIGH/CRITICAL.
 
 > The endpoint creates real users in production. What's the safe way to confirm impact without doing damage?
 
-**Claude pulls:** `osint-methodology` §6.3 (validator discipline) + §28.3 (validation discipline for vuln finds).
+**Claude pulls:** `osint-methodology` §6.3 (validator discipline) + §9 (findings rubric — confirm severity + evidence before you report).
 
 **Approach:**
 - Create ONE user with a sock-puppet email (e.g., `bb-test-<random>@<your-private-domain>`).
@@ -134,7 +134,7 @@ If the program forbids creating real records, document the request shape + respo
 
 > Write the H1 report for: unauth POST /api/v1/users on api.acme.example creates accounts without authorization. Reproduced 3x. Created users are visible via GET /api/v1/users. CVSS-base estimate AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N = 9.4.
 
-**Claude pulls:** `osint-methodology` §30.2 (report structure) + §30.3 (severity inference).
+**Claude pulls:** `osint-methodology` §15 (report structure + severity inference).
 
 **Output:**
 
@@ -216,12 +216,12 @@ Affected component
 ## Citation
 
 This example follows:
-- `osint-methodology` §7.5, §7.6 (pipeline + 1-day profile)
-- `osint-methodology` §8.5 (asset triage)
+- `osint-methodology` §7.1, §7.2 (pipeline + 1-day profile)
+- `osint-methodology` §8.2 (asset triage)
 - `osint-methodology` §10 (bug-bounty pivot mode)
-- `osint-methodology` §22.8 (M365 deep — if relevant for the target)
-- `osint-methodology` §28.3 (validation discipline)
-- `osint-methodology` §30.1, §30.2, §30.3 (HackerOne report structure)
+- `identity-provider-recon` §7, §11 (M365 tenant + pre-auth user-enum — if relevant for the target)
+- `osint-methodology` §6.3 (validator discipline)
+- `osint-methodology` §15 (HackerOne report structure + severity inference)
 - `offensive-osint` §16.1, §16.2, §16.5 (Swagger / GraphQL / always-on probes)
 - `offensive-osint` §19 (GitHub dorks)
 - `offensive-osint` §20 (endpoint interest score)

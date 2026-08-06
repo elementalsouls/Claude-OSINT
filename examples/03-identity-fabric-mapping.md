@@ -7,6 +7,8 @@
 
 Walk-through of mapping a target's Microsoft 365 identity surface end-to-end.
 
+> The dedicated **`identity-provider-recon`** skill goes deepest here — domain→tenant resolution, keyless federation mapping, the pre-auth user-enumeration oracle (with a hard 20-candidate/tenant cap and an explicit enumeration-only boundary), and name×pattern login-candidate synthesis. This walkthrough shows it composing with the core `offensive-osint` endpoint reference.
+
 ---
 
 ## Why identity fabric matters
@@ -29,7 +31,7 @@ For an M365 shop, the identity fabric includes:
 
 > Confirm acme.example is on Microsoft 365 and extract the tenant GUID.
 
-**Claude pulls:** `osint-methodology` §11.2 + `offensive-osint` §22.1.
+**Claude pulls:** `identity-provider-recon` §7 (domain→tenant resolution) + `offensive-osint` §22.1.
 
 **Run:**
 
@@ -75,7 +77,7 @@ Look for:
 
 > Is Teams federation enabled? What's the impact?
 
-**Claude pulls:** `osint-methodology` §11.10 + `offensive-osint` §22.8.
+**Claude pulls:** `identity-provider-recon` §8 (federation mapping) + `offensive-osint` §22.8.
 
 **Run:**
 
@@ -202,7 +204,7 @@ curl -sk -m 10 -I "https://make.powerapps.com/environments" -w '%{http_code}\n'
 
 > Tenant GUID confirmed (12345678-1234-1234-1234-123456789012). I have 30 employee emails from Hunter.io. Cross-reference for SSO_EXPOSURE.
 
-**Claude pulls:** `osint-methodology` §22 (breach × identity correlation).
+**Claude pulls:** `osint-methodology` §12 (breach × identity correlation).
 
 **Run:**
 
@@ -230,7 +232,7 @@ grep -c '"total":[1-9]' evidence/breach-by-email.jsonl
 
 > Compile identity-fabric findings from this engagement: tenant confirmed, Teams federation open, 8 employees in HudsonRock corpus, 2 custom OAuth client_ids found in JS bundles, device-code endpoint enabled.
 
-**Claude pulls:** `osint-methodology` §31.2 (per-finding report card).
+**Claude pulls:** `osint-methodology` §16 (per-finding report card).
 
 **Output (per finding):**
 
@@ -244,10 +246,10 @@ grep -c '"total":[1-9]' evidence/breach-by-email.jsonl
 ## Citation
 
 This example follows:
-- `osint-methodology` §11.2 (Microsoft Entra fingerprinting)
-- `osint-methodology` §11.10 (Microsoft 365 deep surface)
-- `osint-methodology` §22 (Breach × identity correlation)
-- `osint-methodology` §31.2 (per-finding report card)
+- `identity-provider-recon` §7 (domain→tenant resolution — Entra fingerprint)
+- `identity-provider-recon` §8, §11 (federation mapping + pre-auth user-enumeration oracle)
+- `osint-methodology` §12 (Breach × identity correlation)
+- `osint-methodology` §16 (per-finding report card)
 - `offensive-osint` §22.1 (Entra concrete endpoints)
 - `offensive-osint` §22.8 (M365 deep enumeration)
 - `offensive-osint` §16.13 (curl probes)
