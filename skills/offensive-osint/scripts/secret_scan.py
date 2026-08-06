@@ -87,6 +87,10 @@ PATTERNS = [
     ("HUGGINGFACE",          SEV_HIGH,     "ai_api",      r"\bhf_[A-Za-z0-9]{30,}\b"),
 
     # Cloud infra
+    # §17 #35 — Cloudflare API Token: a bare 40-char token is far too generic to match
+    # standalone (any base64/hex chunk collides), so it is anchored to cloudflare / X-Auth-Key
+    # context on the same line, exactly as §17 specifies ("when paired with context").
+    ("CLOUDFLARE_API_TOKEN", SEV_HIGH,     "infra_api",   r"(?i)(?:cloudflare|x-auth-key)['\"\s:=]{1,20}([A-Za-z0-9_\-]{40})\b"),
     ("CLOUDFLARE_API",       SEV_CRITICAL, "infra_api",   r"(?i)cf[_\-]?api[_\-]?key['\"\s:=]+([a-f0-9]{37})"),
     ("DIGITALOCEAN",         SEV_HIGH,     "infra_api",   r"\bdop_v1_[a-f0-9]{64}\b"),
 
