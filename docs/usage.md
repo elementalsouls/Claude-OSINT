@@ -13,9 +13,15 @@ How to actually use these skills during an engagement.
 | Map identity fabric | "Target uses Microsoft 365. Walk me through deep enum." | both |
 | Origin discovery | "Target is behind Cloudflare. How do I find the origin?" | both |
 | Severity assessment | "How serious is `android:debuggable=true` on a prod Android app?" | arsenal §40 |
-| Write a client report | "Write the executive summary for an engagement that found 2 CRIT, 5 HIGH, 12 MED" | methodology §31 |
-| Submit a bug bounty report | "Format my finding as a HackerOne report. Finding: unauth POST /api/users on api.example.com" | methodology §30 |
+| Write a client report | "Write the executive summary for an engagement that found 2 CRIT, 5 HIGH, 12 MED" | methodology §16 |
+| Submit a bug bounty report | "Format my finding as a HackerOne report. Finding: unauth POST /api/users on api.example.com" | methodology §15 |
 | Generate phishing shortlist | "Generate phishing-feasibility shortlist for acme.com (authorized)" | both |
+| Map an org's owned footprint from its legal name | "Map the full owned external footprint of 'Acme Industries Ltd', starting from the legal entity" | org-attack-surface |
+| Get the real email-spoofability verdict | "Is acme.com spoofable? SPF ends in `-all` — I want the header-From verdict" | email-domain-security |
+| Quantify exposure in dollars | "Turn these findings into a 0–100 + A–F risk score, a $ loss range, and a board one-pager" | exposure-risk-quantification |
+| Stand up continuous monitoring | "Set up re-scan + diff monitoring on acme.com, alert me on any new ≥MEDIUM finding" | continuous-exposure-monitoring |
+| Recover an AWS account ID offline | "Decode the AWS account ID from a leaked `ASIA…` access key, offline" | cloud-saas-exposure |
+| Enumerate an identity provider | "Fingerprint acme.com's IdP + run an authorized pre-auth user-enumeration pass" | identity-provider-recon |
 
 ## Conversation patterns
 
@@ -48,9 +54,10 @@ Claude: [no scope check needed; proceeds with §7 pipeline]
 You: Walk me through a 1-week deep recon engagement on acme.com.
      Authorized red team, ~500 employees, M365 + GitHub + AWS shop.
 
-Claude: [pulls §7.6 1-week deep profile + §10.1 medium-org tactics +
-         §11.10 M365 deep + §22 breach × identity correlation, organizes
-         work day-by-day]
+Claude: [pulls §7.2 time-budgeting (1-week deep profile) + §10 medium-org
+         tactics + §11 M365 identity-fabric pointer + §12 breach × identity
+         correlation; if the org has subsidiaries, org-attack-surface maps
+         the owned footprint first — organizes work day-by-day]
 ```
 
 ### Asset-by-asset triage
@@ -64,9 +71,10 @@ You: I have:
 
      What's the highest-ROI thing to do next?
 
-Claude: [pulls §7.5 priority order + §8.5 asset-level triage:
+Claude: [pulls §7.1 priority order + §8.2 asset-level triage:
          1. Run breach lookup on the 23 emails first (HudsonRock free tier)
-         2. Probe Entra tenant via §11.2 endpoints; GitHub org via §16.20+§19 dorks
+         2. Probe the Entra tenant via identity-provider-recon §7 (tenant) + §11
+            (pre-auth user-enum oracle); GitHub org via arsenal §16.20 + §19 dorks
          3. Triage subdomains: dev.* + api.* first (lower defenses + higher API surface)
          4. Defer www/blog to later pass]
 ```
@@ -87,8 +95,10 @@ Claude: [pulls §17 catalog (CRITICAL severity), §6.3 validator discipline,
             list-user-policies, simulate-principal-policy on common danger actions.
          4. Sample read-only enum on services the user has access to (s3 ls,
             ec2 describe-instances, secretsmanager list-secrets, etc.).
-         5. Document finding with §31.2 report card; risk-translate via §31.3.
-         6. Disclose: AWS abuse + GitHub secret scanning (§30.5).
+         5. Recover the AWS account ID offline via cloud-saas-exposure §7 (no
+            API call needed); document with methodology §16 report card;
+            risk-translate via §16.
+         6. Disclose: AWS abuse + GitHub secret scanning (§15).
 ```
 
 ### Reporting workflow
@@ -99,9 +109,11 @@ You: Write the executive summary for an engagement that found:
      - 5 HIGH (sourcemaps on prod, open GraphQL introspection, etc.)
      - 12 MEDIUM (missing HSTS, internal IPs in JS, etc.)
 
-Claude: [pulls §31.1 exec summary template + §31.3 risk translation matrix,
+Claude: [pulls methodology §16 exec-summary template + risk-translation matrix,
          produces a fully filled-in template with business-language impact
-         statements per finding]
+         statements per finding. For a board-ready $-denominated deliverable —
+         a 0–100 + A–F score and IBM/Ponemon loss range — hand the same
+         findings to exposure-risk-quantification §7–§10]
 ```
 
 ## Tips
@@ -112,7 +124,7 @@ Add "show which sections you're using" to your prompt. Claude will cite §s, whi
 
 ```
 You: How do I find an origin behind Cloudflare? Show which sections you're using.
-Claude: [pulls methodology §27 + arsenal §16.15, cites both, walks through 8 techniques]
+Claude: [pulls methodology §11 (WAF/CDN-bypass pointer) + arsenal §16.15, cites both, walks through the techniques]
 ```
 
 ### Iterate on the asset graph
@@ -123,7 +135,7 @@ Treat the engagement as a graph that grows. Periodically ask:
 You: Given everything I've found so far, what's the highest-ROI next probe?
 ```
 
-Claude will re-evaluate against §7.5 priority + §8.5 triage rules.
+Claude will re-evaluate against §7.1 priority + §8.2 triage rules.
 
 ### Confidence-grade your findings
 

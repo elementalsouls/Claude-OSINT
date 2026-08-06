@@ -1,18 +1,20 @@
 # Architecture & Design Philosophy
 
-## The two-skill split
+## Two layers: the core pair + six org-grade depth skills
 
-The skills are deliberately split into **methodology** ("how to think") and **arsenal** ("what to reach for"). This reflects two different mental modes practitioners use:
+The library has eight skills in two layers.
+
+**Layer 1 — the core recon pair.** Deliberately split into **methodology** ("how to think") and **arsenal** ("what to reach for"), reflecting two different mental modes practitioners use:
 
 - **Methodology mode** — "I have a target. How do I approach this?" → strategic + procedural.
 - **Arsenal mode** — "I need a Swagger probe path / secret regex / curl one-liner." → tactical + reference.
 
-A single mega-skill of ~5,500 lines would have noisier triggering and worse retrieval. The split lets each skill have a tight, distinct trigger vocabulary.
+A single mega-skill of ~10,000 lines would have noisier triggering and worse retrieval. Splitting by mode-of-use lets each skill keep a tight, distinct trigger vocabulary.
 
 ```mermaid
 flowchart TD
     U["USER ASKS:<br/><i>'How do I find an origin behind Cloudflare?'</i>"]
-    M["📘 methodology §27<br/>technique catalog + confidence rules"]
+    M["📘 methodology §11<br/>technique pointer + confidence rules"]
     A["🛠️ arsenal §16.15<br/>actual curl commands"]
     O["✅ Composed answer"]
     U --> M
@@ -26,6 +28,21 @@ flowchart TD
 ```
 
 > Most prompts pull both. They're complementary, not overlapping.
+
+**Layer 2 — six organization-grade depth skills.** Each is a self-contained `version: 1.0` skill that goes deep on one enterprise attack-surface problem the core pair only points at: `org-attack-surface` (legal entity → owned footprint), `email-domain-security` (spoofability verdict + SPF supply chain), `exposure-risk-quantification` (FAIR $ risk score), `continuous-exposure-monitoring` (re-scan/diff + CTI chatter), `cloud-saas-exposure` (buckets / AWS account-ID / dependency confusion), and `identity-provider-recon` (tenant/federation + user-enum oracle).
+
+They follow the same design contract as the core pair — the confidence / severity / detectability models below, the Finding output schema, the soft scope-check — and each adds an **explicit hard boundary** that stops it short of active exploitation (e.g. `identity-provider-recon` ends at user *enumeration*, never password spray; `cloud-saas-exposure` decodes an AWS account ID offline but never calls AWS APIs with it). A depth skill triggers on its own vocabulary and composes with the core pair rather than replacing it.
+
+```mermaid
+flowchart LR
+    Core["🎯 Core recon pair<br/>methodology + arsenal"]
+    Depth["🏢 Org-grade depth<br/>6 skills"]
+    Core -->|discovers assets / findings| Depth
+    Depth -->|attribution · risk $ · monitoring · deep enum| Out["✅ Enterprise-grade output"]
+    style Core fill:#334155,color:#f1f5f9
+    style Depth fill:#134e4a,color:#ccfbf1
+    style Out fill:#14532d,color:#dcfce7
+```
 
 ## Confidence model
 
@@ -119,7 +136,7 @@ flowchart TD
     style Person fill:#ea580c,color:#fff
 ```
 
-29 asset types organized in 9 categories. 23 typed edges. Discipline: every discovery is a typed asset (never a free-floating string), with provenance tracked.
+29 asset types organized in 9 categories, connected by typed provenance edges (the diagram shows a representative slice). Discipline: every discovery is a typed asset (never a free-floating string), with provenance tracked.
 
 ## Output schema
 
@@ -198,13 +215,13 @@ Semantic versioning. The `version:` field in YAML frontmatter is authoritative.
 - **MINOR** — new sections, new techniques, expanded catalogs.
 - **PATCH** — typo fixes, link updates, severity-tier corrections.
 
-Current: `2.1`.
+Current: `osint-methodology` **2.3**, `offensive-osint` **2.2**, and the six org-grade depth skills **1.0**.
 
 ## Renumbering policy
 
 When new top-level sections are added in a minor release, existing sections may renumber. The CHANGELOG records mappings (e.g., "v2.0 §27 Self-Test → v2.1 §32 Self-Test").
 
-Subsection numbering is generally additive (§7.6 added without renumbering §7.5).
+Subsection numbering is generally additive, but larger reworks do renumber (e.g. `osint-methodology` v2.3 rewrote §7 into a 6-stage pipeline). After any renumber, companion docs that cite sections are swept for now-dead references.
 
 ## What's deliberately excluded
 
@@ -223,6 +240,6 @@ These exclusions are intentional. A "comprehensive offensive security" skill wou
 
 ## Engagement-platform agnostic
 
-These skills are extracted from operational tradecraft accumulated across external attack-surface engagements. The 90+ modules generalize to any OSINT engagement and slot into any ASM / ticketing / asset-graph platform you already use — or none.
+These skills are extracted from operational tradecraft accumulated across external attack-surface engagements. The 100+ capabilities generalize to any OSINT engagement and slot into any ASM / ticketing / asset-graph platform you already use — or none.
 
 Use the skills standalone (paste a SKILL.md into a Claude Project) or wired into your own pipeline.

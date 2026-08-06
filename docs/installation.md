@@ -15,10 +15,12 @@ cd Claude-OSINT
 # Optional: populate full SKILL.md content from bundled full-skills (one-time after clone)
 ./scripts/sync-skill-content.sh
 
-# Copy both skills into your local Claude Code skills directory
+# Copy all 8 skills into your local Claude Code skills directory
 mkdir -p ~/.claude/skills
-cp -r skills/osint-methodology ~/.claude/skills/
-cp -r skills/offensive-osint   ~/.claude/skills/
+cp -r skills/* ~/.claude/skills/
+
+# Or install only the core recon pair (skip the six org-grade depth skills):
+# cp -r skills/osint-methodology skills/offensive-osint ~/.claude/skills/
 ```
 
 ### Method 2: Symlink (stays in sync with git pull)
@@ -27,8 +29,10 @@ cp -r skills/offensive-osint   ~/.claude/skills/
 git clone https://github.com/elementalsouls/Claude-OSINT.git ~/.local/share/Claude-OSINT
 mkdir -p ~/.claude/skills
 
-ln -sf ~/.local/share/Claude-OSINT/skills/osint-methodology ~/.claude/skills/osint-methodology
-ln -sf ~/.local/share/Claude-OSINT/skills/offensive-osint   ~/.claude/skills/offensive-osint
+# Symlink every skill directory (add/remove names to taste)
+for s in ~/.local/share/Claude-OSINT/skills/*/; do
+  ln -sf "$s" ~/.claude/skills/"$(basename "$s")"
+done
 
 cd ~/.local/share/Claude-OSINT
 ./scripts/sync-skill-content.sh   # one-time
@@ -51,7 +55,7 @@ Claude should pull the 28-path Swagger wordlist from the `offensive-osint` skill
 1. Open https://claude.ai
 2. Create a new Project (or open an existing one).
 3. Click **Add knowledge** → **Files**.
-4. Upload both `skills/osint-methodology/SKILL.md` and `skills/offensive-osint/SKILL.md`.
+4. Upload the `SKILL.md` from each skill you want. At minimum the core pair — `skills/osint-methodology/SKILL.md` and `skills/offensive-osint/SKILL.md` — plus any of the six org-grade depth skills (`org-attack-surface`, `email-domain-security`, `exposure-risk-quantification`, `continuous-exposure-monitoring`, `cloud-saas-exposure`, `identity-provider-recon`) relevant to your engagement.
 5. (Optional) Also upload `tests/smoke-test-prompts.md` for self-test reference.
 6. Save.
 
@@ -72,7 +76,7 @@ with open("skills/offensive-osint/SKILL.md") as f:
     arsenal = f.read()
 
 system_prompt = f"""You are an OSINT recon assistant for authorized red-team engagements.
-You have access to two skills that you should reference whenever relevant:
+You have access to the skills below and should reference them whenever relevant:
 
 === SKILL: osint-methodology ===
 {methodology}
@@ -89,6 +93,8 @@ response = client.messages.create(
 )
 print(response.content[0].text)
 ```
+
+The example attaches the core pair. Attach any of the eight `SKILL.md` files the same way — concatenate the org-grade depth skills (`org-attack-surface`, `exposure-risk-quantification`, `identity-provider-recon`, etc.) into the system prompt when the task calls for them. All eight together are ~10,000 lines and still fit a 200K-context model.
 
 ## Claude Agent SDK / Cowork mode
 
@@ -129,10 +135,10 @@ This populates `skills/*/SKILL.md` with the full content from `docs/full-skills/
 
 ### "Skill is too large for my model's context"
 
-Both skills together are ~5,500 lines / ~150 KB. This fits comfortably in modern Claude context windows (200K+). If you're using an older model with smaller context:
+All 8 skills together are ~10,000 lines / ~320 KB (the core pair alone is ~5,500 / ~150 KB). This fits comfortably in modern Claude context windows (200K+). If you're using an older model with smaller context:
 
 - Use the structured-outline SKILL.md files (don't run sync-skill-content.sh).
-- Or attach only one skill at a time, depending on the task.
+- Or attach only the skills a task needs — each is self-contained (the core pair for recon, plus whichever org-grade depth skills apply).
 - Or run a model with larger context (Claude Sonnet 4.6+, Opus 4.6+).
 
 ### "I want to filter the skill content"
@@ -141,7 +147,7 @@ Edit `skills/<skill-name>/SKILL.md` directly. Both files are plain Markdown. You
 
 ## Verifying skill version
 
-Both SKILL.md files declare `version:` in the YAML frontmatter. Current: `2.1`. Check via:
+Each SKILL.md declares `version:` in the YAML frontmatter. Current: `osint-methodology` **2.3**, `offensive-osint` **2.2**, and the six org-grade depth skills **1.0**. Check via:
 
 ```bash
 grep "^version:" skills/*/SKILL.md
@@ -150,7 +156,8 @@ grep "^version:" skills/*/SKILL.md
 ## Uninstalling
 
 ```bash
-rm -rf ~/.claude/skills/osint-methodology ~/.claude/skills/offensive-osint
+# Remove every installed skill
+rm -rf ~/.claude/skills/{osint-methodology,offensive-osint,org-attack-surface,email-domain-security,exposure-risk-quantification,continuous-exposure-monitoring,cloud-saas-exposure,identity-provider-recon}
 ```
 
 Or remove the symlinks if you used method 2 above.

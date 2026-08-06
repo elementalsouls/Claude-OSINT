@@ -8,14 +8,27 @@ Honest assessment of what these skills cover vs. what real practitioners need.
 
 **~35–45% coverage** of what a full external red-team operator does in their job (because most red-team work is exploitation + post-exploit, intentionally out of scope).
 
+## What the org-grade depth skills add
+
+The six depth skills extend the core recon pair past single-target discovery into enterprise attack-surface reasoning — the areas earlier versions were thinnest on:
+
+- **`org-attack-surface`** — legal-entity → owned-footprint attribution (subsidiaries, dark netblocks, ASN scope). Closes the "whose assets are these, really?" gap the core pair left to the operator.
+- **`email-domain-security`** — a defensible spoofability *verdict* (not just a record dump) + SPF supply-chain analysis.
+- **`exposure-risk-quantification`** — turns findings into a 0–100 + A–F score and a $-denominated board deliverable. Lifts the Reporting phase.
+- **`continuous-exposure-monitoring`** — re-scan/diff + CTI chatter + FP discipline. Lifts the previously-thin Re-test / continuous-monitoring phase.
+- **`cloud-saas-exposure`** — ownership-gated bucket triage, offline AWS account-ID decode, dependency-confusion confirmation.
+- **`identity-provider-recon`** — tenant/federation mapping + a disciplined pre-auth user-enumeration oracle with a hard boundary.
+
+All six stay strictly passive/read-only; each carries an explicit boundary that stops it short of active exploitation.
+
 ## By practitioner archetype
 
 | Archetype | Coverage of their needs | Why |
 |---|---|---|
 | **Pure OSINT analyst** | **~90%** | Skills are built for this. |
-| **External attack-surface analyst (CyCognito-style)** | **~85–90%** | Direct overlap with the methodology. |
+| **External attack-surface analyst (CyCognito-style)** | **~90%** | Direct overlap with the methodology; the org-grade skills add entity→footprint attribution, $-denominated risk scoring, and continuous re-scan/diff — the CyCognito-class core. |
 | **Bug bounty hunter** | **~75–80%** | Strong on recon; thin on exploit techniques. |
-| **Threat intel investigator** | **~70%** | RU/CN pivots, attribution discipline, malware basics — but no infrastructure-tracking-over-time. |
+| **Threat intel investigator** | **~75%** | RU/CN pivots, attribution discipline, malware basics, plus infrastructure-tracking-over-time and adversary-chatter/ransomware-leak monitoring (continuous-exposure-monitoring). |
 | **External red teamer (recon phase)** | **~85–90%** | The OSINT phase is well-covered. |
 | **External red teamer (full engagement)** | **~35–45%** | Recon is ~30–40% of a full engagement; rest (exploitation, post-exploit, lateral, reporting) is mostly out of scope. |
 | **Internal red teamer (assumed-breach)** | **~10%** | Almost entirely out of scope. |
@@ -41,9 +54,9 @@ Honest assessment of what these skills cover vs. what real practitioners need.
 | Domain dominance | 0% (out of scope) |
 | Data exfiltration tradecraft | 0% (out of scope) |
 | Cleanup / artifact removal | 0% (out of scope) |
-| **Reporting (technical + exec)** | **~75%** |
+| **Reporting (technical + exec + board $)** | **~85%** |
 | Disclosure / vendor coordination | ~60% |
-| Re-test / continuous monitoring | ~30% |
+| **Re-test / continuous monitoring** | **~75%** (continuous-exposure-monitoring: re-scan/diff loop + CTI chatter + FP discipline + alert outbox) |
 | Purple-team / SOC-coordination | 0% |
 | Lessons-learned / engagement retrospective | ~20% |
 
@@ -56,20 +69,21 @@ Honest assessment of what these skills cover vs. what real practitioners need.
 - **Pricing, NDA, SOW templates** — business operations, not technical.
 - **Real PII / breach corpus content** — privacy + opsec.
 
-## Smoke-test results (32 prompts)
+## Smoke-test results (56 prompts)
 
-The repo ships 32 self-test prompts ([`tests/smoke-test-prompts.md`](../tests/smoke-test-prompts.md)) covering the major capability areas.
+The repo ships 56 self-test prompts ([`tests/smoke-test-prompts.md`](../tests/smoke-test-prompts.md)) covering the major capability areas — including Tier 4 prompts (34–48) for the six org-grade depth skills and hard-boundary refusal tests (B3–B8).
 
 | Run | PASS | PARTIAL | FAIL | Grade |
 |---|---|---|---|---|
 | v2.0 (initial) | 1 | 9 | 22 | C |
-| **v2.1 (current)** | **31** | **1** | **0** | **A** |
+| v2.1 (32 prompts) | 31 | 1 | 0 | A |
+| **current (56 prompts, 8 skills)** | **56** | **0** | **0** | **A+** |
 
-The single PARTIAL is Test 5 (cloud-bucket combinatorial generation) — acceptable; the inputs + technique are documented, runtime synthesis is appropriate.
+The current run was executed against fresh sessions (each blind to the expected-behavior column, auto-routing from skill frontmatter): zero fabricated endpoints/regexes/sections, and every hard-boundary prompt correctly refused with a real section cite.
 
 ## Caveats
 
-The smoke-test number (96.9% PASS) is **Claude grading itself on tests Claude designed**. It's a useful signal for tracking gaps but not an objective measure of real-world coverage. A real practitioner would find more gaps. Treat it as "the skills now answer the obvious questions"; non-obvious questions may need a follow-on iteration.
+The smoke-test number (100% PASS on 56 prompts) is **Claude grading itself on tests Claude designed**. It's a useful signal for tracking gaps but not an objective measure of real-world coverage. A real practitioner would find more gaps. Treat it as "the skills now answer the obvious questions"; non-obvious questions may need a follow-on iteration.
 
 ## What experienced practitioners would say is still missing (within OSINT scope)
 
@@ -81,7 +95,7 @@ If a senior offensive consultant reviewed v2.1 and stayed within OSINT scope, he
 4. **OPSEC infrastructure as code** — Terraform/Ansible to spin up clean engagement infrastructure (proxy stacks, redirectors).
 5. **Sector-specific deep dives** — §47 is a starting point, not a deep dive (real healthcare RT specialists know HL7 trafficking like a second language).
 6. **Adversary-emulation playbooks per APT** — "to simulate APT29's external recon, use these specific tools/techniques."
-7. **Continuous-monitoring orchestration** — daily diff scripts, alert pipelines, false-positive tuning.
+7. ~~**Continuous-monitoring orchestration** — daily diff scripts, alert pipelines, false-positive tuning.~~ **Shipped** in the `continuous-exposure-monitoring` skill (baseline→re-scan→diff→threshold-alert loop, CTI chatter, finding-lifecycle FP discipline, durable alert outbox).
 8. **Multi-tenant engagement workflow** — how an MSSP runs 30 concurrent ASM engagements without crossing wires.
 9. **Client-specific report styling** — every Big-4 consultancy has their own template.
 10. **Tool failure recovery** — when Shodan rate-limits during a critical phase, what's plan B/C/D?
@@ -94,8 +108,9 @@ These would push coverage to ~95% of OSINT-phase work. Each would add 200–500 
 |---|---|---|
 | v1.0 | ✅ Done | Original framework |
 | v2.0 | ✅ Done | External-red-team posture rewrite |
-| **v2.1** | ✅ Current | Comprehensive expansion (this version) |
-| v2.2 | 🔜 | Continuous-monitoring playbook + multi-tenant workflow + Burp extension recipes |
+| v2.1 | ✅ Done | Comprehensive expansion of the core pair |
+| **Org-grade depth** | ✅ **Current** | Six new skills — org-attack-surface, email-domain-security, exposure-risk-quantification, continuous-exposure-monitoring, cloud-saas-exposure, identity-provider-recon; `offensive-osint` v2.2 (80-pattern catalog + APK); `osint-methodology` v2.3 (6-stage pipeline) |
+| Next | 🔜 | Multi-tenant / MSSP engagement workflow · Burp extension recipes · adversary-emulation playbooks per APT |
 | v3.0 | 🔜 | Plugin manifest for one-click Claude Code install + optional MCP server companion |
 
 ## Bottom line
