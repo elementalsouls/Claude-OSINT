@@ -2,7 +2,7 @@
 
 # claude-osint
 
-> 2 paired Claude skills · **90+ recon modules** · 48 secret-regex patterns · 80+ dorks · 9 read-only credential validators · 27 attack-path templates · 4,600+ lines of structured tradecraft. Drop-in `SKILL.md` files that turn Claude into a god-mode external recon operator for authorized red-team and bug-bounty engagements.
+> **8 Claude skills** · 100+ recon capabilities · 80 secret-regex patterns · 80+ dorks · 9 read-only credential validators · 27 attack-path templates · ~10,000 lines of structured tradecraft. Drop-in `SKILL.md` files that turn Claude into a god-mode external recon operator for authorized red-team and bug-bounty engagements.
 
 Built by **[ElementalSoul](https://github.com/elementalsouls)** — GenAI Security Research.
 
@@ -21,14 +21,25 @@ Built by **[ElementalSoul](https://github.com/elementalsouls)** — GenAI Securi
 
 ## What is this?
 
-`claude-osint` is a paired set of skills for the [Claude skills system](https://docs.claude.com/en/docs/claude-code/skills). Each skill is a structured `SKILL.md` file that primes Claude with expert-level methodology for one half of the offensive recon problem:
+`claude-osint` is a library of skills for the [Claude skills system](https://docs.claude.com/en/docs/claude-code/skills). Each skill is a structured `SKILL.md` file that primes Claude with expert-level methodology for one part of the offensive recon problem.
+
+**The core pair — the recon backbone:**
 
 - **`osint-methodology`** - *how to think.* Strategic + procedural. Asset-graph discipline, severity rubric, time budgeting, identity-fabric mapping, deliverable templates.
 - **`offensive-osint`** - *what to reach for.* Tactical arsenal. Probe paths, regexes, payloads, scoring rules, curl one-liners, tool URLs.
 
-Drop both into your Claude environment and it behaves like a senior recon analyst: it knows the techniques, the tooling, the edge cases, and the escalation paths — and it stays in scope.
+**Six organization-grade depth skills — enterprise-scale attack-surface reasoning the core pair doesn't carry:**
 
-~4,600 lines of structured tradecraft · 96.9% PASS on a 32-prompt self-evaluation · ~85–90% practitioner coverage for the recon phase of authorized engagements.
+- **`org-attack-surface`** - legal entity → owned footprint (GLEIF org-tree, org-first RIR "dark netblock" recall, ASN hyperscaler-scope guard). Discover-only.
+- **`email-domain-security`** - composite spoofability verdict (envelope vs header-From; SPF `-all` alone ≠ spoof-proof) + SPF supply-chain analysis.
+- **`exposure-risk-quantification`** - FAIR 0–100 + A–F risk score, $-denominated loss model, board one-pager, ownership/proof honesty caps.
+- **`continuous-exposure-monitoring`** - re-scan/diff loop + CTI/ransomware chatter + finding-lifecycle FP discipline + durable alert outbox.
+- **`cloud-saas-exposure`** - bucket ownership-gated severity + offline AWS account-ID decode + dependency-confusion confirmation + K8s/CI fingerprint.
+- **`identity-provider-recon`** - tenant/federation mapping + pre-auth user-enumeration oracle + name×pattern login synthesis, with a hard enumeration boundary.
+
+Drop them into your Claude environment and it behaves like a senior recon analyst: it knows the techniques, the tooling, the edge cases, and the escalation paths — and it stays in scope.
+
+~10,000 lines of structured tradecraft · **56/56 PASS** on a 56-prompt self-evaluation (100%, zero fabrications) · ~85–90% practitioner coverage for the recon phase of authorized engagements.
 
 ---
 
@@ -37,30 +48,49 @@ Drop both into your Claude environment and it behaves like a senior recon analys
 ```
 claude-osint/
 ├── skills/
-│   ├── osint-methodology/SKILL.md     # how to think  (455 lines)
-│   └── offensive-osint/
-│       ├── SKILL.md                   # what to reach for (4,168 lines)
-│       ├── scripts/secret_scan.py     # stdlib-only secret scanner
-│       └── scripts/h1_reference.py    # HackerOne disclosed-reports reference agent
-├── docs/                              # architecture · coverage · install · usage
-├── examples/                          # 4 end-to-end engagement walk-throughs
-├── tests/smoke-test-prompts.md        # 32-prompt self-evaluation
+│   ├── osint-methodology/SKILL.md            # how to think  (515 lines)
+│   ├── offensive-osint/
+│   │   ├── SKILL.md                          # what to reach for (4,555 lines)
+│   │   ├── scripts/secret_scan.py            # stdlib-only 80-pattern secret scanner
+│   │   └── scripts/h1_reference.py           # HackerOne disclosed-reports reference agent
+│   ├── org-attack-surface/SKILL.md           # legal entity → owned footprint (1,052 lines)
+│   ├── email-domain-security/SKILL.md        # spoofability + SPF supply-chain (589 lines)
+│   ├── exposure-risk-quantification/SKILL.md # FAIR $ risk score + board one-pager (748 lines)
+│   ├── continuous-exposure-monitoring/SKILL.md # re-scan/diff + CTI chatter (811 lines)
+│   ├── cloud-saas-exposure/SKILL.md          # cloud + supply-chain depth (802 lines)
+│   └── identity-provider-recon/SKILL.md      # tenant/federation + user-enum (968 lines)
+├── docs/                                     # architecture · coverage · install · usage
+├── examples/                                 # 4 end-to-end engagement walk-throughs
+├── tests/smoke-test-prompts.md               # 56-prompt self-evaluation
 └── assets/banner.png
 ```
 
-Each skill directory is self-contained. Drop into `~/.claude/skills/` and Claude auto-triggers on relevant phrases.
+Each skill directory is self-contained (its own `SKILL.md` + `README.md`). Drop into `~/.claude/skills/` and Claude auto-triggers on relevant phrases.
 
 ---
 
 ## Skill Index
 
-90+ capabilities across 12 domains. Categorized like Claude-Red — pick a domain to drill in.
+100+ capabilities across 13 domains. Pick a domain to drill in.
+
+### Organization-Grade Depth
+
+The six skills that lift the library from single-target recon to enterprise attack-surface reasoning.
+
+| Capability | Skill |
+|---|---|
+| Legal-entity → owned-footprint attribution (GLEIF org-tree by exact LEI · EDGAR / OpenCorporates / Wikidata · reverse-WHOIS · crt.sh `?O=` · org-first RIR "dark netblock" recall · ASN hyperscaler-scope guard · discover-only) | org-attack-surface |
+| Composite email spoofability verdict (envelope vs header-From · SPF `-all` ≠ spoof-proof · only DMARC governs) + SPF supply-chain (RFC 7208 >10-lookup PermError · dead-include takeover) | email-domain-security |
+| FAIR risk quantification (0–100 + A–F score · $-loss IBM/Ponemon per-record bands · board one-pager · ownership/proof demotion cap) | exposure-risk-quantification |
+| Continuous exposure monitoring (baseline → re-scan → diff → threshold alert · CTI / ransomware-leak-site chatter · finding-lifecycle FP discipline · durable alert outbox) | continuous-exposure-monitoring |
+| Cloud & supply-chain depth (bucket ownership-gated severity · offline AWS account-ID base32 decode · dependency-confusion confirmation · K8s / CI control-plane fingerprint) | cloud-saas-exposure |
+| Identity-provider recon (domain→tenant + federation map · pre-auth user-enumeration oracle · name×pattern login synthesis · hard enumeration boundary) | identity-provider-recon |
 
 ### Reconnaissance & Asset Discovery
 
 | Capability | Skill |
 |---|---|
-| 5-stage external recon pipeline + time-budget profiles (1h / 4h / 1d / 1w) | methodology |
+| 6-stage external recon pipeline + time-budget profiles (1h / 4h / 1d / 1w) | methodology |
 | Subdomain-source stack (crt.sh + 7-source fallback chain when crt.sh 502s) | arsenal |
 | Common-prefix subdomain sweep (100+ ordered prefixes, PowerShell + bash) | arsenal |
 | Wayback CDX deep mining + legacy-app pivot (.asp/.php/.jsp/.cfm) | arsenal |
@@ -110,9 +140,9 @@ Each skill directory is self-contained. Drop into `~/.claude/skills/` and Claude
 
 | Capability | Skill |
 |---|---|
-| 48-pattern secret-regex catalog (29 base + 19 modern) | arsenal |
-| Modern AI API keys (Anthropic / OpenAI / HuggingFace / Cloudflare) | arsenal (rows 30-36) |
-| Package-registry tokens (npm / PyPI / Docker Hub) | arsenal (rows 38-40) |
+| 80-pattern secret-regex catalog (48 core + 32 provider-expansion) — §17 ↔ `secret_scan.py` ↔ §48 kept byte-identical | arsenal |
+| Modern AI API keys (Anthropic / OpenAI / HuggingFace / Cloudflare) | arsenal |
+| Package-registry & provider tokens (npm / PyPI / Docker Hub / GitLab / Stripe / Shopify / Atlassian / +25 more) | arsenal |
 | GitHub code-search dorks (13 templates) | arsenal |
 | 9 read-only credential validators (Postman / AWS / GitHub / Slack / Anthropic / OpenAI / npm / Atlassian / DataDog) | arsenal |
 | Post-discovery enumeration workflows (IAM enum · repo enum · workspace enum · JWT triage) | arsenal |
@@ -192,15 +222,25 @@ Each skill directory is self-contained. Drop into `~/.claude/skills/` and Claude
 
 ## Capability Map
 
-Two skills, twelve capability domains. Drill into the [Skill Index](#skill-index) above for concrete sub-capabilities.
+Eight skills, thirteen capability domains — the core recon pair plus six organization-grade depth skills. Drill into the [Skill Index](#skill-index) above for concrete sub-capabilities.
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#1e293b','primaryTextColor':'#f1f5f9','primaryBorderColor':'#475569','lineColor':'#94a3b8'}}}%%
 flowchart LR
     Root(["🦅 claude-osint"])
 
-    Root --> M["📘 osint-methodology<br/><i>how to think</i>"]
-    Root --> A["🛠️ offensive-osint<br/><i>what to reach for</i>"]
+    Root --> Core["🎯 Core recon pair"]
+    Root --> Depth["🏢 Organization-grade depth"]
+
+    Core --> M["📘 osint-methodology<br/><i>how to think</i>"]
+    Core --> A["🛠️ offensive-osint<br/><i>what to reach for</i>"]
+
+    Depth --> O["🏢 org-attack-surface<br/><i>entity → footprint</i>"]
+    Depth --> E["✉️ email-domain-security<br/><i>spoofability + SPF chain</i>"]
+    Depth --> R["📊 exposure-risk-quantification<br/><i>FAIR $ score</i>"]
+    Depth --> CM["🔁 continuous-exposure-monitoring<br/><i>watch + diff + chatter</i>"]
+    Depth --> CL["☁️ cloud-saas-exposure<br/><i>cloud + supply-chain</i>"]
+    Depth --> ID["🪪 identity-provider-recon<br/><i>tenant + user-enum</i>"]
 
     M --> M1[Recon Pipeline]
     M --> M2[Asset Graph]
@@ -235,6 +275,14 @@ flowchart LR
     style A6 fill:#1c1917,stroke:#44403c,color:#fed7aa
     style A7 fill:#1c1917,stroke:#44403c,color:#fed7aa
     style A8 fill:#1c1917,stroke:#44403c,color:#fed7aa
+    style Core fill:#334155,stroke:#475569,color:#f1f5f9
+    style Depth fill:#134e4a,stroke:#0f766e,color:#ccfbf1
+    style O fill:#042f2e,stroke:#115e59,color:#99f6e4
+    style E fill:#042f2e,stroke:#115e59,color:#99f6e4
+    style R fill:#042f2e,stroke:#115e59,color:#99f6e4
+    style CM fill:#042f2e,stroke:#115e59,color:#99f6e4
+    style CL fill:#042f2e,stroke:#115e59,color:#99f6e4
+    style ID fill:#042f2e,stroke:#115e59,color:#99f6e4
 ```
 
 ---
@@ -245,25 +293,25 @@ flowchart LR
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#1e293b','primaryTextColor':'#f1f5f9','primaryBorderColor':'#475569','lineColor':'#94a3b8'}}}%%
 flowchart TD
     A["🎯 Target authorized<br/><i>RoE / BB scope / ASM contract</i>"] --> B[methodology<br/>scope check]
-    B --> C[methodology<br/>5-stage pipeline]
+    B --> C[methodology<br/>6-stage pipeline]
 
     C --> D1["🔍 Stage 1<br/>Seed Discovery"]
     C --> D2["🌐 Stage 2<br/>Asset Expansion"]
     C --> D3["📊 Stage 3<br/>Enrichment"]
     C --> D4["⚠️ Stage 4<br/>Exposure Analysis"]
-    C --> D5["📋 Stage 5<br/>Reporting"]
+    C --> D5["📋 Stage 5-6<br/>Converge + Report"]
 
-    D1 --> E1[DNS catalog<br/>WHOIS / RDAP<br/>public records]
+    D1 --> E1[DNS catalog · WHOIS / RDAP<br/>public records<br/><b>org-attack-surface</b><br/>entity → owned footprint]
     D2 --> E2[subdomain stack<br/>prefix sweep<br/>Wayback CDX]
-    D3 --> E3[vendor fingerprint<br/>identity fabric<br/>infrastructure OSINT]
-    D4 --> E4[secret catalog<br/>always-on HTTP checks<br/>K8s exposure<br/>read-only validators<br/>breach × identity]
-    D5 --> E5[severity rubric<br/>BB submission<br/>client deliverable]
+    D3 --> E3[vendor fingerprint · infra OSINT<br/><b>identity-provider-recon</b> tenant/enum<br/><b>email-domain-security</b> spoofability]
+    D4 --> E4[secret catalog · HTTP checks<br/>breach × identity · validators<br/><b>cloud-saas-exposure</b> buckets/acct-id/dep-confusion]
+    D5 --> E5[severity rubric · BB submission<br/><b>exposure-risk-quantification</b> FAIR $ + board<br/><b>continuous-exposure-monitoring</b> re-scan/diff]
 
     E1 --> F[methodology<br/>asset graph]
     E2 --> F
     E3 --> F
     E4 --> G["📋 Findings<br/>severity + confidence + evidence"]
-    E5 --> H["📦 Deliverable<br/>exec summary + repro package"]
+    E5 --> H["📦 Deliverable<br/>exec summary · $ risk · repro package"]
 
     F --> G
 
@@ -282,18 +330,17 @@ flowchart TD
 ### With Claude Code
 
 ```bash
-# Install both skills (one-time, after clone)
+# Install all 8 skills (one-time, after clone)
 git clone https://github.com/elementalsouls/Claude-OSINT.git
 cd Claude-OSINT
 chmod +x ./scripts/sync-skill-content.sh
 ./scripts/sync-skill-content.sh
 mkdir -p ~/.claude/skills
-cp -r skills/osint-methodology ~/.claude/skills/
-cp -r skills/offensive-osint   ~/.claude/skills/
+cp -r skills/* ~/.claude/skills/
 ls ~/.claude/skills/
 ```
 
-Then, in any Claude Code session, ask an OSINT question — both skills auto-load and trigger on relevant phrases (50+ trigger phrases each).
+Then, in any Claude Code session, ask an OSINT question — the skills auto-load and each triggers on its own relevant phrases. Install only the core pair (`osint-methodology` + `offensive-osint`) if you want the recon backbone without the org-grade depth skills.
 
 ### With the Claude Skills System
 
@@ -312,7 +359,7 @@ Paste the contents of any `SKILL.md` into a Project's system prompt or prepend i
 
 These skills are intended for assets you **own** or have **written authorization to assess** (red-team rules of engagement, bug-bounty in-scope assets, ASM contracts).
 
-Both skills include a soft scope-check when you ask Claude to act against an unverified third-party target. They explicitly **exclude** active exploitation, post-exploitation, malware development, and other activities beyond OSINT-driven reconnaissance. See [`SECURITY.md`](SECURITY.md) for the full posture.
+All eight skills include a soft scope-check when you ask Claude to act against an unverified third-party target, and the depth skills carry explicit hard-boundary sections (e.g. identity-provider-recon ends at user *enumeration* — never password spray or credential submission; cloud-saas-exposure decodes an AWS account ID offline but never calls AWS APIs with it). They explicitly **exclude** active exploitation, post-exploitation, credential submission, token forging/replay, malware development, and other activities beyond OSINT-driven reconnaissance. See [`SECURITY.md`](SECURITY.md) for the full posture.
 
 ---
 
@@ -325,7 +372,7 @@ Both skills include a soft scope-check when you ask Claude to act against an unv
 | [`docs/installation.md`](docs/installation.md) | Symlink installs and multi-environment install patterns |
 | [`docs/usage.md`](docs/usage.md) | Trigger-phrase reference and prompt templates |
 | [`examples/`](examples/) | 4 end-to-end engagement walk-throughs (quick recon · bug-bounty · M365 deep · secret hunting) |
-| [`tests/smoke-test-prompts.md`](tests/smoke-test-prompts.md) | 32-prompt self-evaluation suite (current grade: 31/32 PASS) |
+| [`tests/smoke-test-prompts.md`](tests/smoke-test-prompts.md) | 56-prompt self-evaluation suite (current grade: 56/56 PASS) |
 | [`CHANGELOG.md`](CHANGELOG.md) | Version history |
 | [`CONTRIBUTING.md`](CONTRIBUTING.md) | Pull-request guidelines |
 
