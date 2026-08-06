@@ -8,12 +8,12 @@ The "how to think" reference for external red-team OSINT and bug-bounty reconnai
 | Version | 2.3 |
 | Lines | ~515 |
 | Top-level sections | 19 |
-| Subsections | 14 |
+| Subsections | 12 |
 | Companion skill | [`offensive-osint`](../offensive-osint/) |
 
 ## When this skill triggers
 
-Auto-triggers on prompts containing any of ~55 trigger phrases. Common ones:
+Auto-triggers on prompts containing any of ~52 trigger phrases. Common ones:
 
 - `external recon`, `external red team`, `bug bounty recon`, `attack surface management`, `ASM`, `perimeter recon`
 - `OSINT methodology`, `recon methodology`, `target reconnaissance`, `asset discovery`, `attack path`
@@ -35,11 +35,11 @@ See the parent [README's "What's in the box" table](../../README.md#whats-in-the
 Highlights:
 
 - **§7 — 6-stage recon pipeline** (seed → asset expansion → enrichment → exposure analysis → convergence → operator-armed active validation) + priority order + time budgeting (1h / 4h / 1d / 1w profiles) + connector resilience (§7.3) + stage-vs-gating discipline (§7.4)
-- **§8 — Asset graph discipline** with 29 typed asset types + 23 typed edges + per-asset-type triage
+- **§8 — Asset graph discipline** with 29 typed asset types across 9 categories + per-asset-type triage rules
 - **§9 — Findings rubric** anchored on examples (CRITICAL → INFO + escalation rules)
-- **§11 — Identity fabric mapping** (Entra, Okta, ADFS, Google, SAML, AWS, M365 deep)
+- **§10 — Pivot modes & scale tactics** (scope-sized tactics for <100 vs. large surfaces)
+- **§11 — Companion-skill pointers** — the "what to do here / how in `offensive-osint`" hub: identity-fabric mapping (Entra, Okta, ADFS, Google, SAML, AWS acct-id, M365 deep), API & auth-map, JavaScript deep analysis, mobile & cloud attack surface, WAF/CDN bypass + origin discovery, vulnerability prioritization (CVE × EPSS × KEV), phishing infrastructure
 - **§12 — Breach × identity correlation** (HudsonRock + HIBP + DeHashed + IntelX → SSO_EXPOSURE finding) + **§12.1 — per-person identity dossier** (PERSON × CREDENTIAL join by email, ranked spear-phish/credential-stuffing target list)
-- **§11 — Companion-skill pointers** (WAF/CDN bypass + origin discovery, vulnerability prioritization CVE × EPSS × KEV, phishing infrastructure — full implementation detail lives in `offensive-osint`)
 - **§13 — Specialty OSINT domains** (cryptocurrency, image/chronolocation, threat-actor investigation, people & social)
 - **§15 — Bug bounty submission & responsible disclosure** (HackerOne, Bugcrowd, Intigriti, etc.)
 - **§16 — Client deliverable templates** (exec summary + risk-translation matrix + reporting cadence)
