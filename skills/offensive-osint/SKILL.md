@@ -1,7 +1,7 @@
 ---
 name: offensive-osint
-description: "Operational arsenal for external red-team and bug-bounty reconnaissance. Concrete wordlists (28 Swagger paths, 13 GraphQL paths, 35 high-risk ports, 6 missing-header findings, 15 always-on HTTP checks, 5 SAML paths, cloud bucket permutations, JS guess-paths, vendor product fingerprints for Citrix/F5/Pulse/Fortinet/Cisco/PaloAlto/VMware/Exchange, cloud-native service fingerprints, container/K8s exposure paths, CI/CD platform paths, documentation/wiki leak paths, WHOIS/RDAP, DNS record catalog, Wayback CDX recipes), 43+-pattern secret-regex catalog (incl. modern AI API keys: Anthropic/OpenAI/HuggingFace/Cloudflare/DigitalOcean/npm/PyPI/Docker Hub/Atlassian/DataDog/Sentry/ngrok), 80+ dork corpus across 9 categories, GitHub code-search dorks, copy-paste curl/httpie probes for every check, post-discovery enumeration workflows (AWS/GitHub/Slack/JWT/PMAK/Anthropic/OpenAI), endpoint interest scoring rubric (0–100), mobile app ownership confidence, identity-fabric endpoints (Entra/Okta/ADFS/Google/SAML/M365 Teams+SharePoint+OneDrive+OAuth + user-enum), GraphQL field-suggestion enumeration when introspection disabled, 9 read-only secret validators (Postman/AWS/GitHub/Slack/Anthropic/OpenAI/npm/Atlassian/DataDog), Postman workspace search (verified endpoint), Stack Exchange sweep, public SaaS dorks, email security analysis (SPF/DMARC/DKIM/BIMI/MTA-STS/DNSSEC), origin-discovery / CDN bypass techniques, TLS deep audit (sslyze/testssl.sh/JA3/JA4), reverse-DNS sweep + IPv6 enum, vulnerability prioritization data sources (NVD/EPSS/CISA KEV/ExploitDB/Metasploit), 27 attack-path hint templates, 80+ severity-matrix examples, LinkedIn employee enumeration, job posting tech-stack analysis, Slack/Discord workspace discovery, package registry leak hunting (npm/PyPI/Docker Hub/Quay/GHCR), sat imagery for physical recon, tooling quick-install one-liners, sector-specific recon notes (healthcare/finance/ICS-SCADA/IoT/government), runnable stdlib-only secret_scan.py helper, plus the existing tool references for username/email/phone/people/social/breach/infrastructure/crypto/media/geospatial/AI/archiving/automation. Use when you need concrete probe paths, regexes, payloads, scoring rules, curl one-liners, and tool URLs for an authorized external recon engagement."
-version: 2.1.2
+description: "Operational arsenal for external red-team and bug-bounty reconnaissance. Concrete wordlists (28 Swagger paths, 13 GraphQL paths, 35 high-risk ports, 6 missing-header findings, 15 always-on HTTP checks, 5 SAML paths, cloud bucket permutations, JS guess-paths, vendor product fingerprints for Citrix/F5/Pulse/Fortinet/Cisco/PaloAlto/VMware/Exchange, cloud-native service fingerprints, container/K8s exposure paths, CI/CD platform paths, documentation/wiki leak paths, WHOIS/RDAP, DNS record catalog, Wayback CDX recipes), 80-pattern secret-regex catalog (incl. modern AI API keys: Anthropic/OpenAI/HuggingFace/Cloudflare/DigitalOcean/npm/PyPI/Docker Hub/Atlassian/DataDog/Sentry/ngrok; plus a provider-expansion tier: Postman PMAK/GitLab/Square/Shopify/Mailchimp/PagerDuty/Asana/Databricks/Grafana/Terraform Cloud/Fastly/Algolia/Segment/Airtable/GCP+Google OAuth/Azure AD/Facebook OAuth/RubyGems/JFrog/Okta/Slack app-level/Dropbox/Doppler/HashiCorp Vault/Firebase Cloud Messaging), 80+ dork corpus across 9 categories, GitHub code-search dorks, copy-paste curl/httpie probes for every check, post-discovery enumeration workflows (AWS/GitHub/Slack/JWT/PMAK/Anthropic/OpenAI), endpoint interest scoring rubric (0–100), mobile app ownership confidence + APK static-analysis pipeline (acquisition, apktool/aapt2/jadx/androguard decompile, manifest exported-component/deep-link/misconfig extraction, Firebase config, network-security-config, embedded-secret scan), identity-fabric endpoints (Entra/Okta/ADFS/Google/SAML/M365 Teams+SharePoint+OneDrive+OAuth + user-enum), GraphQL field-suggestion enumeration when introspection disabled, 9 read-only secret validators (Postman/AWS/GitHub/Slack/Anthropic/OpenAI/npm/Atlassian/DataDog), Postman workspace search (verified endpoint), Stack Exchange sweep, public SaaS dorks, email security analysis (SPF/DMARC/DKIM/BIMI/MTA-STS/DNSSEC), origin-discovery / CDN bypass techniques, TLS deep audit (sslyze/testssl.sh/JA3/JA4), reverse-DNS sweep + IPv6 enum, vulnerability prioritization data sources (NVD/EPSS/CISA KEV/ExploitDB/Metasploit), 27 attack-path hint templates, 80+ severity-matrix examples, LinkedIn employee enumeration, job posting tech-stack analysis, Slack/Discord workspace discovery, package registry leak hunting (npm/PyPI/Docker Hub/Quay/GHCR), sat imagery for physical recon, tooling quick-install one-liners, sector-specific recon notes (healthcare/finance/ICS-SCADA/IoT/government), runnable stdlib-only secret_scan.py helper, plus the existing tool references for username/email/phone/people/social/breach/infrastructure/crypto/media/geospatial/AI/archiving/automation. Use when you need concrete probe paths, regexes, payloads, scoring rules, curl one-liners, and tool URLs for an authorized external recon engagement."
+version: 2.2
 triggers:
   - external recon
   - external red team
@@ -1682,7 +1682,7 @@ puredns resolve <(awk -v d="$D" '{print $1"."d}' assetnote-best-dns-wordlist.txt
 
 ---
 
-## 17. Secret-Pattern Catalog — 48 patterns (29 base + 19 modern)
+## 17. Secret-Pattern Catalog — 80 patterns (29 base + 19 modern + 32 provider expansion)
 
 The catalog runs against any text source: GitHub code, Postman workspaces, JS bodies, sourcesContent blobs, mobile-app strings, Wayback HTML, paste sites, Stack Exchange code blocks. **Order matters: most-specific patterns first** so generic catches don't pre-empt typed ones.
 
@@ -1737,11 +1737,52 @@ The catalog runs against any text source: GitHub code, Postman workspaces, JS bo
 | 47 | Discord Bot Token | `\b[MN][A-Za-z\d]{23}\.[\w\-]{6}\.[\w\-]{27}\b` | HIGH | bot_token |
 | 48 | Telegram Bot Token | `\b\d{8,10}:[A-Za-z0-9_\-]{35}\b` | HIGH | bot_token |
 
+**Provider expansion (v2.2, #49–80).** Row 49 (Postman PMAK) is grounded directly in Falcon-Recon's `modules/secrets_beyond_github.py::_RE_PMAK` — a real gap, since §23.1 already documents the PMAK *validator* but the catalog never had the detection regex. Rows 50–80 add well-known, distinctive-prefix or context-anchored token formats for providers not covered by rows 1–48, in the same reliability bar: standalone only where the vendor's own prefix is distinctive enough to not collide (`glpat-`, `sq0atp-`, `shpat_`, `dapi`, `.atlasv1.`, `GOCSPX-`, `ya29.`, `EAA`, `rubygems_`, `AKCp`, `SSWS `, `xapp-1-`, `sl.`, `dp.pt.`, `hvs.`, `AAAA…:`), context-anchored (mirroring the §17 #35 Cloudflare approach) everywhere the vendor's own token has no fixed shape (PagerDuty, Asana, Fastly, Algolia, Segment, legacy Airtable key, Azure/Entra client secret, Okta generic token).
+
+| # | Name | Regex | Severity | Category |
+|---|---|---|---|---|
+| 49 | Postman API Key (PMAK) | `\bPMAK-[A-Za-z0-9]{24,64}\b` | **CRITICAL** | postman |
+| 50 | GitLab Personal Access Token | `\bglpat-[A-Za-z0-9_\-]{20}\b` | HIGH | gitlab |
+| 51 | Square Access Token | `\bsq0atp-[0-9A-Za-z\-_]{22}\b` | **CRITICAL** | square |
+| 52 | Square OAuth Secret | `\bsq0csp-[0-9A-Za-z\-_]{43}\b` | HIGH | square |
+| 53 | Shopify Access Token | `\bshpat_[a-fA-F0-9]{32}\b` | HIGH | shopify |
+| 54 | Shopify Shared Secret | `\bshpss_[a-fA-F0-9]{32}\b` | HIGH | shopify |
+| 55 | Mailchimp API Key | `\b[0-9a-f]{32}-us[0-9]{1,2}\b` | HIGH | email_svc |
+| 56 | PagerDuty API Key | `(?i)pagerduty(.{0,20})?(api\|token\|key)['"\s:=]+([A-Za-z0-9+_\-]{20,32})` | MEDIUM | saas_api |
+| 57 | Asana Personal Access Token | `(?i)asana(.{0,20})?(token\|pat)['"\s:=]+([0-9]{1,10}/[0-9]{10,20}:[a-f0-9]{32})` | MEDIUM | saas_api |
+| 58 | Databricks Personal Access Token | `\bdapi[0-9a-f]{32}(?:-\d)?\b` | HIGH | saas_api |
+| 59 | Grafana API Key (legacy) | `\beyJrIjoi[A-Za-z0-9+/=]{40,}\b` | MEDIUM | observability |
+| 60 | Grafana Cloud Access Policy Token | `\bglc_[A-Za-z0-9+/]{32,}={0,2}\b` | MEDIUM | observability |
+| 61 | Terraform Cloud/Enterprise Token | `\b[A-Za-z0-9]{14}\.atlasv1\.[A-Za-z0-9_\-=]{60,70}\b` | **CRITICAL** | infra_api |
+| 62 | Fastly API Token | `(?i)fastly(.{0,20})?(api\|token)['"\s:=]+([A-Za-z0-9_\-]{32})` | HIGH | infra_api |
+| 63 | Algolia Admin API Key | `(?i)algolia(.{0,20})?(admin\|api)[_\-]?key['"\s:=]+([A-Za-z0-9]{32})` | HIGH | saas_api |
+| 64 | Segment Write Key | `(?i)segment(.{0,20})?(write)?[_\-]?key['"\s:=]+([A-Za-z0-9]{20,32})` | LOW | saas_api |
+| 65 | Airtable API Key (legacy) | `(?i)airtable(.{0,20})?(api)?[_\-]?key['"\s:=]+(key[A-Za-z0-9]{14})` | MEDIUM | saas_api |
+| 66 | Airtable Personal Access Token | `\bpat[A-Za-z0-9]{14}\.[a-f0-9]{64}\b` | HIGH | saas_api |
+| 67 | GCP OAuth Client Secret | `\bGOCSPX-[A-Za-z0-9_\-]{28}\b` | HIGH | gcp |
+| 68 | Google OAuth Access Token | `\bya29\.[0-9A-Za-z_\-]{20,}\b` | HIGH | gcp |
+| 69 | Google OAuth Client ID | `\b[0-9]+-[0-9A-Za-z_]{32}\.apps\.googleusercontent\.com\b` | LOW | gcp |
+| 70 | Azure AD / Entra Client Secret | `(?i)(?:azure\|entra)[_\-]?(?:client\|app)[_\-]?secret['"\s:=]+([A-Za-z0-9_~.\-]{34,40})` | HIGH | azure |
+| 71 | Facebook Graph API Access Token | `\bEAA[A-Za-z0-9]{90,}\b` | HIGH | oauth |
+| 72 | RubyGems API Key | `\brubygems_[a-f0-9]{48}\b` | HIGH | package_registry |
+| 73 | JFrog Artifactory API Key | `\bAKCp[A-Za-z0-9]{50,70}\b` | HIGH | infra_api |
+| 74 | Okta SSWS Token | `\bSSWS\s+[0-9a-zA-Z_\-]{40}\b` | **CRITICAL** | identity |
+| 75 | Okta API Token | `(?i)okta(.{0,20})?(api)?[_\-]?token['"\s:=]+([0-9a-zA-Z_\-]{40})` | HIGH | identity |
+| 76 | Slack App-Level Token | `\bxapp-1-[A-Za-z0-9\-]{20,}\b` | HIGH | slack |
+| 77 | Dropbox Short-Lived Token | `\bsl\.[A-Za-z0-9_\-]{130,140}\b` | MEDIUM | oauth |
+| 78 | Doppler Personal Token | `\bdp\.pt\.[A-Za-z0-9]{40,44}\b` | **CRITICAL** | secrets_mgmt |
+| 79 | HashiCorp Vault Token | `\bhvs\.[A-Za-z0-9_\-]{90,100}\b` | **CRITICAL** | secrets_mgmt |
+| 80 | Firebase Cloud Messaging Server Key (legacy) | `\bAAAA[A-Za-z0-9_\-]{7}:[A-Za-z0-9_\-]{140,}\b` | HIGH | firebase |
+
 **False-positive notes:**
 - Patterns 22 (JWT), 23 (Bearer), 29 (Generic) trigger on test/example data frequently. Always look at *context* — a JWT in a `README.md` example block ≠ a JWT in a production `.env` file.
 - Pattern 16 (Mailgun loose) and pattern 11 (Stripe test) are noisy by design; severity is set low for that reason.
 - Pattern 24 (Basic auth in URL) catches monitoring-tool URLs and CI-debug URLs as well as real creds — verify before alerting.
 - For GitHub's Fine-grained PAT (pattern 7), the `82` length is by GitHub's spec — be skeptical of matches significantly longer or shorter.
+- Patterns 56 (PagerDuty), 57 (Asana), 62 (Fastly), 63 (Algolia), 64 (Segment), 65 (Airtable legacy), 70 (Azure/Entra), 75 (Okta generic) are context-anchored because the vendor token itself has no fixed shape — same discipline as pattern 35 (Cloudflare). A hit means "provider name + key-shaped value on the same line," not a cryptographically distinctive match; verify before escalating.
+- Pattern 59 (Grafana legacy) and 60 (Grafana Cloud) can both fire on the same key in older self-hosted instances that still mint `eyJrIjoi…`-style tokens even under a Cloud-flavored URL — treat as one finding, not two.
+- Pattern 69 (Google OAuth Client ID) is LOW by design: a client ID is a public identifier by OAuth spec, not a secret — the finding is config/tenant disclosure, not credential exposure. Don't escalate without a paired client secret (pattern 67) or refresh token.
+- Pattern 80 (FCM Server Key) enables push-notification injection to every installed instance of the app (phishing/malware push at scale), not data read — cross-reference §21.1 for the mobile-static-analysis context this typically surfaces in.
 
 ---
 
@@ -1964,6 +2005,121 @@ Before running deep APK static analysis, score whether the discovered app actual
 | App has ≥ minimum review-score threshold (default 20 reviews) | +5 |
 
 Apps below threshold are tagged `mobile_review_pending` and shown but not analyzed. Operator can re-score with `--mobile-ownership-threshold 50` for noisier collection.
+
+### 21.1 APK Static Analysis Pipeline
+
+Once an app clears the §21 ownership gate, run this pipeline. **Passive static analysis only** — no Frida/emulator instrumentation, no exercising the app against a live backend, no replaying captured app traffic. Confirming a leaked secret is live uses the §23 read-only validators; confirming an open cloud surface (Firebase, S3, GCS) uses §16.8/§16.17 — separate, explicit steps, deliberately not bundled into this pass.
+
+**A. Acquisition**
+
+| Source | Method | Notes |
+|---|---|---|
+| Google Play | `pip install google-play-scraper` (§46.9) for metadata | Play's public surface does **not** distribute the binary itself |
+| APKPure | HTML-scrape the download page, extract the `.apk` link | No login required; rate-limit-friendly; primary automatable source |
+| APKMirror | Manual browser download | Stronger anti-automation than APKPure; fallback only |
+| iOS IPA | Operator-supplied, dropped into a local `ipa_uploads/` dir | Never auto-download a `.ipa` — DMCA posture; analyse in place if the operator has it in scope |
+
+```bash
+curl -s "https://apkpure.net/$(echo com.acme.android | tr . -)/com.acme.android/download" \
+  | grep -oE 'https://[^"]+\.apk[^"]*' | head -1
+```
+
+**B. Decompile toolchain**
+
+```bash
+# apktool — resources + manifest to readable XML (not raw AXML)
+apktool d app.apk -o out/
+
+# aapt2 (Android SDK build-tools) — manifest dump without full unpack
+aapt2 dump badging app.apk
+aapt2 dump xmltree app.apk --file AndroidManifest.xml
+
+# jadx — Java source recovery from classes.dex (for logic review, not just strings)
+jadx -d out_src/ app.apk
+```
+
+Windows: `apktool.bat`; `aapt2.exe` lives under `%LOCALAPPDATA%\Android\Sdk\build-tools\<ver>\aapt2.exe` (install via Android Studio SDK Manager or `sdkmanager --install "build-tools;34.0.0"`); `jadx.bat` from the portable jadx zip, or `jadx-gui.exe` for interactive review.
+
+No-toolchain alternative — pure Python, what Falcon-Recon's own `mobile_attack_surface.py` uses (no apktool/jadx dependency):
+
+```bash
+pip install androguard
+```
+```python
+from androguard.core.apk import APK
+a = APK("app.apk")
+print(a.get_package(), a.get_effective_target_sdk_version())
+print(a.get_permissions())
+manifest_xml = a.get_android_manifest_axml().get_xml()  # decoded AndroidManifest.xml
+```
+
+**C. AndroidManifest.xml parse**
+
+- **Exported-component test** (the subtlety most manual reviews miss): a component is *effectively* exported if `android:exported="true"` **OR** `exported` is unset **and** it declares an `<intent-filter>`. Don't just grep for `exported="true"`.
+- `android:debuggable="true"` on `<application>` — production debug surface.
+- `android:allowBackup` — **defaults to `"true"` when the attribute is absent entirely.** Most manifests never set it, so absence of the attribute is not absence of the risk.
+- `android:usesCleartextTraffic` — explicit `"true"` allows unencrypted HTTP app-wide (API ≥28 defaults this to `false`, so an explicit `"true"` is a deliberate override worth flagging harder).
+- Custom `<permission>` declarations — check `android:protectionLevel`. `normal` or `dangerous` means any installed app can hold the permission; sensitive custom permissions (guarding IPC to exported components) should be `signature`.
+- `android:networkSecurityConfig` reference on `<application>` — pivot to step G below.
+
+**D. Deep-link / intent-filter extraction**
+
+Walk every `activity` / `activity-alias` / `service` / `receiver` for `<intent-filter><data android:scheme=… android:host=…/></intent-filter>`. For each `scheme://host` pair:
+
+- Flag handlers whose **component name or host** contains `auth`, `token`, `reset`, `callback`, `oauth`, `sso`, or `login` — these are the deep links worth weaponizing (attacker-controlled query params reaching an auth/token flow).
+- Distinguish **App Links** (`https://` scheme + `android:autoVerify="true"` + a matching `.well-known/assetlinks.json` on the host) from a **custom scheme** (`myapp://`). Only the custom scheme is hijackable by a second app registering the same scheme — App Links are domain-verified by the OS.
+
+**E. Firebase / GCP config extraction**
+
+- `google-services.json` → `project_info.project_id`, and every `client[].api_key[].current_key` (the project's default Google API key, often over-scoped).
+- `GoogleService-Info.plist` (iOS bundle) → `PROJECT_ID`, `API_KEY`, `GCM_SENDER_ID`.
+- Extraction here is **read-of-the-APK-only**. Falcon-Recon's own pipeline goes one step further and probes the extracted `project_id` against canonical Firebase endpoints (RTDB `/.json`, Firestore, Storage list) — that's a live-backend check, not static analysis; do it as a distinct, explicit step via §16.8's cloud-bucket-style workflow, not silently inside this pass.
+
+**F. Embedded secrets — reuse §17**
+
+Extract every text blob and run it through `scripts/secret_scan.py` (§48) or the raw §17 table:
+
+```bash
+# Unpack once, scan everything under it in one pass
+unzip -o app.apk -d out/
+python3 scripts/secret_scan.py out/
+
+# Strings out of native libs (classes.dex string-pool is already covered by
+# apktool's baksmali output / jadx's decompiled source under out_src/)
+find out/lib -name '*.so' -exec strings {} \; | python3 scripts/secret_scan.py
+
+# assets/ specifically — bundled credential files, not just string hits
+find out/assets -type f \( -iname '*.pem' -o -iname '*.p12' -o -iname '*.jks' \
+  -o -iname '*.keystore' -o -iname '*.env' -o -iname 'google-services.json' \)
+```
+
+The FCM Server Key (§17 #80) and the GCP/Firebase family (§17 #4, #5, #67–69) are the entries most likely to fire here — this is exactly the mobile-recon context they were added for.
+
+**G. Network Security Config**
+
+`res/xml/<name>.xml`, referenced by the manifest's `android:networkSecurityConfig` attribute (captured in step C). Falcon-Recon's own pipeline stops at recording the *reference* as a pinning marker — it does not parse the file. Pull it manually (via the apktool/aapt2 output from step B) and check for:
+
+- `cleartextTrafficPermitted="true"` at the `<base-config>` level — overrides a `usesCleartextTraffic="false"` manifest attribute for the domains it covers.
+- `<trust-anchors><certificates src="user"/></trust-anchors>` — accepts user-installed CAs, which means a proxy CA (Burp/mitmproxy) is trusted without needing a bypass. This is the single most common reason an app "should have pinning but doesn't" in practice — the pin-set is declared, but a permissive trust-anchor still lets a MITM proxy through for testing-flavored builds accidentally shipped to prod.
+- `<pin-set>` entries — note the `expiration` date; an expired pin-set silently stops enforcing.
+
+**H. Findings + severities**
+
+| Finding | Severity |
+|---|---|
+| `android:debuggable="true"` | **CRITICAL** |
+| Embedded secret (per §17 catalog severity) | per §17 |
+| Sensitive deep-link handler (auth/token/reset keyword) | HIGH |
+| `android:allowBackup="true"` (incl. unset/default) | MEDIUM |
+| `android:usesCleartextTraffic="true"` | MEDIUM |
+| Unprotected exported component (no permission) | MEDIUM |
+| High-risk permission held (RECORD_AUDIO, READ_SMS, BIND_ACCESSIBILITY_SERVICE, etc.) | MEDIUM |
+| Other sensitive permission | LOW |
+| Cert pinning missing / permissive user trust-anchor | LOW |
+
+Full worked examples and rationale for each row live in §40 (search "android"/"deep-link"/"exported") — this table is the quick-reference, §40 is the narrative.
+
+**Cross-references:** §21 (run the ownership gate first — never deep-analyse an unrelated app), §17/§48 (secret catalog + scanner reused verbatim on decompiled text), §23 (read-only validators for anything extracted here that looks live), §40 (severity worked examples), §46.9 (tooling install commands).
 
 ---
 
@@ -2273,6 +2429,8 @@ Iterate over a candidate-field wordlist (use SecLists `Discovery/Web-Content/gra
 Use these to confirm a discovered credential is live. **Read-only, never destructive.** Tag every validation with `detectability` and `checked_at` (UTC).
 
 ### 23.1 Postman API Key (PMAK-*)
+
+Detection regex: §17 #49 (`\bPMAK-[A-Za-z0-9]{24,64}\b`, CRITICAL). Validate a hit with:
 
 ```
 GET https://api.getpostman.com/me
@@ -3919,12 +4077,26 @@ git clone https://github.com/knavesec/CredMaster
 # google-play-scraper (Python)
 pip install google-play-scraper
 
-# androguard (APK static analysis)
+# androguard (APK static analysis — pure Python, no apktool/jadx needed; §21.1)
 pip install androguard
 # or: brew install androguard
 
 # apkleaks (secret scan in APK)
 pip install apkleaks
+
+# apktool (decompile APK to readable resources + manifest; §21.1)
+# macOS/Linux:
+brew install apktool
+# Windows: download apktool.jar + apktool.bat wrapper from
+# https://apktool.org/ , or `choco install apktool`
+
+# aapt2 (manifest/badging dump — ships with Android SDK build-tools)
+sdkmanager --install "build-tools;34.0.0"
+# Windows path: %LOCALAPPDATA%\Android\Sdk\build-tools\<ver>\aapt2.exe
+
+# jadx (Java source recovery from classes.dex)
+brew install jadx
+# Windows: unzip the jadx release zip, run jadx.bat / jadx-gui.exe
 ```
 
 ### 46.10 TLS / cert
@@ -4051,11 +4223,11 @@ Most recon generalizes; some sectors have unique attack-surface elements worth f
 
 ## 48. Runnable Helper — `secret_scan.py`
 
-Drop-in Python helper that mirrors the 48-pattern catalog (§17). Pure stdlib, no dependencies. For operator use against captured text.
+Drop-in Python helper that mirrors the 80-pattern catalog (§17). Pure stdlib, no dependencies. For operator use against captured text.
 
 ```python
 #!/usr/bin/env python3
-"""Stdlib-only secret scanner. Mirrors the 48-pattern catalog from
+"""Stdlib-only secret scanner. Mirrors the 80-pattern catalog from
 the `offensive-osint` skill (§17).
 
 Usage:
@@ -4170,6 +4342,86 @@ PATTERNS = [
     # Bot tokens
     ("DISCORD_BOT",          SEV_HIGH,     "bot_token",   r"\b[MN][A-Za-z\d]{23}\.[\w\-]{6}\.[\w\-]{27}\b"),
     ("TELEGRAM_BOT",         SEV_HIGH,     "bot_token",   r"\b\d{8,10}:[A-Za-z0-9_\-]{35}\b"),
+
+    # Provider expansion (v2.2) — §17 #49-80. Falcon-Recon-grounded (PMAK from
+    # modules/secrets_beyond_github.py) plus well-known, distinctive-prefix
+    # provider token formats not covered above. Every entry here is either a
+    # standalone distinctive-prefix regex or context-anchored exactly like
+    # CLOUDFLARE_API_TOKEN above, so a bare generic token can't FP-flood.
+
+    # Postman (grounded in Falcon-Recon modules/secrets_beyond_github.py _RE_PMAK)
+    ("POSTMAN_PMAK",         SEV_CRITICAL, "postman",     r"\bPMAK-[A-Za-z0-9]{24,64}\b"),
+
+    # GitLab
+    ("GITLAB_PAT",           SEV_HIGH,     "gitlab",      r"\bglpat-[A-Za-z0-9_\-]{20}\b"),
+
+    # Square
+    ("SQUARE_ACCESS_TOKEN",  SEV_CRITICAL, "square",      r"\bsq0atp-[0-9A-Za-z\-_]{22}\b"),
+    ("SQUARE_OAUTH_SECRET",  SEV_HIGH,     "square",      r"\bsq0csp-[0-9A-Za-z\-_]{43}\b"),
+
+    # Shopify
+    ("SHOPIFY_ACCESS_TOKEN", SEV_HIGH,     "shopify",     r"\bshpat_[a-fA-F0-9]{32}\b"),
+    ("SHOPIFY_SHARED_SECRET",SEV_HIGH,     "shopify",     r"\bshpss_[a-fA-F0-9]{32}\b"),
+
+    # Mailchimp
+    ("MAILCHIMP_API_KEY",    SEV_HIGH,     "email_svc",   r"\b[0-9a-f]{32}-us[0-9]{1,2}\b"),
+
+    # PagerDuty / Asana / Databricks (§17 #56-58)
+    ("PAGERDUTY_API_KEY",    SEV_MEDIUM,   "saas_api",    r"(?i)pagerduty(.{0,20})?(api|token|key)['\"\s:=]+([A-Za-z0-9+_\-]{20,32})"),
+    ("ASANA_PAT",            SEV_MEDIUM,   "saas_api",    r"(?i)asana(.{0,20})?(token|pat)['\"\s:=]+([0-9]{1,10}/[0-9]{10,20}:[a-f0-9]{32})"),
+    ("DATABRICKS_PAT",       SEV_HIGH,     "saas_api",    r"\bdapi[0-9a-f]{32}(?:-\d)?\b"),
+
+    # Grafana
+    ("GRAFANA_API_KEY",      SEV_MEDIUM,   "observability", r"\beyJrIjoi[A-Za-z0-9+/=]{40,}\b"),
+    ("GRAFANA_CLOUD_TOKEN",  SEV_MEDIUM,   "observability", r"\bglc_[A-Za-z0-9+/]{32,}={0,2}\b"),
+
+    # Terraform Cloud / Enterprise
+    ("TERRAFORM_CLOUD_TOKEN",SEV_CRITICAL, "infra_api",   r"\b[A-Za-z0-9]{14}\.atlasv1\.[A-Za-z0-9_\-=]{60,70}\b"),
+
+    # Fastly
+    ("FASTLY_API_TOKEN",     SEV_HIGH,     "infra_api",   r"(?i)fastly(.{0,20})?(api|token)['\"\s:=]+([A-Za-z0-9_\-]{32})"),
+
+    # Algolia / Segment
+    ("ALGOLIA_ADMIN_KEY",    SEV_HIGH,     "saas_api",    r"(?i)algolia(.{0,20})?(admin|api)[_\-]?key['\"\s:=]+([A-Za-z0-9]{32})"),
+    ("SEGMENT_WRITE_KEY",    SEV_LOW,      "saas_api",    r"(?i)segment(.{0,20})?(write)?[_\-]?key['\"\s:=]+([A-Za-z0-9]{20,32})"),
+
+    # Airtable
+    ("AIRTABLE_KEY_LEGACY",  SEV_MEDIUM,   "saas_api",    r"(?i)airtable(.{0,20})?(api)?[_\-]?key['\"\s:=]+(key[A-Za-z0-9]{14})"),
+    ("AIRTABLE_PAT",         SEV_HIGH,     "saas_api",    r"\bpat[A-Za-z0-9]{14}\.[a-f0-9]{64}\b"),
+
+    # GCP / Google OAuth
+    ("GCP_OAUTH_CLIENT_SECRET", SEV_HIGH,  "gcp",         r"\bGOCSPX-[A-Za-z0-9_\-]{28}\b"),
+    ("GOOGLE_OAUTH_ACCESS_TOKEN", SEV_HIGH,"gcp",         r"\bya29\.[0-9A-Za-z_\-]{20,}\b"),
+    ("GOOGLE_OAUTH_CLIENT_ID",SEV_LOW,     "gcp",         r"\b[0-9]+-[0-9A-Za-z_]{32}\.apps\.googleusercontent\.com\b"),
+
+    # Azure AD / Entra
+    ("AZURE_AD_CLIENT_SECRET",SEV_HIGH,    "azure",       r"(?i)(?:azure|entra)[_\-]?(?:client|app)[_\-]?secret['\"\s:=]+([A-Za-z0-9_~.\-]{34,40})"),
+
+    # Facebook OAuth
+    ("FACEBOOK_ACCESS_TOKEN",SEV_HIGH,     "oauth",       r"\bEAA[A-Za-z0-9]{90,}\b"),
+
+    # Package registries (v2.2)
+    ("RUBYGEMS_API_KEY",     SEV_HIGH,     "package_registry", r"\brubygems_[a-f0-9]{48}\b"),
+
+    # JFrog / Artifactory
+    ("JFROG_API_KEY",        SEV_HIGH,     "infra_api",   r"\bAKCp[A-Za-z0-9]{50,70}\b"),
+
+    # Okta
+    ("OKTA_SSWS_TOKEN",      SEV_CRITICAL, "identity",    r"\bSSWS\s+[0-9a-zA-Z_\-]{40}\b"),
+    ("OKTA_API_TOKEN",       SEV_HIGH,     "identity",    r"(?i)okta(.{0,20})?(api)?[_\-]?token['\"\s:=]+([0-9a-zA-Z_\-]{40})"),
+
+    # Slack app-level (Socket Mode)
+    ("SLACK_APP_LEVEL_TOKEN",SEV_HIGH,     "slack",       r"\bxapp-1-[A-Za-z0-9\-]{20,}\b"),
+
+    # Dropbox
+    ("DROPBOX_SHORT_LIVED",  SEV_MEDIUM,   "oauth",       r"\bsl\.[A-Za-z0-9_\-]{130,140}\b"),
+
+    # Secrets managers — Doppler / HashiCorp Vault
+    ("DOPPLER_TOKEN",        SEV_CRITICAL, "secrets_mgmt", r"\bdp\.pt\.[A-Za-z0-9]{40,44}\b"),
+    ("VAULT_TOKEN",          SEV_CRITICAL, "secrets_mgmt", r"\bhvs\.[A-Za-z0-9_\-]{90,100}\b"),
+
+    # Firebase Cloud Messaging legacy server key (mobile-recon relevant, §21.1)
+    ("FCM_SERVER_KEY",       SEV_HIGH,     "firebase",    r"\bAAAA[A-Za-z0-9_\-]{7}:[A-Za-z0-9_\-]{140,}\b"),
 ]
 
 COMPILED = [(n, s, c, re.compile(p)) for (n, s, c, p) in PATTERNS]
@@ -4251,7 +4503,7 @@ Drop these prompts into a fresh Claude session to verify the skill loads correct
 1. *"What paths should I probe to find Swagger or OpenAPI specs on a webapp?"* → §16.1.
 2. *"Give me the GraphQL introspection query I should POST."* → §16.2.
 3. *"What are the high-risk ports to flag from a Shodan scan?"* → §16.3.
-4. *"Show me the secret regex catalog."* → §17 (48 patterns) + §48 (runnable Python).
+4. *"Show me the secret regex catalog."* → §17 (80 patterns) + §48 (runnable Python).
 5. *"How do I score an API endpoint by attack interest?"* → §20.
 6. *"Validate a leaked Postman API key — what URL?"* → §23.1.
 7. *"Give me dorks for pastebin/gist/ghostbin leaks for a target."* → §18.3.
@@ -4288,11 +4540,14 @@ Drop these prompts into a fresh Claude session to verify the skill loads correct
 38. *"DMARC RUA points to `kdmarc.com` — what does that tell me?"* → §16.14 DMARC reporting-vendor table.
 39. *"SharePoint HEAD probe returns HTTP 200. Does that mean anonymous access is granted?"* → §22.8 (no — tenant exists, not anonymous access; distinguish).
 40. *"Wayback `*.js` query returned empty for a brochure-ware site. Pivot?"* → §16.23 legacy-app pivot (.asp / .php / .jsp / .cfm / .aspx).
+41. *"Found a leaked GitLab / Shopify / Databricks / Okta / Vault token in a repo — does the catalog cover it?"* → §17 rows 49–80 (provider expansion) + §48.
+42. *"Walk me through pulling and statically analysing an Android APK for a target."* → §21.1 (acquisition → decompile → manifest/deep-link/Firebase extraction → §17 secret scan → findings).
 
 ---
 
 ## 50. Changelog
 
+- **v2.2 (2026-08-06)** — §17 secret catalog expanded 48 → 80 patterns (#49–80), keeping the §17 ↔ `scripts/secret_scan.py` ↔ §48 three-way parity. Row 49 (Postman PMAK) closes a real gap grounded in Falcon-Recon's `modules/secrets_beyond_github.py::_RE_PMAK` — §23.1 already validated PMAK keys but the catalog never had the detection regex. Rows 50–80 add a provider-expansion tier: GitLab, Square (2), Shopify (2), Mailchimp, PagerDuty, Asana, Databricks, Grafana (2), Terraform Cloud, Fastly, Algolia, Segment, Airtable (2), GCP/Google OAuth (3), Azure AD/Entra, Facebook OAuth, RubyGems, JFrog/Artifactory, Okta (2), Slack app-level, Dropbox, Doppler, HashiCorp Vault, and a Firebase Cloud Messaging legacy server key — each either a standalone distinctive-prefix regex or context-anchored exactly like the existing §17 #35 Cloudflare pattern, so no bare generic token can FP-flood. Note on provenance: Falcon-Recon's dedicated `dorking/secrets.py` catalog (33 patterns) turned out to be a strict subset already covered by the pre-v2.2 48 — it contributed no net-new providers directly; the 32 new patterns are well-known, industry-standard token-format signatures for the providers, verified against a self-validating synthetic fixture (32/32 detect, 0 false positives on plain prose) rather than forced to hit a round number. Added §21.1 APK Static Analysis Pipeline (new subsection under Mobile App Ownership Confidence) grounded in `modules/mobile_attack_surface.py`: acquisition (Play/APKPure/APKMirror/manual-IPA), apktool/aapt2/jadx decompile + androguard no-toolchain alternative, AndroidManifest parsing (effectively-exported test, debuggable/allowBackup-default-true/usesCleartextTraffic, custom permission protectionLevel), deep-link/intent-filter extraction (App Links vs. hijackable custom scheme), Firebase/GCP config extraction (google-services.json / GoogleService-Info.plist) with an explicit note that live-backend confirmation is a separate step (§16.8), embedded-secret scanning reusing §17/§48 verbatim over decompiled text, and Network Security Config review (cleartextTrafficPermitted, user trust-anchors that silently defeat pinning) — a gap Falcon-Recon's own pipeline captures only as a reference, not a parsed check. Passive static analysis only; no dynamic instrumentation. §46.9 tooling list expanded with apktool/aapt2/jadx install commands (bash + Windows paths). §49 self-test gained #41 (provider-expansion catalog) and #42 (APK pipeline walkthrough). Verified: `scripts/secret_scan.py` compiles, `--help` exits 0, all 32 new patterns detect on a self-validating synthetic fixture, zero hits on plain prose, and §17 row count / script `PATTERNS` count / §48 embedded count all agree at 80.
 - **v2.1.2 (2026-08-06)** — helper/catalog parity fix. The §48 runnable `secret_scan.py` had drifted: its embedded copy shipped only the 29 base patterns (stale "29-pattern catalog" docstring) while §17 documents 48. Resynced §48 to embed the full shipped `scripts/secret_scan.py` byte-for-byte, and implemented the one previously-missing catalog entry — §17 #35 Cloudflare API Token — as a context-anchored regex (`(?i)(?:cloudflare|x-auth-key)…{40}`) so the bare 40-char token can't FP-flood, bringing the helper to a true 48/48. Verified: compiles, `--help` exits 0, all patterns detect on a synthetic fixture, zero false hits on plain prose.
 - **v2.1.1 (2026-04-27)** — battle-test gap fixes from real-engagement smoke run. Added: §15.0.1 HudsonRock Cavalier direct-API recipe (curl + PowerShell, full JSON shape, free-tier redaction caveats, rate-limit guidance). §15.2 expanded with legacy-mail-decommissioned escalation pattern (NXDOMAIN legacy mail + breach corpus + autodiscover-confirmed cloud migration → CRITICAL SSO_EXPOSURE). §16.14 expanded with DMARC reporting-vendor table (Kratikal kdmarc / dmarcian / Valimail / Agari / EasyDMARC / DMARC Analyzer / Postmark) + full Windows/PowerShell parallel for the entire email security audit + caveat that PS 5.1 `Resolve-DnsName -Type CAA` errors (use PS 7+ or `nslookup -type=CAA`). §16.22 expanded TXT verification token catalog with 17 new tokens (zscaler-verification, cloudflare-verify, autosect, cisco-site-verification, mscid, _amazonses, salesforce-domain-verification, workday/shopify/klaviyo/mailchimp/hubspot/zendesk/freshworks/intercom/loom/miro/gitlab) + new "Autodiscover-as-confirmation" pattern for M365 detection when MX is wrapped by Mimecast/Proofpoint/Barracuda. §22.1 added passive Autodiscover IP correlation pattern with Microsoft Exchange Online IP ranges. §22.8 added clarification: SharePoint HEAD HTTP 200 = tenant exists, NOT anonymous access granted (operators commonly misread). New §16.23 legacy-app pivot block (when Wayback `*.js` returns empty for brochure-ware sites, pivot to .asp/.php/.jsp/.cfm/.aspx/.json/.xml/.yml/.ini/.conf — with full broad-sweep one-liner). New §16.24 Common-Prefix Subdomain Sweep — formalized active prefix-probe technique with 100+ ordered prefix list, PowerShell + bash + puredns recipes, and real-engagement validation note (passive enum misses 20-40% of high-value subdomains; always pair with active prefix probe). §27.0.1 added crt.sh fallback chain (Censys, CertSpotter, Calidog, Subfinder, OTX, ThreatMiner, URLScan, Anubis-DB) with PowerShell wrapper that retries crt.sh 3× then falls back to Subfinder. §28.1 added Bulk IP→ASN recipes (Cymru bulk WHOIS, RIPEstat, bgp.tools, IPinfo Lite) + caveat that bgpview.io API has aggressive rate limits unsuitable for bulk. §40 severity matrix gained 8 rows: vendor procurement portal exposed + breach corpus hits (HIGH), PII-collection portal over plain HTTP (HIGH), decommissioned legacy mail + breach + cloud migration (CRITICAL), public-facing intranet without VPN (MEDIUM), staging/preprod publicly resolvable (MEDIUM), vpn.<domain> resolves but vendor unknown (INFO escalating to HIGH-CRITICAL on KEV match), DMARC RUA → third-party vendor (INFO). §49 self-test expanded from 30 → 40 prompts targeting all new content.
 - **v2.1 (2026-04-27)** — comprehensive expansion based on 32-test smoke-test gap analysis. Added: copy-paste curl probes for every check (§16.13), email security analysis with SPF/DMARC/DKIM/BIMI/MTA-STS/DNSSEC parsing + SaaS tenant inference (§16.14), origin discovery / CDN bypass via DNS history + cert SAN + favicon hash + JARM + Host-header probe (§16.15), vendor product fingerprints for Citrix/F5/Pulse/Fortinet/PaloAlto/Cisco/VMware/Exchange + KEV CVE associations (§16.16), cloud-native service URL fingerprints — Lambda Function URLs, Cloud Run, Cloud Functions, Azure Functions, Vercel, Netlify, Cloudflare Workers, etc. (§16.17), container & Kubernetes exposure (kubelet, etcd, K8s API, dashboard, Helm Tiller, container registries) (§16.18), CI/CD platform exposure (Jenkins deeper, GitLab, GitHub Actions, CircleCI, TeamCity, Argo CD, Spinnaker) (§16.19), documentation/wiki leak paths (Notion, Confluence, Trello, Miro, Lucidchart, Figma, ReadTheDocs, GitBook, Slab, Coda, etc.) (§16.20), WHOIS/RDAP/historical-WHOIS recipes + reverse-WHOIS pivots (§16.21), DNS record catalog with TXT verification token table → SaaS tenant inference (§16.22), Wayback CDX deep usage with all filter parameters (§16.23). Expanded: §17 secret catalog from 29 → 48 patterns adding modern AI API keys (Anthropic, OpenAI legacy + project, HuggingFace), infra (Cloudflare, DigitalOcean), package registries (npm, PyPI, Docker Hub), SaaS (Atlassian, Linear), observability (New Relic, DataDog, Sentry DSN), bot tokens (Discord, Telegram), and ngrok. Expanded §18 dork corpus from 50+ → 80+ with internal-tool exposure (Splunk/Grafana/Kibana/Argo CD/Sonarqube/Confluence/Jira/GitLab/Gitea), backup-file extensions, and sector-specific dorks (healthcare/finance/gov). Added §22.8 Microsoft 365 deep enumeration (Teams federation, SharePoint subdomain probe, OneDrive personal-site probe, OAuth client_id discovery, device-code phishing target check, Power Platform). Added §22.9 GraphQL field-suggestion enumeration recipe + alias batching, query-depth bypass, subscription enumeration, batched-query bypass. Added §23.5–23.9 read-only validators for Anthropic, OpenAI, npm, Atlassian, DataDog (5 new). Added §23.12 post-discovery enumeration workflows (AWS IAM enum, GitHub PAT scope/repo enum, Slack workspace enum, JWT full triage with algorithm-confusion + brute-force + none-bypass, Postman PMAK workspace enum, Anthropic + OpenAI usage enum, generic key provenance enum). Pinned §24 Postman search endpoint with verified shape + DevTools fallback recipe. Added §27.1 wordlist sources (Assetnote, SecLists, jhaddix, OneListForAll, raft-large-words, fuzzdb, etc.) + size guidance. Added §28.4 TLS deep audit (sslyze + testssl.sh + nmap + JA3/JA4 + cipher/protocol/cert checks). Added §28.5 reverse DNS sweep + IPv6 enumeration + BGP route observation. Added §29.2 vulnerability prioritization data sources (NVD/EPSS/CISA KEV/ExploitDB/Metasploit/InTheWild/OpenCVE/Trickest CVE+POC mapping/OSV.dev/VulnCheck KEV) + bulk prioritization workflow. Expanded §39 attack-path hints with 15 more templates (open kubelet/etcd, K8s API anonymous, Citrix/F5/vCenter/Cloud Function unauth, npm typosquat, DMARC missing, live AI keys, Slack invite, sourcemap with sourcesContent). Expanded §40 severity matrix with 30 more worked examples covering Kubernetes/container, vendor products with KEV CVEs, M365/cloud-native, CI/CD misconfig, documentation leaks, email-security gaps, AI/package-registry credentials, TLS issues. Added §41 LinkedIn employee enumeration tradecraft (search techniques + role inference + email-pattern derivation + sock-puppet considerations). Added §42 job posting tech-stack analysis (sources + extraction + tooling). Added §43 Slack/Discord/Telegram/Mattermost workspace discovery. Added §44 package registry leak hunting (npm/PyPI/RubyGems/Cargo/Packagist/NuGet/Maven Central + workflow + typosquat surveillance). Added §45 sat imagery for physical recon (sources + extraction + LinkedIn/Glassdoor/Instagram/conference intel + vehicle/fleet intel). Added §46 tooling quick-install (subdomain, HTTP probing, vuln scanning, content discovery, JS extraction, Wayback, cloud, identity, mobile, TLS, utilities, frameworks). Added §47 sector-specific recon notes (healthcare DICOM/HL7/FHIR/EHR + finance SWIFT/FIX/Bloomberg/banking middleware + ICS-SCADA Modbus/BACnet/S7/DNP3 + IoT MQTT/CoAP/UPnP + government FedRAMP/FISMA + maritime/aviation/auto). Renumbered Runnable Helper → §48, Self-Test → §49 (refreshed for v2.1), Changelog → §50.

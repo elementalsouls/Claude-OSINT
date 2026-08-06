@@ -5,10 +5,10 @@ The "what to reach for" operational arsenal for external red-team OSINT and bug-
 | Field | Value |
 |---|---|
 | Name | `offensive-osint` |
-| Version | 2.1 |
-| Lines | ~3,800 |
+| Version | 2.2 |
+| Lines | ~4,550 |
 | Top-level sections | 51 |
-| Subsections | ~135 |
+| Subsections | ~136 |
 | Companion skill | [`osint-methodology`](../osint-methodology/) |
 
 ## When this skill triggers
@@ -54,10 +54,10 @@ See the parent [README's "What's in the box" table](../../README.md#whats-in-the
 Highlights:
 
 - **§16 — Pre-built wordlists & probe paths** including 28 Swagger paths, 13 GraphQL paths + introspection POST body, 35 high-risk ports, 6 missing security headers, 15 always-on HTTP checks, 5 SAML metadata paths, 8 SSO subdomain prefixes, cloud-bucket arsenal (6 prefixes × 15 suffixes × 47 stems × 3 providers), JS guess-paths, endpoint-extraction regex tiers, internal-host leakage regexes, 27 takeover provider fingerprints, copy-paste curl probes, email security analysis, origin discovery / CDN bypass, vendor product fingerprints, cloud-native fingerprints, container/K8s exposure, CI/CD exposure, doc/wiki leak paths, WHOIS/RDAP, DNS catalog with TXT verification token table, Wayback CDX deep usage.
-- **§17 — Secret-pattern catalog (48 patterns)** with severity, category, false-positive notes.
+- **§17 — Secret-pattern catalog (80 patterns)** with severity, category, false-positive notes; includes a v2.2 provider-expansion tier (GitLab/Square/Shopify/Mailchimp/PagerDuty/Asana/Databricks/Grafana/Terraform Cloud/Fastly/Algolia/Segment/Airtable/Postman PMAK/GCP+Google OAuth/Azure AD/Facebook OAuth/RubyGems/JFrog/Okta/Slack app-level/Dropbox/Doppler/HashiCorp Vault/Firebase Cloud Messaging).
 - **§18 — Dork corpus (80+ templates, 9 categories)**.
 - **§20 — Endpoint interest score (0–100 rubric)**.
-- **§21 — Mobile app ownership confidence (0–100 rubric)**.
+- **§21 — Mobile app ownership confidence (0–100 rubric)** + **§21.1 APK static-analysis pipeline** (acquisition, apktool/aapt2/jadx/androguard decompile, manifest/deep-link/Firebase extraction, embedded-secret scan via §17, network-security-config review).
 - **§22 — Identity-fabric concrete endpoints** (incl. M365 Deep + GraphQL field-suggestion enum).
 - **§23 — 9 read-only secret validators** + post-discovery enumeration workflows.
 - **§39 — 27 attack-path hint templates**.

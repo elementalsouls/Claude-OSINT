@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Stdlib-only secret scanner. Mirrors the 48-pattern catalog from
+"""Stdlib-only secret scanner. Mirrors the 80-pattern catalog from
 the `offensive-osint` skill (§17).
 
 Usage:
@@ -114,6 +114,86 @@ PATTERNS = [
     # Bot tokens
     ("DISCORD_BOT",          SEV_HIGH,     "bot_token",   r"\b[MN][A-Za-z\d]{23}\.[\w\-]{6}\.[\w\-]{27}\b"),
     ("TELEGRAM_BOT",         SEV_HIGH,     "bot_token",   r"\b\d{8,10}:[A-Za-z0-9_\-]{35}\b"),
+
+    # Provider expansion (v2.2) — §17 #49-80. Falcon-Recon-grounded (PMAK from
+    # modules/secrets_beyond_github.py) plus well-known, distinctive-prefix
+    # provider token formats not covered above. Every entry here is either a
+    # standalone distinctive-prefix regex or context-anchored exactly like
+    # CLOUDFLARE_API_TOKEN above, so a bare generic token can't FP-flood.
+
+    # Postman (grounded in Falcon-Recon modules/secrets_beyond_github.py _RE_PMAK)
+    ("POSTMAN_PMAK",         SEV_CRITICAL, "postman",     r"\bPMAK-[A-Za-z0-9]{24,64}\b"),
+
+    # GitLab
+    ("GITLAB_PAT",           SEV_HIGH,     "gitlab",      r"\bglpat-[A-Za-z0-9_\-]{20}\b"),
+
+    # Square
+    ("SQUARE_ACCESS_TOKEN",  SEV_CRITICAL, "square",      r"\bsq0atp-[0-9A-Za-z\-_]{22}\b"),
+    ("SQUARE_OAUTH_SECRET",  SEV_HIGH,     "square",      r"\bsq0csp-[0-9A-Za-z\-_]{43}\b"),
+
+    # Shopify
+    ("SHOPIFY_ACCESS_TOKEN", SEV_HIGH,     "shopify",     r"\bshpat_[a-fA-F0-9]{32}\b"),
+    ("SHOPIFY_SHARED_SECRET",SEV_HIGH,     "shopify",     r"\bshpss_[a-fA-F0-9]{32}\b"),
+
+    # Mailchimp
+    ("MAILCHIMP_API_KEY",    SEV_HIGH,     "email_svc",   r"\b[0-9a-f]{32}-us[0-9]{1,2}\b"),
+
+    # PagerDuty / Asana / Databricks (§17 #56-58)
+    ("PAGERDUTY_API_KEY",    SEV_MEDIUM,   "saas_api",    r"(?i)pagerduty(.{0,20})?(api|token|key)['\"\s:=]+([A-Za-z0-9+_\-]{20,32})"),
+    ("ASANA_PAT",            SEV_MEDIUM,   "saas_api",    r"(?i)asana(.{0,20})?(token|pat)['\"\s:=]+([0-9]{1,10}/[0-9]{10,20}:[a-f0-9]{32})"),
+    ("DATABRICKS_PAT",       SEV_HIGH,     "saas_api",    r"\bdapi[0-9a-f]{32}(?:-\d)?\b"),
+
+    # Grafana
+    ("GRAFANA_API_KEY",      SEV_MEDIUM,   "observability", r"\beyJrIjoi[A-Za-z0-9+/=]{40,}\b"),
+    ("GRAFANA_CLOUD_TOKEN",  SEV_MEDIUM,   "observability", r"\bglc_[A-Za-z0-9+/]{32,}={0,2}\b"),
+
+    # Terraform Cloud / Enterprise
+    ("TERRAFORM_CLOUD_TOKEN",SEV_CRITICAL, "infra_api",   r"\b[A-Za-z0-9]{14}\.atlasv1\.[A-Za-z0-9_\-=]{60,70}\b"),
+
+    # Fastly
+    ("FASTLY_API_TOKEN",     SEV_HIGH,     "infra_api",   r"(?i)fastly(.{0,20})?(api|token)['\"\s:=]+([A-Za-z0-9_\-]{32})"),
+
+    # Algolia / Segment
+    ("ALGOLIA_ADMIN_KEY",    SEV_HIGH,     "saas_api",    r"(?i)algolia(.{0,20})?(admin|api)[_\-]?key['\"\s:=]+([A-Za-z0-9]{32})"),
+    ("SEGMENT_WRITE_KEY",    SEV_LOW,      "saas_api",    r"(?i)segment(.{0,20})?(write)?[_\-]?key['\"\s:=]+([A-Za-z0-9]{20,32})"),
+
+    # Airtable
+    ("AIRTABLE_KEY_LEGACY",  SEV_MEDIUM,   "saas_api",    r"(?i)airtable(.{0,20})?(api)?[_\-]?key['\"\s:=]+(key[A-Za-z0-9]{14})"),
+    ("AIRTABLE_PAT",         SEV_HIGH,     "saas_api",    r"\bpat[A-Za-z0-9]{14}\.[a-f0-9]{64}\b"),
+
+    # GCP / Google OAuth
+    ("GCP_OAUTH_CLIENT_SECRET", SEV_HIGH,  "gcp",         r"\bGOCSPX-[A-Za-z0-9_\-]{28}\b"),
+    ("GOOGLE_OAUTH_ACCESS_TOKEN", SEV_HIGH,"gcp",         r"\bya29\.[0-9A-Za-z_\-]{20,}\b"),
+    ("GOOGLE_OAUTH_CLIENT_ID",SEV_LOW,     "gcp",         r"\b[0-9]+-[0-9A-Za-z_]{32}\.apps\.googleusercontent\.com\b"),
+
+    # Azure AD / Entra
+    ("AZURE_AD_CLIENT_SECRET",SEV_HIGH,    "azure",       r"(?i)(?:azure|entra)[_\-]?(?:client|app)[_\-]?secret['\"\s:=]+([A-Za-z0-9_~.\-]{34,40})"),
+
+    # Facebook OAuth
+    ("FACEBOOK_ACCESS_TOKEN",SEV_HIGH,     "oauth",       r"\bEAA[A-Za-z0-9]{90,}\b"),
+
+    # Package registries (v2.2)
+    ("RUBYGEMS_API_KEY",     SEV_HIGH,     "package_registry", r"\brubygems_[a-f0-9]{48}\b"),
+
+    # JFrog / Artifactory
+    ("JFROG_API_KEY",        SEV_HIGH,     "infra_api",   r"\bAKCp[A-Za-z0-9]{50,70}\b"),
+
+    # Okta
+    ("OKTA_SSWS_TOKEN",      SEV_CRITICAL, "identity",    r"\bSSWS\s+[0-9a-zA-Z_\-]{40}\b"),
+    ("OKTA_API_TOKEN",       SEV_HIGH,     "identity",    r"(?i)okta(.{0,20})?(api)?[_\-]?token['\"\s:=]+([0-9a-zA-Z_\-]{40})"),
+
+    # Slack app-level (Socket Mode)
+    ("SLACK_APP_LEVEL_TOKEN",SEV_HIGH,     "slack",       r"\bxapp-1-[A-Za-z0-9\-]{20,}\b"),
+
+    # Dropbox
+    ("DROPBOX_SHORT_LIVED",  SEV_MEDIUM,   "oauth",       r"\bsl\.[A-Za-z0-9_\-]{130,140}\b"),
+
+    # Secrets managers — Doppler / HashiCorp Vault
+    ("DOPPLER_TOKEN",        SEV_CRITICAL, "secrets_mgmt", r"\bdp\.pt\.[A-Za-z0-9]{40,44}\b"),
+    ("VAULT_TOKEN",          SEV_CRITICAL, "secrets_mgmt", r"\bhvs\.[A-Za-z0-9_\-]{90,100}\b"),
+
+    # Firebase Cloud Messaging legacy server key (mobile-recon relevant, §21.1)
+    ("FCM_SERVER_KEY",       SEV_HIGH,     "firebase",    r"\bAAAA[A-Za-z0-9_\-]{7}:[A-Za-z0-9_\-]{140,}\b"),
 ]
 
 COMPILED = [(n, s, c, re.compile(p)) for (n, s, c, p) in PATTERNS]

@@ -1,7 +1,7 @@
 ---
 name: osint-methodology
-description: "Comprehensive OSINT methodology for external red-team operations and authorized attack-surface assessments. Covers the 5-stage recon pipeline, asset-graph discipline, severity rubric, confidence upgrade workflows, time budgeting, identity-fabric mapping, breach×identity correlation, detectability tagging, detection-aware probing, WAF/CDN bypass, vulnerability prioritization, phishing infrastructure planning, bug bounty submission, and client deliverable templates. Use when planning or executing reconnaissance against authorized targets, mapping an organization's external attack surface, investigating a person/entity, or producing client deliverables."
-version: 2.2
+description: "Comprehensive OSINT methodology for external red-team operations and authorized attack-surface assessments. Covers the 6-stage recon pipeline (seed → asset expansion → enrichment → exposure analysis → convergence → operator-armed active validation) with connector-resilience and stage-vs-gating discipline, asset-graph discipline, severity rubric, confidence upgrade workflows, time budgeting, identity-fabric mapping, breach×identity correlation with per-person identity dossiers, detectability tagging, detection-aware probing, WAF/CDN bypass, vulnerability prioritization, phishing infrastructure planning, bug bounty submission, and client deliverable templates. Use when planning or executing reconnaissance against authorized targets, mapping an organization's external attack surface, investigating a person/entity, or producing client deliverables."
+version: 2.3
 triggers:
   - external recon
   - external red team
@@ -201,15 +201,17 @@ When you find a credential in the wild, confirm liveness with **read-only valida
 
 ## 7. External Red-Team Recon Pipeline
 
-Five sequential stages; modules within a stage can run concurrently.
+Six sequential operational stages, then reporting as a post-stage; modules within a stage can run concurrently.
 
 | Stage | What you do |
 |---|---|
 | **1 — Seed Discovery** | WHOIS, ASN enum (HE BGP Toolkit, RIPEstat), DNS records (A/AAAA/MX/TXT/NS/SOA/CAA), CT history (crt.sh, Censys). |
-| **2 — Asset Expansion** | Subdomain enum (passive first → permutations → brute); cloud bucket permutation; typosquat generation; Wayback CDX; mobile app discovery; DNS walking; LinkedIn employee enum. |
-| **3 — Enrichment** | Port/service (Shodan InternetDB → naabu); TLS handshakes (cert chain, JARM, favicon mmh3); WAF/CDN inference; origin discovery; security headers; email harvest; email security audit; GitHub dorking; JS deep analysis; SSO/IdP fingerprinting; API discovery; secrets sweep (Postman, Stack Exchange); vendor product fingerprinting; container/CI-CD/cloud-native exposure; job posting harvest. |
-| **4 — Exposure Analysis** | Nuclei always-on checks; TLS deep audit; breach × identity correlation → SSO_EXPOSURE findings; targeted misconfig probes (`.git/config`, `.env`, `/actuator/env`, `/_cat/indices`, `/console`); vulnerability prioritization (CVE × EPSS × KEV × POC). |
-| **5 — Reporting** | Risk scoring per finding; asset graph export; client-facing report (exec summary + technical detail + remediation); reproduction package; bug bounty submission if applicable. |
+| **2 — Asset Expansion** | Subdomain enum (passive first → permutations → brute); cloud bucket permutation; typosquat generation; Wayback CDX; mobile app discovery; DNS walking; LinkedIn employee enum; org/subsidiary footprint (reverse-WHOIS, corporate registries). |
+| **3 — Enrichment** | First active web traffic + identity signal: port/service (Shodan InternetDB → naabu); TLS handshakes (cert chain, JARM, favicon mmh3); WAF/CDN inference; origin discovery; security headers; email harvest; email security audit; GitHub dorking; JS deep analysis; SSO/IdP fingerprinting (passive tier); API discovery (passive classifier); secrets sweep (Postman, Stack Exchange); vendor product fingerprinting; container/CI-CD/cloud-native exposure; job posting harvest. |
+| **4 — Exposure Analysis** | Bulk active probing: Nuclei always-on checks; TLS deep audit; breach × identity correlation → SSO_EXPOSURE findings; targeted misconfig probes (`.git/config`, `.env`, `/actuator/env`, `/_cat/indices`, `/console`); vulnerability prioritization (CVE × EPSS × KEV × POC). |
+| **5 — Convergence** | One bounded recursion round over hostnames/assets surfaced by Stages 2–4 (re-mutate, re-probe — not an open-ended crawl); cloud-footprint follow-up (e.g. account-ID extraction from a leaked cloud access key); supply-chain claimability check (internal/scoped package names confirmed unclaimed on the public registry). |
+| **6 — Active Validation** | Hard-gated, operator-armed, engagement-authorized proof tier — **default OFF**. Live credential submission (default-cred + breach-credential replay) against owned panels; active cloud/container/API/SSO confirmation; host-header injection / blind-SSRF; HTTP request-smuggling differential; injection-payload confirmation (e.g. XSS); JWT-forge auth-bypass differential. Every module here needs explicit arming plus a per-target scope-confirmation step on top of engagement authorization (§1). |
+| **Reporting** *(post-stage)* | Risk scoring per finding; asset graph export; client-facing report (exec summary + technical detail + remediation); reproduction package; bug bounty submission if applicable. |
 
 ### 7.1 Pipeline Priority Order (highest signal density first)
 
@@ -234,11 +236,37 @@ Five sequential stages; modules within a stage can run concurrently.
 | 2. Asset expansion | 1–2 h | 2–4 h | 4–8 h |
 | 3. Enrichment (per 100 alive webapps) | ~1 h | ~1 h | ~1 h |
 | 4. Exposure analysis | 1–3 h | 3–6 h | 6–12 h |
-| 5. Reporting | 2–4 h | 4–8 h | 1–2 days |
+| 5. Convergence | 15–30 min | 30–60 min | 1–2 h |
+| 6. Active validation *(if armed)* | 30 min–1 h | 1–2 h | 2–4 h |
+| Reporting | 2–4 h | 4–8 h | 1–2 days |
 
-**Profiles:** 1-hour rapid (Stages 1–2 passive + breach + exec summary) · 4-hour focused (adds email harvest, SSO fingerprinting, typosquats) · 1-day standard (full Stages 1–4 in priority order) · 1-week deep (all of standard + JS deep, mobile, cloud-native, vendor product, package registry) · ongoing weekly diff (re-run Stages 1–3, diff against baseline).
+**Profiles:** 1-hour rapid (Stages 1–2 passive + breach + exec summary) · 4-hour focused (adds email harvest, SSO fingerprinting, typosquats) · 1-day standard (full Stages 1–5 in priority order) · 1-week deep (all of standard + JS deep, mobile, cloud-native, vendor product, package registry; Stage 6 only under explicit written engagement authorization) · ongoing weekly diff (re-run Stages 1–3, diff against baseline).
 
-**Abort conditions:** scope mismatch after Stage 1; near-zero attack surface after Stage 2; WAF/detection signs hit during any stage (§6.4).
+**Abort conditions:** scope mismatch after Stage 1; near-zero attack surface after Stage 2 — meaning the *union* of every connector in a category came up empty, not just one source (§7.3); WAF/detection signs hit during any stage (§6.4).
+
+### 7.3 Connector Resilience
+
+No single data source should gate a whole category. Query interchangeable backends per category as a **union**, not a single call — CT logs (crt.sh, Censys, certspotter), passive DNS (multiple providers), host-intel (Shodan, Censys, Netlas), reverse-WHOIS (multiple vendors) — with per-source health tracking and short-TTL result caching underneath the union.
+
+- A rate-limited or dead source degrades that category's yield; it must never silently zero it out.
+- Log the failure as a per-source health event, not as "category empty." The Stage-2 abort decision (§7.2) reads the union result, never one source's status.
+- Cache each source's results with a TTL short enough to stay fresh but long enough to survive that source's rate-limit window — a re-run mid-engagement shouldn't re-spend a quota you already burned.
+
+This generalizes the crt.sh-style fallback discipline to every category, not just certificates: one dead API is a coverage-degradation event to note and route around, not a hole in the map.
+
+### 7.4 Stage Number ≠ Safe-by-Default
+
+A module's stage number tells you *when* it runs, not *whether it's passive*. Always check the module's own gating flag before treating a stage placement as a detectability tier.
+
+| Technique | Stage | What actually gates it |
+|---|---|---|
+| IDOR/BOLA differential confirm | 3 (enrichment) | its own `--active`/`--deep` flag — not the stage boundary |
+| Active user-enumeration oracle (IdP) | 3 (enrichment) | its own `--deep` flag |
+| Bounded 401/403 bypass / param mining | 4 (exposure) | rate-limited by default; ships un-gated at this stage |
+| Credential replay / default-cred submission | 6 (active validation) | explicit arming + scope confirmation |
+| JWT-forge auth-bypass differential | 6 (active validation) | explicit arming + a second confirmation flag |
+
+Stage 6 is the one place the pipeline is explicitly all-intrusive-by-design (default OFF, operator-armed) — but stages 1–5 are only *mostly* passive-to-low-intrusion, and "mostly" hides real exceptions like the two Stage-3 rows above. Detectability is tagged per-technique (§6.2), never inferred from the pipeline stage a technique happens to sit at.
 
 ---
 
@@ -352,6 +380,34 @@ Highest-ROI single technique for external red teams. Run on every engagement.
 
 **Stealer log discipline:** encrypt at rest; SHA-256 every artifact; never paste plaintext passwords into cloud LLMs; maintain chain of custody; redact passwords in client reports by default (offer encrypted credential bundle separately).
 
+### 12.1 Per-Person Identity Dossier
+
+Domain-level breach counts (above) tell you the org is exposed. The **identity dossier** tells you *who* — join every discovered PERSON (name, role, seniority, target score from person-enum/LinkedIn dorking) to any leaked CREDENTIAL matched by email, producing one ranked card per human. This is the step that turns a breach headcount into a spear-phish / credential-stuffing target list.
+
+**The join key is the email address, not the name.** A PERSON asset is name-keyed and usually carries no email on its own — resolve name→email via the org's *confirmed* email-format pattern (Hunter-derived or independently observed) before joining. Never join off a guessed pattern from a single sample.
+
+| Field | Source |
+|---|---|
+| Role / seniority / target score | person-enum / LinkedIn dorking |
+| Email — `known` (directly observed) or `pattern` (name run through the org's confirmed format) | email OSINT / org email-format pattern |
+| Every credential tied to that email | breach dumps, stealer logs, GitHub/JS basic-auth leaks, breach-replay hits |
+| Risk tier | derived, see below |
+
+**Risk tiering:** a breached high-value mailbox (exec/IT/admin, target score ≥80) with ≥1 confirmed credential is the worst case.
+
+| Target score | Credential(s) leaked | Risk |
+|---|---|---|
+| ≥80 (exec/IT/admin) | ≥1 | **CRITICAL** |
+| any | ≥1 | **HIGH** |
+| ≥80 | 0 | **MEDIUM** |
+| <80 | 0 | **LOW** |
+
+**Orphan credentials:** a leaked email that ties to no discovered person is still a lead, not a dead end — surface it separately, sorted by breach count. It just hasn't been named yet; a further person-enum pass may resolve it.
+
+**Confidence:** the join is only as strong as the email resolution. `known` email carries the credential's own confidence (§2); a `pattern`-resolved email stays TENTATIVE for attribution purposes until the address itself is independently observed (e.g. it appears verbatim in the breach record, or Hunter.io returns it directly) — never report a pattern-resolved dossier as CONFIRMED off the pattern alone.
+
+Run this pass any time Stage 3 person-enum/email-OSINT output and a breach lookup (domain-level or replay) both exist for the engagement — it is a join over data already collected, not new collection, so there's no reason to skip it. Use the output to decide who gets the phishing pretext first (§13) and who's the highest-value candidate for the read-only credential check (§6.3).
+
 ---
 
 ## 13. Specialty OSINT Domains
@@ -437,18 +493,22 @@ Drop these into a fresh session to verify the skill loads correctly.
 3. *"50 subdomains, 12 webapps, 23 emails — triage order?"* → §8.2 + §7.1.
 4. *"Found live AWS key in GitHub repo. Should I validate it?"* → §6.3.
 5. *"Probes getting 429s and Cloudflare interstitial. What now?"* → §6.4.
-6. *"200 emails harvested, org uses Entra. Highest-ROI next step?"* → §12.
+6. *"200 emails harvested, org uses Entra. Highest-ROI next step?"* → §12, §12.1.
 7. *"Target fully behind Cloudflare. How to find the origin?"* → §11 (WAF/CDN pointer) + companion skill §16.15.
 8. *"100 CVEs from a Nuclei scan. Prioritize."* → §11 (vuln prioritization pointer) + companion skill §29.2.
 9. *"Authorized engagement asks for phishing-feasibility shortlist."* → §11 (phishing pointer).
 10. *"Found unauth POST endpoint on HackerOne target. Write the report."* → §15.
 11. *"Write exec summary for 2 CRIT, 5 HIGH, 12 MED."* → §16.
 12. *"Run full subdomain enum on chase.com."* → §1 (scope check; should NOT run).
+13. *"crt.sh is 429ing mid-engagement — is the subdomain list complete?"* → §7.3.
+14. *"A module runs at Stage 3. Safe to assume it's passive?"* → §7.4.
+15. *"We have breach hits and a LinkedIn employee list — who do we prioritize?"* → §12.1.
 
 ---
 
 ## 18. Changelog
 
+- **v2.3 (2026-08-06)** — §7 upgraded from the 5-stage model to the battle-tested 6-stage model (Seed → Asset Expansion → Enrichment → Exposure Analysis → **Convergence** [bounded recursion + cloud-footprint + supply-chain] → **Active Validation** [hard-gated, operator-armed, default OFF]), with Reporting reframed as a post-stage; added §7.3 Connector Resilience (union-query interchangeable backends per data category, per-source health tracking, so one dead/rate-limited source never zeroes a category) and §7.4 Stage Number ≠ Safe-by-Default (a module's stage doesn't tell you if it's passive — always check its own gating flag; detectability is per-technique). Added §12.1 Per-Person Identity Dossier — joins discovered PERSON role/seniority to leaked CREDENTIAL by email into a ranked spear-phish/credential-stuffing target list, with risk tiering and orphan-credential handling. Added 3 self-test prompts (§17.13–15).
 - **v2.2 (2026-04-29)** — refactor: trimmed from 1,694 to ~480 lines. Compressed implementation-detail sections (§11–§15, §27–§31 original) to pointers to `offensive-osint`. Retained full framework core: confidence levels, pipeline, asset graph, severity rubric, OpSec, breach correlation, anti-patterns, deliverable templates. Removed duplicate content; combined specialty domains into single §13; merged §23–§25 into §13; collapsed §27–§29 into §11 pointer block.
 - **v2.1 (2026-04-27)** — comprehensive expansion based on 32-prompt smoke-test gap analysis. PASS rate: 31/32.
 - **v2.0 (2026-04-27)** — major rewrite for external red-team posture.
