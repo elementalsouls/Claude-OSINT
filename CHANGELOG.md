@@ -9,6 +9,38 @@ and the project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added — six organization-grade depth skills
+
+Lifts the project from a 2-skill recon pair to an **8-skill** organization-grade attack-surface library. Each new skill is `version: 1.0`, passive/read-only, ships its own `README.md` + in-skill Self-Test, and is grounded in a production ASM implementation. They deepen (never duplicate) the core `osint-methodology` / `offensive-osint` pair.
+
+- **`org-attack-surface` (1,052 lines)** — legal entity → owned footprint. GLEIF corporate org-tree keyed on the exact LEI (never name re-resolution), EDGAR / OpenCorporates / Wikidata entity resolution, reverse-WHOIS, crt.sh `?O=` org-cert pivot, org-first RIR ("dark netblock") recall via ARIN Whois-RWS + RIPE DB, ASN hyperscaler-scope guard, independent-evidence confidence combiner. Discover-only — never auto-scans.
+- **`email-domain-security` (589 lines)** — composite header-From spoofability verdict via a priority-ordered decision tree (envelope vs header-From; SPF `-all` alone ≠ spoof-proof, only DMARC governs the header-From) + SPF supply-chain analysis (RFC 7208 §4.6.4 >10-lookup PermError, dead-include takeover, 2-void-lookup cap) + runnable stdlib SPF lookup counter.
+- **`exposure-risk-quantification` (748 lines)** — FAIR risk quantification: three-factor Exposure/Threat/Impact model → 0–100 + A–F score, $-denominated loss model (IBM/Ponemon per-record bands, max-across-sources dedup, Threat-factor annualization), board one-pager with tri-state honest hero, ownership/proof demotion cap.
+- **`continuous-exposure-monitoring` (811 lines)** — baseline → re-scan → diff → threshold-gated alert loop, CTI / adversary-chatter monitoring (ransomwatch, ransomware.live, paste + forum sources), finding-lifecycle false-positive discipline, durable alert outbox (queued ≠ delivered, backoff / dead-letter).
+- **`cloud-saas-exposure` (802 lines)** — storage-bucket discovery with the ownership-gated severity model, fully offline AWS account-ID recovery from a leaked AKIA/ASIA/AROA key (base32 decode, test vector `ASIAY34FZKBOKMUTVV7A → 609629065308`), dependency-confusion confirmation (internal-signal classifier + public-registry 404 / npm-scope claimability), passive cloud-native / K8s / CI control-plane fingerprinting.
+- **`identity-provider-recon` (968 lines)** — domain→tenant resolution + keyless federation mapping, the pre-auth user-enumeration oracle (GetCredentialType `IfExistsResult`, Okta `/api/v1/authn`) with a hard 20-candidate/tenant cap, name×pattern login-candidate synthesis that fails closed without a confirmed org pattern, and a dedicated hard-boundary section (enumeration only — never password spray / credential submission / auth bypass).
+
+### `offensive-osint` — feat: secret catalog 48 → 80 + APK static analysis (v2.2)
+
+- §17 secret-pattern catalog expanded 48 → **80 patterns** (#49–80): a Postman PMAK detector plus 31 well-known distinctive-prefix / context-anchored provider token formats (GitLab, Square, Shopify, Mailchimp, PagerDuty, Asana, Databricks, Grafana, Terraform Cloud, Fastly, Algolia, Segment, Airtable, GCP / Google OAuth, Azure/Entra, Facebook, RubyGems, JFrog, Okta, Slack app-level, Dropbox, Doppler, HashiCorp Vault, Firebase FCM legacy). Every entry is a distinctive-prefix regex or context-anchored like the §17 #35 Cloudflare pattern, so no bare generic token FP-floods.
+- Three-way parity (§17 table ↔ `scripts/secret_scan.py` `PATTERNS` ↔ §48 embedded block) held **byte-identical at 80**; verified compile / `--help` / detect / no-FP.
+- Added **§21.1 APK Static Analysis Pipeline** — acquisition, apktool/aapt2/jadx + androguard no-toolchain path, AndroidManifest misconfig parsing (exported components, debuggable/allowBackup, cleartext traffic), deep-link / intent-filter extraction, Firebase/GCP config extraction, embedded-secret scan over decompiled text reusing §17/§48, Network Security Config review. Passive static analysis only.
+- Added trigger phrases + smoke-test prompts #41–#42.
+
+### `osint-methodology` — feat: 6-stage pipeline + identity dossier (v2.3)
+
+- §7 recon pipeline rewritten 5 → **6 stages** (seed → asset expansion → enrichment → exposure analysis → convergence → operator-armed active validation; reporting as a post-stage) + **§7.3** connector resilience + **§7.4** "stage number ≠ safe-by-default".
+- Added **§12.1 Per-Person Identity Dossier** — PERSON × CREDENTIAL join by email → one ranked spear-phish / credential-stuffing card per human, with fail-closed pattern-resolution confidence (a `pattern`-resolved email stays TENTATIVE until independently observed).
+
+### Changed — genericized private product references
+
+- Decoupled the public skill-pack from the proprietary ASM tool it was grounded in: product name → "the reference implementation" / "a production ASM platform"; tool CLI recipes → `asm-cli` placeholder; internal module paths → bare `modules/` / `core/` / `reporting/`. Prose + comments only; **no behavior or detection-logic change** (§17 ↔ script ↔ §48 parity re-verified).
+
+### Docs & tests
+
+- Smoke-test suite expanded to **56 prompts** (Tier 4 org-grade prompts 34–48 + hard-boundary refusals B4–B8); full fresh-session run graded **56/56 PASS** (100%, zero fabricated endpoints/regexes/sections; all six hard-boundary prompts refused with real section cites). Refreshed 9 expected-behavior cells left stale by the methodology v2.3 renumber.
+- Main `README.md` + `skills/osint-methodology/README.md` updated for the 8-skill library (structure tree, Skill Index "Organization-Grade Depth" domain, capability-map + engagement-flow diagrams, install-all-8, self-eval 56/56).
+
 ### `offensive-osint` — feat: HackerOne hacktivity reference agent (§29.3)
 
 - Added `skills/offensive-osint/scripts/h1_reference.py` — stdlib-only Python script (no API key required) that queries HackerOne's public GraphQL API for disclosed reports, surfacing community-validated findings during recon.
