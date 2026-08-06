@@ -3232,6 +3232,7 @@ while IFS= read -r CVE; do
   KEV_FLAG=$([ -n "$KEV" ] && echo "KEV" || echo "")
   echo "$CVE | EPSS:$EPSS | $KEV_FLAG"
 done < cves.txt | sort -t: -k2 -nr
+```
 
 ### 29.3 HackerOne Disclosed Reports Reference
 

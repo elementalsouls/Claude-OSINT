@@ -30,7 +30,7 @@ Full trigger list in the SKILL.md frontmatter.
 
 ## What's in it
 
-See the parent [README's "What's in the box" table](../../README.md#whats-in-the-box) for the full §-by-§ breakdown.
+See the parent [README's Skill Index](../../README.md#skill-index) for the full §-by-§ breakdown.
 
 Highlights:
 
