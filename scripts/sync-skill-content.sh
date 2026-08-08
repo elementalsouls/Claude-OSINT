@@ -22,6 +22,7 @@ SKILLS=(
 
 FORCE=false
 CHECK_ONLY=false
+CHECK_FAILED=false
 
 for arg in "$@"; do
   case "$arg" in
@@ -59,9 +60,11 @@ for skill in "${SKILLS[@]}"; do
         echo "  ✓  $skill: in sync"
       else
         echo "  ✗  $skill: DRIFT (run without --check to update)"
+        CHECK_FAILED=true
       fi
     else
       echo "  ✗  $skill: destination missing (run without --check to populate)"
+      CHECK_FAILED=true
     fi
     continue
   fi
@@ -82,6 +85,10 @@ for skill in "${SKILLS[@]}"; do
   BYTES=$(wc -c < "$DST")
   echo "  ✓  $skill: $LINES lines, $BYTES bytes installed at $DST"
 done
+
+if [ "$CHECK_ONLY" = true ] && [ "$CHECK_FAILED" = true ]; then
+  exit 1
+fi
 
 if [ "$CHECK_ONLY" = false ]; then
   echo
