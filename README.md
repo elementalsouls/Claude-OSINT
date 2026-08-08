@@ -420,6 +420,8 @@ This project is dual-licensed:
 - **Code** (Python helpers, shell scripts) — [MIT](LICENSE).
 - **Content** (skill methodology, wordlists, regex catalogs, severity rubrics, docs) — [Creative Commons Attribution 4.0 International](LICENSE-CONTENT) (CC BY 4.0).
 
+To be precise about the boundary: **`*.py`, `*.sh`, and other source files are MIT; `*.md` documentation, wordlists, regex catalogs, and rubrics are CC BY 4.0.**
+
 Reuse the content freely — including commercially — as long as you credit **Sachin Sharma / Claude-OSINT** and link back to this repository.
 
 ---
