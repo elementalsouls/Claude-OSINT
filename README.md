@@ -413,7 +413,14 @@ Operational tradecraft accumulated across external attack-surface engagements, c
 · [SecLists](https://github.com/danielmiessler/SecLists) 
 · [Assetnote Wordlists](https://wordlists.assetnote.io/)
 
-**License:** [MIT](LICENSE) — use freely, attribution appreciated.
+## License
+
+This project is dual-licensed:
+
+- **Code** (Python helpers, shell scripts) — [MIT](LICENSE).
+- **Content** (skill methodology, wordlists, regex catalogs, severity rubrics, docs) — [Creative Commons Attribution 4.0 International](LICENSE-CONTENT) (CC BY 4.0).
+
+Reuse the content freely — including commercially — as long as you credit **Sachin Sharma / Claude-OSINT** and link back to this repository.
 
 ---
 
