@@ -4,7 +4,7 @@
 
 > **8 Claude skills** · 100+ recon capabilities · 80 secret-regex patterns · 80+ dorks · 9 read-only credential validators · 27 attack-path templates · ~10,000 lines of structured tradecraft. Drop-in `SKILL.md` files that turn Claude into a god-mode external recon operator for authorized red-team and bug-bounty engagements.
 
-Built by **[ElementalSoul](https://github.com/elementalsouls)** — GenAI Security Research.
+Built by **[Sachin Sharma](https://www.linkedin.com/in/sachinsharma8080/)** — GenAI Security Research.
 
 <p align="center">
   <sub>SPONSORED BY</sub>
