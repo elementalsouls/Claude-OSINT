@@ -9,6 +9,10 @@ and the project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- `osint-autopilot/scripts/recon_pipeline.sh` — reject domain arguments containing anything other than letters, digits, `.`, or `-` before building the engagement path, closing a directory-traversal hole (a `../`-laden argument could write evidence outside `~/Research/engagements/`).
+
 ### Added — six organization-grade depth skills
 
 Lifts the project from a 2-skill recon pair to an **8-skill** organization-grade attack-surface library. Each new skill is `version: 1.0`, passive/read-only, ships its own `README.md` + in-skill Self-Test, and is grounded in a production ASM implementation. They deepen (never duplicate) the core `osint-methodology` / `offensive-osint` pair.
