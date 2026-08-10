@@ -45,6 +45,7 @@ Optional screenshots: `gowitness scan file -f <urls> --screenshot-path evidence/
 Re-curl every CONFIRMED-worthy claim before reporting it: exposed secrets (fetch the JS/vars file), `/version` disclosures, Cognito/Auth0 config, any "unauth admin 200". Downgrade anything you can't reproduce.
 
 ### 4. Auto-findings + workbook
+`build_xlsx.py` requires the `openpyxl` pip package (`pip install -r $S/requirements.txt` if missing).
 ```
 python3 $S/findings_gen.py <domain>     # evidence -> findings/findings.csv (rules engine)
 python3 $S/build_xlsx.py  <domain>      # findings.csv + evidence -> <domain>-osint-consolidated.xlsx
