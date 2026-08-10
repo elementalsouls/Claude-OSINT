@@ -139,11 +139,13 @@ triggers:
 ## 0. When to use / When NOT
 
 **Use this skill when:**
+
 - You need concrete probe paths, wordlists, regexes, payloads, scoring rules, or tool URLs.
 - You're executing reconnaissance and need the actual technical reference (vs. methodology).
 - You're building a recon automation and need specific lists to seed it.
 
 **Do NOT use this skill when:**
+
 - The user is asking for active exploitation, post-exploitation, or anything past reconnaissance.
 - The user is asking for defensive / blue-team detections.
 - The target's authorization isn't established — see §1.
@@ -282,14 +284,17 @@ Six parallel sources, dedup at the end:
 6. **Wayback CDX** — historic snapshots of the target's homepage / contact / about pages often contain emails removed from the live site.
 
 **Email regex:**
+
 ```regex
 \b[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}\b
 ```
 
 **Noise filter (reject numeric-only locals):**
+
 ```regex
 ^[0-9]+$
 ```
+
 (Discards garbage like `12345@example.com` from random tokens.)
 
 ---
@@ -364,6 +369,7 @@ curl -sk -m 30 "https://cavalier.hudsonrock.com/api/json/v2/osint-tools/search-b
 ```
 
 PowerShell:
+
 ```powershell
 $hr = Invoke-RestMethod -Uri "https://cavalier.hudsonrock.com/api/json/v2/osint-tools/search-by-domain?domain=$D" -TimeoutSec 30
 "Employees: $($hr.employees) | Users: $($hr.users) | Third-party: $($hr.third_parties) | Total: $($hr.total)"
@@ -372,6 +378,7 @@ $hr.data.clients_urls   | Sort-Object -Property occurrence -Descending | Select-
 ```
 
 **Top-level JSON fields:**
+
 - `total` — total stealer entries touching this domain.
 - `totalStealers` — global stealer-log corpus size (context only).
 - `employees` — count of `<*>@<domain>` accounts found.
@@ -383,6 +390,7 @@ $hr.data.clients_urls   | Sort-Object -Property occurrence -Descending | Select-
 - `data.dates_compromised[]` — `{_key, _value}` → temporal distribution.
 
 **Free-tier caveats (CRITICAL to know):**
+
 - Subdomain hostnames in `data.*_urls[]` past the first few are **redacted with asterisks** (`*****.target.com`). Pivot to paid Cavalier tier or other sources for unredacted.
 - Free endpoint returns counts + sample URLs only. Cleartext passwords + emails are **never** in the free response.
 - Rate limit ~1 req/sec/IP; 429 on burst. Sleep 1s between calls.
@@ -412,6 +420,7 @@ When a discovered SSO tenant (Entra GUID / Okta slug / Google Workspace domain) 
 If `mail.<domain>` / `webmail.<domain>` returns **NXDOMAIN today** but HudsonRock/HIBP corpus still has historical employee credentials against it AND `autodiscover.<domain>` resolves to Microsoft IPs (M365) or `aspmx.l.google.com` MX (Workspace), the org migrated from on-prem to cloud — and the stolen passwords almost certainly survived the migration via password reuse. **Escalate to CRITICAL `SSO_EXPOSURE`** even when the legacy host is dead.
 
 Concrete triggers (all three together):
+
 1. `Resolve-DnsName mail.<domain> -Type A` → NXDOMAIN (legacy gone)
 2. HudsonRock corpus has employee URLs against the *old* host (e.g. `mail.<domain>/names.nsf` for Lotus Domino, `mail.<domain>/owa/` for Exchange, `mail.<domain>/iwaredir.nsf` for iNotes, `mail.<domain>/zimbra/` for Zimbra)
 3. Current MX → M365 / Google Workspace / Zoho cloud (DNS confirms migration)
@@ -459,6 +468,7 @@ api/documentation
 ```
 
 **Severity:**
+
 - Reachable Swagger/OpenAPI spec without auth → **HIGH** `LEAKY_API_SPEC` (full endpoint enumeration leaks; often reveals undocumented internal APIs).
 - Behind auth but accessible to any authenticated user → MEDIUM (still discloses internal API surface).
 
@@ -481,6 +491,7 @@ api/v1/graphql
 ```
 
 **Standard introspection POST body:**
+
 ```json
 {
   "operationName": "IntrospectionQuery",
@@ -489,11 +500,13 @@ api/v1/graphql
 ```
 
 **Severity:**
+
 - Introspection returns schema without auth → **HIGH** `OPEN_GRAPHQL_API`.
 - Field-suggestion enumeration possible (server returns "did you mean" for typo'd field names) → **MEDIUM** (re-derive partial schema even when introspection is disabled).
 - `/graphql` accepts batched queries (`[...]` request body) → MEDIUM (rate-limit bypass surface; auth bypass via mixed batches).
 
 UI markers (lower severity but still discoverable):
+
 - HTML response contains `graphiql`, `playground`, `apollo studio`, `altair` → GraphiQL UI exposed (often shipped accidentally on prod).
 
 ### 16.3 High-risk ports — 35 services
@@ -601,6 +614,7 @@ Reachable SAML metadata XML reveals: `EntityID`, signing certs (often pinned →
 ### 16.7 SSO subdomain prefixes — 8 prefixes
 
 Probe each against root domain + every sibling brand domain:
+
 ```
 auth.{domain}
 login.{domain}
@@ -617,6 +631,7 @@ Plus probe `/.well-known/openid-configuration` on every alive subdomain (regardl
 ### 16.8 Cloud bucket permutation arsenal
 
 **6 prefixes:**
+
 ```
 ""           # bare candidate
 backup-
@@ -627,6 +642,7 @@ prod-
 ```
 
 **15 suffixes:**
+
 ```
 ""           # bare candidate
 -backup
@@ -646,6 +662,7 @@ prod-
 ```
 
 **47 generic stems** (filter unless combined with target-identifying token):
+
 ```
 www, mail, email, app, apps, web, webmail, ftp, cdn, static, assets, media, img, images,
 videos, download, downloads, upload, uploads, data, files, docs, support, help, kb,
@@ -656,6 +673,7 @@ mx, smtp, imap, pop, dns, ns, ns1, ns2, mx1, mx2
 **Provider URL templates:**
 
 S3:
+
 ```
 https://{candidate}.s3.amazonaws.com/
 https://{candidate}.s3-{region}.amazonaws.com/      # try us-east-1, us-west-2, eu-west-1, ap-southeast-1 first
@@ -663,12 +681,14 @@ https://s3.{region}.amazonaws.com/{candidate}/
 ```
 
 GCS:
+
 ```
 https://{candidate}.storage.googleapis.com/
 https://storage.googleapis.com/{candidate}/
 ```
 
 Azure Blob:
+
 ```
 https://{candidate}.blob.core.windows.net/
 ```
@@ -701,17 +721,21 @@ For every found JS, also try `<jsfile>.map` for sourcemap leaks (HIGH `INFO_DISC
 Three tiers, run in order on every JS body + every sourcesContent[] blob:
 
 **Tier 1 — generic quoted paths:**
+
 ```regex
 ['"`](/[A-Za-z0-9_\-./{}\[\]?=&%:]+)['"`]
 ```
+
 Match group: the path. High recall, lots of false positives — apply allowlist downstream.
 
 **Tier 2 — API-ish paths (biased filter on tier 1):**
+
 ```regex
 ['"`](/(?:api|graphql|gql|v\d+|swagger|openapi|rest|services|internal|admin|auth|oauth|user|users|account|accounts|search|export|upload|file|files|download|webhook|hooks|callback|admin)/[A-Za-z0-9_\-./{}\[\]?=&%:]+)['"`]
 ```
 
 **Tier 3 — fully-qualified URLs:**
+
 ```regex
 \bhttps?://[A-Za-z0-9.\-]+\.[A-Za-z]{2,}(?::\d+)?[/A-Za-z0-9_\-./{}\[\]?=&%:#]*
 ```
@@ -723,16 +747,19 @@ Dedup on `(method, normalized-path-template)` where the template replaces `/123/
 Run on every JS body + sourcesContent + APK strings + manifest:
 
 **RFC1918:**
+
 ```regex
 \b(?:10\.(?:\d{1,3}\.){2}\d{1,3}|172\.(?:1[6-9]|2\d|3[01])\.(?:\d{1,3})\.(?:\d{1,3})|192\.168\.(?:\d{1,3})\.(?:\d{1,3})|127\.(?:\d{1,3}\.){2}\d{1,3})\b
 ```
 
 **Internal DNS suffixes:**
+
 ```regex
 \b[A-Za-z0-9][A-Za-z0-9\-]{0,62}\.(?:internal|corp|lan|intranet|local|prod|staging|dev|qa|test)\b
 ```
 
 **Kubernetes service DNS:**
+
 ```regex
 \b[A-Za-z0-9\-]+\.[A-Za-z0-9\-]+\.svc(?:\.cluster\.local)?\b
 ```
@@ -965,6 +992,7 @@ dig +short TXT "$D" | grep -i 'v=spf1'
 ```
 
 **Common SPF parsing checklist:**
+
 - Ends in `-all` (hardfail) → strict; major providers reject spoofs.
 - Ends in `~all` (softfail) → spam folder for spoofs.
 - Ends in `?all` or no `all` → permissive; spoofs likely deliver.
@@ -991,6 +1019,7 @@ dig +short TXT "_dmarc.${D}"
 ```
 
 Parse for:
+
 - `p=` → primary policy (`none`, `quarantine`, `reject`).
 - `sp=` → subdomain policy (defaults to `p=`).
 - `aspf=` / `adkim=` → alignment mode (`r`=relaxed, `s`=strict).
@@ -998,6 +1027,7 @@ Parse for:
 - `rua=` / `ruf=` → reporting addresses (often reveals SaaS DMARC vendors: dmarcian, valimail, Agari, easydmarc).
 
 **Severity:**
+
 - `p=none` → spoof-feasible, downgrade trust → MEDIUM finding.
 - `p=quarantine pct<100` → partial enforcement → LOW.
 - `p=reject` + `aspf=s` + `adkim=s` → well-postured → no finding.
@@ -1005,6 +1035,7 @@ Parse for:
 **DKIM key discovery:**
 
 DKIM selectors aren't well-known; common patterns:
+
 ```bash
 for selector in default google selector1 selector2 mail email k1 dkim s1 s2 mta1 mta2 \
                 amazonses 20240101 20230101 mailchimp sendgrid mxvault; do
@@ -1033,6 +1064,7 @@ curl -sk -m 10 "https://mta-sts.${D}/.well-known/mta-sts.txt"
 If neither responds → MX-server TLS not enforced; MITM-able. LOW finding. If `mode=enforce` present and policy file matches → well-postured.
 
 **TLS-RPT (TLS Reporting):**
+
 ```bash
 dig +short TXT "_smtp._tls.${D}"
 ```
@@ -1105,9 +1137,11 @@ foreach ($s in @("default","google","selector1","selector2","mail","email","k1",
 If the target is behind Cloudflare/Akamai/Fastly/CloudFront, their CDN IPs are well-defined. Find IPs **not** in those ranges that serve the same site = origin.
 
 **Cloudflare IPv4 ranges:**
+
 ```
 https://www.cloudflare.com/ips-v4
 ```
+
 **Akamai ASNs:** AS16625, AS20940, AS21342, AS21357.
 **Fastly:** AS54113.
 **AWS CloudFront:** published in `https://ip-ranges.amazonaws.com/ip-ranges.json` filter `service:CLOUDFRONT`.
@@ -1121,6 +1155,7 @@ curl -sk -H "APIKEY: ..." \
 ```
 
 Free alternatives:
+
 ```bash
 # Validin
 curl -sk "https://app.validin.com/api/axon/${D}/dns" | jq .
@@ -1139,6 +1174,7 @@ censys search "services.tls.certificates.leaf_data.subject.common_name:${D} AND 
 ```
 
 Or via crt.sh + manual IP check:
+
 ```bash
 curl -sk "https://crt.sh/?q=%25.${D}&output=json" | jq -r '.[].name_value' | sort -u
 ```
@@ -1202,6 +1238,7 @@ Send mail to `<random>@${D}` from a sock-puppet account. The bounce often includ
 **Origin via misconfigured CDN error pages:**
 
 Some CDN 5xx error pages historically leaked upstream details. Trigger errors and inspect:
+
 ```bash
 # Trigger CDN-side 5xx (oversized request, malformed Host)
 curl -sk -m 10 -H "Host: " "https://target.example/" -o /tmp/err.html
@@ -1289,6 +1326,7 @@ Modern apps deploy on serverless / managed services. Fingerprint the platform fr
 | **DigitalOcean App Platform** | `*.ondigitalocean.app` | Static + container. |
 
 **For each pattern:**
+
 - Confirm public vs auth-required (HEAD / GET).
 - Check CORS posture.
 - For Lambda Function URLs / Cloud Run / Cloud Functions: check whether IAM auth is enforced (anonymous invocation = HIGH finding).
@@ -1324,6 +1362,7 @@ Increasingly common; often forgotten when behind a NAT.
 | Google Container Registry (public) | `https://console.cloud.google.com/gcr/images/<project>?project=<project>` |
 
 **Per-image scan workflow:**
+
 1. `docker pull <registry>/<image>:<tag>` (or `skopeo inspect`).
 2. `docker save <image> -o /tmp/img.tar`.
 3. Extract layers; scan with secret catalog (§17).
@@ -1393,6 +1432,7 @@ Public-share features on collaboration platforms regularly leak.
 | **Wrike** | `app.wrike.com/external/<id>` | External-shared spaces. |
 
 **Dork-driven discovery:**
+
 ```
 site:notion.site "{target}"
 site:notion.so "{target}"
@@ -1426,6 +1466,7 @@ curl -sk "https://www.iana.org/rdap" | jq .   # bootstrap registry
 ```
 
 What to extract from WHOIS / RDAP:
+
 - Registrant: name, org, email, phone, address (often redacted post-GDPR but not always for non-EU registrants).
 - Registrar: enables registrar-account pivot for related domains.
 - Created / updated / expiry dates: pattern of bulk registrations = same registrant.
@@ -1448,6 +1489,7 @@ Pre-GDPR records often have unredacted contact info. Sources:
 **Reverse-WHOIS pivots:**
 
 If you have a registrant email, search "every domain registered by this email":
+
 ```bash
 # DomainTools (paid)
 curl -sk -H "X-API-Username: ..." -H "X-API-Key: ..." \
@@ -1525,15 +1567,19 @@ Resolve-DnsName "autodiscover.$D" -Type A | Select Name,IPAddress
 If IPs are in Microsoft ranges → `M365_CONFIRMED`. Cross-reference with `getuserrealm.srf` (§22.1) for tenant GUID extraction.
 
 **CAA records:**
+
 ```bash
 dig +short CAA "${D}"
 ```
+
 Lists which CAs are allowed to issue certs. Absence = LOW finding (any CA can mis-issue). Presence + restrictive list = good posture.
 
 **SOA serial pattern analysis:**
+
 ```bash
 dig +short SOA "${D}"
 ```
+
 Serial format `YYYYMMDDNN` reveals last-edit date. Pattern across multiple zones can correlate ownership.
 
 ### 16.23 Wayback CDX Deep Usage
@@ -1541,6 +1587,7 @@ Serial format `YYYYMMDDNN` reveals last-edit date. Pattern across multiple zones
 The Wayback Machine has a structured query API.
 
 **Basic CDX query:**
+
 ```bash
 D="target.example"
 curl -sk "https://web.archive.org/cdx/search/cdx?url=${D}/*&output=json&fl=timestamp,original&limit=10000"
@@ -1549,6 +1596,7 @@ curl -sk "https://web.archive.org/cdx/search/cdx?url=${D}/*&output=json&fl=times
 Returns JSON array of `[timestamp, original_url]` tuples.
 
 **Useful filters:**
+
 - `&from=20200101&to=20231231` — date range.
 - `&filter=mimetype:application/json` — only JSON responses (often APIs).
 - `&filter=mimetype:application/javascript` — JS bundles.
@@ -1558,6 +1606,7 @@ Returns JSON array of `[timestamp, original_url]` tuples.
 - `&collapse=digest` — dedup by content (catches identical pages re-archived).
 
 **Get specific snapshot:**
+
 ```bash
 TS="20231215120000"
 URL="https://target.example/admin/dashboard"
@@ -1565,6 +1614,7 @@ curl -sk "https://web.archive.org/web/${TS}/${URL}"
 ```
 
 **Diff snapshot vs live:**
+
 ```bash
 LIVE=$(curl -sk -m 10 "${URL}")
 ARCHIVED=$(curl -sk -m 10 "https://web.archive.org/web/${TS}/${URL}")
@@ -1572,6 +1622,7 @@ diff <(echo "$LIVE") <(echo "$ARCHIVED") | head -100
 ```
 
 **Save current page:**
+
 ```bash
 curl -sk -X POST "https://pragma.archivelab.org/" \
   -H 'Content-Type: application/json' \
@@ -1579,6 +1630,7 @@ curl -sk -X POST "https://pragma.archivelab.org/" \
 ```
 
 **Find every archived JS:**
+
 ```bash
 curl -sk "https://web.archive.org/cdx/search/cdx?url=${D}/*.js&output=json&fl=timestamp,original&filter=statuscode:200" | \
   jq -r '.[1:][] | "\(.[0]) \(.[1])"'
@@ -1644,6 +1696,7 @@ sclepro, tender, tenders, suppliers, vendor, vendors, procurement, purchase
 ```
 
 **One-liner (PowerShell):**
+
 ```powershell
 $D = "target.example"
 $prefixes = @("www","mail","webmail","owa","autodiscover","ftp","vpn","sslvpn","gateway","api","app","portal","login","sso","idp","iam","identity","accounts","oauth","auth","adfs","admin","intranet","hr","sap","erp","crm","support","help","status","grafana","kibana","docs","wiki","jira","jenkins","gitlab","dev","test","staging","stg","qa","uat","sandbox","preprod","preview","careers","jobs","eapps","old","legacy","beta","tender","suppliers","procurement")
@@ -1657,6 +1710,7 @@ foreach ($p in $prefixes) {
 ```
 
 **One-liner (bash + dig):**
+
 ```bash
 D="target.example"
 for p in www mail webmail owa autodiscover ftp vpn sslvpn gateway api app portal login sso idp iam identity accounts oauth auth adfs admin intranet hr sap erp crm support help status grafana kibana docs wiki jira jenkins gitlab dev test staging stg qa uat sandbox preprod preview careers jobs eapps old legacy beta tender suppliers procurement; do
@@ -1666,12 +1720,14 @@ done
 ```
 
 **Mass DNS approach (faster for large prefix lists):**
+
 ```bash
 # Generate candidate FQDNs from a wordlist; resolve in parallel via puredns
 puredns resolve <(awk -v d="$D" '{print $1"."d}' assetnote-best-dns-wordlist.txt) -r resolvers.txt
 ```
 
 **What to extract from each hit:**
+
 - IP / IP block → ASN lookup (§28.1) → confirms target-owned vs hosted-elsewhere.
 - For `vpn.*` / `gateway.*` / `gp.*` / `globalprotect.*` / `citrix.*` → flag for active vendor fingerprint (§16.16) under separate engagement scope.
 - For `api.*` / `app.*` → seed for §16.1–16.10 webapp probes.
@@ -1775,6 +1831,7 @@ The catalog runs against any text source: GitHub code, Postman workspaces, JS bo
 | 80 | Firebase Cloud Messaging Server Key (legacy) | `\bAAAA[A-Za-z0-9_\-]{7}:[A-Za-z0-9_\-]{140,}\b` | HIGH | firebase |
 
 **False-positive notes:**
+
 - Patterns 22 (JWT), 23 (Bearer), 29 (Generic) trigger on test/example data frequently. Always look at *context* — a JWT in a `README.md` example block ≠ a JWT in a production `.env` file.
 - Pattern 16 (Mailgun loose) and pattern 11 (Stripe test) are noisy by design; severity is set low for that reason.
 - Pattern 24 (Basic auth in URL) catches monitoring-tool URLs and CI-debug URLs as well as real creds — verify before alerting.
@@ -1924,6 +1981,7 @@ site:{domain} (filetype:pdf OR filetype:xlsx) ("personnel security" OR clearance
 ### 18.10 Result classification
 
 After running, score each result via URL signature → title hint → snippet regex:
+
 - **CRITICAL URL signatures:** `.pem`, `.p12`, `.pfx`, `.key` extensions; `id_rsa` filename.
 - **HIGH URL signatures:** `/.env`, `/.git/`, database dumps, `wp-config.bak`, `/phpmyadmin`, `/jenkins`, `/phpinfo.php`.
 - **MEDIUM URL signatures:** `/admin`, `/login`, `/swagger`, `.log`, `/backup`, `.DS_Store`.
@@ -1955,6 +2013,7 @@ Apply each template to `{target}` (root domain stem like `acme`), `{domain}` (fu
 **Requirements:** GitHub personal access token (any scope; recommend a fine-grained PAT with read-only repo access). Rate limit per token; concurrency cap ≤5.
 
 **For each result:**
+
 1. Fetch the file (or relevant fragment) via the GitHub Contents API.
 2. Run the secret catalog (§17).
 3. If a secret hits → `SECRET_LEAK` finding with catalog severity, evidence = repo URL + file path + matched secret (truncated, last 4 chars only).
@@ -2045,6 +2104,7 @@ No-toolchain alternative — pure Python, what the reference implementation's ow
 ```bash
 pip install androguard
 ```
+
 ```python
 from androguard.core.apk import APK
 a = APK("app.apk")
@@ -2130,26 +2190,34 @@ Methodology lives in the companion `osint-methodology` skill §11. This is the U
 ### 22.1 Microsoft Entra (Azure AD)
 
 **OIDC metadata + tenant GUID extraction:**
+
 ```
 GET https://login.microsoftonline.com/{tenant-or-domain}/.well-known/openid-configuration
 ```
+
 Response field `issuer` contains the tenant GUID. GUID regex:
+
 ```regex
 \b[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\b
 ```
+
 Detectability: low.
 
 **getuserrealm.srf — managed vs federated probe:**
+
 ```
 GET https://login.microsoftonline.com/getuserrealm.srf?login=<probe-user>@<domain>
 ```
+
 Response: JSON with `NameSpaceType` field (`Managed` / `Federated` / `Unknown`). Federated also includes `FederationBrandName` and `AuthURL` (the upstream IdP URL). Detectability: low.
 
 **Autodiscover v2:**
+
 ```
 POST https://autodiscover-s.outlook.com/autodiscover/metadata/json/1
 Body: {"Email": "<probe-user>@<domain>"}
 ```
+
 Returns the protocol endpoint for the user; presence indicates tenant membership. Detectability: low.
 
 **Autodiscover IP correlation (passive M365 confirmation):**
@@ -2159,6 +2227,7 @@ Resolve `autodiscover.<domain>` and check if it lands in Microsoft Exchange Onli
 ```bash
 dig +short A autodiscover.target.example
 ```
+
 ```powershell
 Resolve-DnsName "autodiscover.$D" -Type A | Select Name,IPAddress
 ```
@@ -2168,6 +2237,7 @@ Microsoft Exchange Online IPs (truncated common ranges): `40.96.0.0/13`, `52.96.
 If `autodiscover.<domain>` lands in that space → `M365_CONFIRMED` even when nothing else does. Detectability: low (passive DNS).
 
 **GetCredentialType — user-enum (deep mode only):**
+
 ```
 POST https://login.microsoftonline.com/common/GetCredentialType
 Content-Type: application/json
@@ -2187,27 +2257,33 @@ Body:
   "federationFlags": 0
 }
 ```
+
 Response field `IfExistsResult` indicates user existence: `0` = exists, `1` = doesn't exist, `5` = exists in federated tenant. Detectability: medium (logged in tenant audit). Cap at 20 attempts per tenant.
 
 ### 22.2 Okta
 
 **Org slug derivation:** start with stems from discovered subdomains and root-domain stem. Probe `<slug>.okta.com` and `<slug>.oktapreview.com`. Slug regex:
+
 ```regex
 [a-z0-9][a-z0-9-]{1,40}\.okta(?:preview)?\.com
 ```
 
 **OIDC fingerprint:**
+
 ```
 GET https://<slug>.okta.com/.well-known/openid-configuration
 ```
 
 **/api/v1/authn user-enum (deep mode):**
+
 ```
 POST https://<slug>.okta.com/api/v1/authn
 Content-Type: application/json
 Body: {"username": "<email>", "password": "invalid_password_for_enum"}
 ```
+
 Response distinguishes user existence:
+
 - `400` with `errorCode: E0000004` → user doesn't exist (or generic password error in some configs).
 - `401` with `status: PASSWORD_WARN` / `LOCKED_OUT` / `MFA_REQUIRED` → user exists.
 Detectability: medium (audit-log per attempt). Cap at 20 attempts per tenant.
@@ -2215,23 +2291,29 @@ Detectability: medium (audit-log per attempt). Cap at 20 attempts per tenant.
 ### 22.3 ADFS
 
 **Passive fingerprint:**
+
 ```
 GET https://{domain}/adfs/idpinitiatedsignon.aspx
 ```
+
 A `200 OK` with a `urn:com:microsoft:ADFS:` reference in HTML indicates ADFS. Version-string greppable in HTML resource references.
 
 **Mex endpoint (deep mode):**
+
 ```
 GET https://{domain}/adfs/Services/Trust/mex
 ```
+
 Returns SOAP federation metadata including endpoint URLs, signing certs, and supported claim types.
 
 ### 22.4 Google Workspace
 
 **OIDC discovery:**
+
 ```
 GET https://{domain}/.well-known/openid-configuration
 ```
+
 Google-Workspace-hosted-domain customers expose discovery endpoints with characteristic `issuer` URI (`https://accounts.google.com`) and JWKS URI. MX records pointing to `aspmx.l.google.com` are a corroborating signal.
 
 ### 22.5 Generic OIDC (Keycloak / Auth0 / Ping / OneLogin / Duo)
@@ -2254,33 +2336,41 @@ See §16.6.
 ### 22.7 AWS account-ID extraction
 
 **S3 bucket region header (passive):**
+
 ```
 HEAD https://<known-bucket>.s3.amazonaws.com/
 ```
+
 Response includes `x-amz-bucket-region`. Cross-reference with bucket name entropy and known patterns to scope the account.
 
 **ARN regex (in any JSON / HTML / JS response):**
+
 ```regex
 arn:aws:[a-z0-9\-]+:[a-z0-9\-]*:([0-9]{12}):
 ```
+
 Capture group: 12-digit AWS account ID.
 
 **`AccountId` property pattern:**
+
 ```regex
 (?i)["']?account[_\-]?id["']?\s*[:=]\s*["']([0-9]{12})["']
 ```
 
 **Google OAuth client_id:**
+
 ```regex
 \b\d{8,}-[a-z0-9]{10,40}\.apps\.googleusercontent\.com\b
 ```
 
 **MSAL / Microsoft client_id (GUID property):**
+
 ```regex
 (?i)["']?client[_\-]?id["']?\s*[:=]\s*["']([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})["']
 ```
 
 **OAuth scope extraction:**
+
 ```regex
 (?i)["']?scope["']?\s*[:=]\s*["']([^"']+)["']
 ```
@@ -2288,6 +2378,7 @@ Capture group: 12-digit AWS account ID.
 ### 22.8 Microsoft 365 Deep Enumeration (Teams / SharePoint / OneDrive / OAuth)
 
 **Teams federation status:**
+
 ```bash
 # Resolve tenant first
 curl -sk -m 10 "https://login.microsoftonline.com/${TARGET_DOMAIN}/.well-known/openid-configuration" | jq -r '.issuer'
@@ -2296,6 +2387,7 @@ curl -sk -m 10 "https://teams.microsoft.com/api/mt/emea/beta/users/<email>/exter
 ```
 
 **SharePoint subdomain probe:**
+
 ```bash
 STEM=$(echo $TARGET_DOMAIN | cut -d. -f1)
 for sub in "" "-my" "-admin"; do
@@ -2305,12 +2397,14 @@ done
 ```
 
 **Reading the result correctly:** `HTTP 200` from these probes means **the tenant exists** (Microsoft serves a generic redirect-to-auth page) — it does **NOT** mean anonymous access is granted to the tenant's content. Distinguish:
+
 - 200 → tenant provisioned (INFO).
 - 200 + redirect to a custom anonymous-share URL (`/sites/<x>/Lists/<y>/AllItems.aspx?guestaccesstoken=...`) discovered via dorks → HIGH (data exposure).
 - 401/403 → tenant exists but auth required (INFO).
 - 404 / NXDOMAIN → tenant not provisioned at this stem (or vanity-named — check known stems from cert transparency).
 
 PowerShell:
+
 ```powershell
 $STEM = ($D -split '\.')[0]
 foreach ($s in @("","-my","-admin")) {
@@ -2325,6 +2419,7 @@ foreach ($s in @("","-my","-admin")) {
 ```
 
 **OneDrive personal site probe** (for a known email `alice@acme.com`):
+
 ```bash
 USER_TOKEN=$(echo "alice@acme.com" | tr '@.' '__')
 STEM="acme"
@@ -2333,24 +2428,29 @@ curl -sk -m 10 -I "https://${STEM}-my.sharepoint.com/personal/${USER_TOKEN}/Docu
 ```
 
 **M365 OAuth client_id discovery in JS:**
+
 ```bash
 curl -sk -m 10 "https://app.target.example/main.js" | \
   grep -oE 'clientId["'\''[:=]+ ?["'\'']?[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'
 ```
 
 **Device-code phishing target check** (look for `device_authorization_endpoint` in OIDC metadata):
+
 ```bash
 curl -sk -m 10 "https://login.microsoftonline.com/${TARGET_DOMAIN}/v2.0/.well-known/openid-configuration" | \
   jq '.device_authorization_endpoint'
 ```
+
 If non-null and tenant doesn't restrict device-code: MEDIUM finding (device-code phishing feasible).
 
 **Power Platform / Dynamics URLs to check:**
+
 - `*.crm.dynamics.com` (per-region: `crm`, `crm2`-`crm15`, `crm.dynamics.com`).
 - `*.api.crm.dynamics.com` (Web API).
 - `make.powerapps.com` / `flow.microsoft.com` (auth-required dashboards).
 
 **Severity:**
+
 - Discovered SharePoint/OneDrive tenants → INFO (asset only).
 - Anonymous SharePoint anonymous-share link → HIGH (data exposure).
 - `device_authorization_endpoint` enabled on tenant → MEDIUM (operational risk).
@@ -2361,6 +2461,7 @@ If non-null and tenant doesn't restrict device-code: MEDIUM finding (device-code
 When the standard introspection query (§16.2) returns `"errors":[{"message":"GraphQL introspection is disabled"}]`, fall back to field-suggestion enumeration. Apollo and most GraphQL libraries enable "did you mean" suggestions by default.
 
 **Detection probe:**
+
 ```bash
 curl -sk -m 10 -X POST "$T/graphql" \
   -H 'Content-Type: application/json' \
@@ -2369,6 +2470,7 @@ curl -sk -m 10 -X POST "$T/graphql" \
 ```
 
 **Field-suggestion probe** (intentionally typo a field name to trigger suggestions):
+
 ```bash
 curl -sk -m 10 -X POST "$T/graphql" \
   -H 'Content-Type: application/json' \
@@ -2379,6 +2481,7 @@ curl -sk -m 10 -X POST "$T/graphql" \
 Iterate over a candidate-field wordlist (use SecLists `Discovery/Web-Content/graphql.txt` or `clairvoyance` library's seed list). Each suggestion reveals real field names. Continue until no new suggestions emerge.
 
 **Tooling:**
+
 - **Clairvoyance** (`pip install clairvoyance`) — automated field-suggestion enumerator. `clairvoyance -w wordlist.txt -o schema.json https://target.example/graphql`.
 - **GraphQL-Cop** — auditor that probes for introspection, batching, depth-limit, suggestion config. `pip install graphql-cop`.
 - **InQL** (Burp extension) — Burp Suite extension for GraphQL endpoint analysis.
@@ -2387,22 +2490,27 @@ Iterate over a candidate-field wordlist (use SecLists `Discovery/Web-Content/gra
 **Other GraphQL-when-introspection-disabled techniques:**
 
 - **Alias-based query batching** (rate-limit / auth-bypass surface):
+
   ```json
   {
     "query": "{ a:user(id:1){name} b:user(id:2){name} c:user(id:3){name} ... }"
   }
   ```
+
   Many APIs rate-limit per-request, not per-alias. Test 100+ aliases per request.
 
 - **Query-depth-limit bypass** (DoS / introspection bypass):
+
   ```json
   {
     "query": "{ user { friends { friends { friends { friends { id } } } } } }"
   }
   ```
+
   If server allows arbitrary depth → DoS surface; if depth-limited but doesn't strip nested `__type`/`__schema` → introspection-via-depth.
 
 - **Subscription enumeration via WebSocket:**
+
   ```bash
   wscat -c "wss://target.example/graphql" -s graphql-ws
   > {"type":"connection_init"}
@@ -2410,6 +2518,7 @@ Iterate over a candidate-field wordlist (use SecLists `Discovery/Web-Content/gra
   ```
 
 - **Batched query bypass** (some servers process all queries in batch even if first fails):
+
   ```json
   [
     {"query":"{ __schema { types { name } } }"},
@@ -2418,6 +2527,7 @@ Iterate over a candidate-field wordlist (use SecLists `Discovery/Web-Content/gra
   ```
 
 **Severity:**
+
 - Field-suggestion enumeration succeeds (50+ fields recoverable) → MEDIUM `MISCONFIG`.
 - Alias batching not rate-limited → MEDIUM (rate-limit-bypass surface).
 - Subscription endpoint exposed without auth → MEDIUM (often used for real-time data exfil).
@@ -2436,6 +2546,7 @@ Detection regex: §17 #49 (`\bPMAK-[A-Za-z0-9]{24,64}\b`, CRITICAL). Validate a 
 GET https://api.getpostman.com/me
 Header: X-Api-Key: PMAK-<key>
 ```
+
 - `200` → live; response contains `{user: {id, username, email}}`.
 - `401` → dead.
 - Scope: full read access to the user's Postman account (collections, env vars, history).
@@ -2446,7 +2557,9 @@ Header: X-Api-Key: PMAK-<key>
 ```
 sts:GetCallerIdentity
 ```
+
 Use boto3:
+
 ```python
 import boto3
 sts = boto3.client('sts',
@@ -2456,6 +2569,7 @@ sts = boto3.client('sts',
 ident = sts.get_caller_identity()
 # ident['Account'], ident['Arn'], ident['UserId']
 ```
+
 - Valid → returns Account ID + ARN + UserId.
 - Invalid → `InvalidClientTokenId` or `SignatureDoesNotMatch`.
 - ARN scope: `:user/` is IAM user (broad), `:assumed-role/` is temp role (narrow), `:root` is account root (do NOT validate root keys you find).
@@ -2467,6 +2581,7 @@ ident = sts.get_caller_identity()
 GET https://api.github.com/user
 Header: Authorization: token <ghp_*>
 ```
+
 - `200` → live; response contains `login`, `id`, `name`, `email` (if public).
 - Response header `X-OAuth-Scopes` lists token scopes. `repo` scope = write to all accessible repos; `admin:org` = org admin.
 - `401` → dead.
@@ -2478,6 +2593,7 @@ Header: Authorization: token <ghp_*>
 POST https://slack.com/api/auth.test
 Header: Authorization: Bearer <xox*-*>
 ```
+
 - `200` with `{"ok": true}` → live; response includes `team`, `team_id`, `user`, `user_id`.
 - `200` with `{"ok": false, "error": "invalid_auth"}` → dead.
 - Detectability: low.
@@ -2490,6 +2606,7 @@ Headers:
   x-api-key: sk-ant-api03-...
   anthropic-version: 2023-06-01
 ```
+
 - `200` → live; response lists available models.
 - `401` → dead.
 - `403` with org_disabled → key valid but org disabled.
@@ -2501,6 +2618,7 @@ Headers:
 GET https://api.openai.com/v1/models
 Header: Authorization: Bearer sk-...
 ```
+
 - `200` → live; lists models (may include org-specific fine-tunes).
 - `401` → dead.
 - `429` → live but quota exhausted.
@@ -2512,6 +2630,7 @@ Header: Authorization: Bearer sk-...
 GET https://registry.npmjs.org/-/whoami
 Header: Authorization: Bearer npm_<token>
 ```
+
 - `200` with `{"username": "<user>"}` → live.
 - `401` → dead.
 - For scope check: `GET /-/npm/v1/tokens` returns the token's permissions (read/publish).
@@ -2523,6 +2642,7 @@ Header: Authorization: Bearer npm_<token>
 GET https://<workspace>.atlassian.net/rest/api/3/myself
 Auth: Basic <base64(email:ATATT3xFfGF0_...)>
 ```
+
 - `200` → live; returns account profile + email.
 - `401` → dead.
 - Workspace required — extract from leaked repo URL or Atlassian dork results.
@@ -2536,6 +2656,7 @@ Headers:
   DD-API-KEY: <api-key>
   DD-APPLICATION-KEY: <app-key>
 ```
+
 - `200` → both keys valid.
 - `403` → either key invalid.
 - Per-region URL varies: `api.datadoghq.eu`, `api.us3.datadoghq.com`, etc.
@@ -2571,6 +2692,7 @@ Headers:
 After validation confirms a key is live, you often want to enumerate what it can do. Stay read-only.
 
 **AWS access key — IAM enum:**
+
 ```bash
 export AWS_ACCESS_KEY_ID="AKIA..."
 export AWS_SECRET_ACCESS_KEY="..."
@@ -2608,6 +2730,7 @@ aws iam list-mfa-devices --user-name <username>
 ```
 
 **GitHub PAT — repo enum:**
+
 ```bash
 TOKEN="ghp_..."
 H="Authorization: token $TOKEN"
@@ -2633,6 +2756,7 @@ curl -sk -m 10 -H "$H" "https://api.github.com/repos/$REPO/actions/secrets"
 ```
 
 **Slack token — workspace enum:**
+
 ```bash
 TOKEN="xoxb-..."
 H="Authorization: Bearer $TOKEN"
@@ -2654,6 +2778,7 @@ curl -sk -m 10 -H "$H" -X POST "https://slack.com/api/users.list?limit=100" | jq
 ```
 
 **JWT — full triage workflow:**
+
 ```bash
 JWT="eyJhbGciOiJIUzI1NiI..."
 
@@ -2686,6 +2811,7 @@ NEW_JWT="${NEW_JWT}.$(echo "$JWT" | cut -d. -f2)."
 ```
 
 **Postman PMAK — workspace enum:**
+
 ```bash
 PMAK="PMAK-..."
 H="X-Api-Key: $PMAK"
@@ -2712,6 +2838,7 @@ curl -sk -m 10 -H "$H" "https://api.getpostman.com/environments/$ENV" | jq '.env
 ```
 
 **Anthropic API key — usage enum:**
+
 ```bash
 KEY="sk-ant-api03-..."
 H="x-api-key: $KEY"
@@ -2727,6 +2854,7 @@ curl -sk -m 10 -H "$H" -H "$A" https://api.anthropic.com/v1/organizations/usage_
 ```
 
 **OpenAI API key — usage enum:**
+
 ```bash
 KEY="sk-..."
 H="Authorization: Bearer $KEY"
@@ -2743,6 +2871,7 @@ curl -sk -m 10 -H "$H" https://api.openai.com/v1/fine_tuning/jobs | jq .
 ```
 
 **Generic key — provenance enum:**
+
 1. Find the consuming domain (where in JS bundle did the key appear? what URL is the bundle served from?).
 2. Check the API docs of the inferred service.
 3. If the key matches a known regex, lookup vendor-specific scope check.
@@ -2781,6 +2910,7 @@ curl -sk -m 15 \
 This proxies through Postman's web app to their internal search service. Pagination via `from` (0, 100, 200, ...).
 
 **If the proxy shape changes** (it has historically): inspect a real search request from the Postman web UI:
+
 1. Open `https://www.postman.com/explore` in a browser.
 2. Open DevTools → Network tab.
 3. Search for any term.
@@ -2805,6 +2935,7 @@ curl -sk -m 10 "https://www.postman.com/_api/collection/$COL_ID" | jq '.collecti
 ```
 
 **Ownership scoring signals:**
+
 - Creator/team name mentions target domain or brand → strong.
 - Workspace name/description mentions target → strong.
 - Request URLs contain `*.target.com` → strongest signal (workspace is actively used against target's APIs).
@@ -2818,6 +2949,7 @@ curl -sk -m 10 "https://www.postman.com/_api/collection/$COL_ID" | jq '.collecti
 Stack Exchange and its sister sites collect code paste-ins from developers — many include secrets, internal hostnames, and proprietary code excerpts.
 
 **Sites to query (8 with highest signal):**
+
 ```
 stackoverflow.com
 serverfault.com
@@ -2830,6 +2962,7 @@ salesforce.stackexchange.com
 ```
 
 **API:**
+
 ```
 GET https://api.stackexchange.com/2.3/search/advanced
    ?site=<site>
@@ -2839,12 +2972,15 @@ GET https://api.stackexchange.com/2.3/search/advanced
 ```
 
 **Code block extraction regex:**
+
 ```regex
 <pre><code>([\s\S]*?)</code></pre>
 ```
+
 (Stack Exchange wraps code in `<pre><code>` HTML.)
 
 **Pipeline:**
+
 1. Search each site for the target name, brand, root domain.
 2. Extract code blocks from `body` HTML.
 3. Run secret catalog (§17) over each block.
@@ -2860,6 +2996,7 @@ GET https://api.stackexchange.com/2.3/search/advanced
 Many SaaS collaboration tools allow public sharing. Dork them like search engines.
 
 **Platforms with high incident rate:**
+
 ```
 trello.com
 notion.so / notion.site
@@ -2871,6 +3008,7 @@ airtable.com
 ```
 
 **Dork template:**
+
 ```
 site:{platform} "{target-keyword}"
 ```
@@ -2878,6 +3016,7 @@ site:{platform} "{target-keyword}"
 **Run via search-engine adapter** (DDG default; Bing / Brave / Yandex / SerpAPI optional). The same classification logic from §18.7 applies.
 
 **Common findings:**
+
 - Public Trello board with credentials in card titles or attached config files.
 - Public Notion page with internal SOPs, API keys in code blocks, customer data.
 - Public Confluence space with onboarding docs containing seed creds.
@@ -2906,9 +3045,11 @@ Practical "what actually returns useful data in 2026" reference, ordered by reca
 | Recon-ng | Free | Modular framework; many free providers built in. |
 
 **DNS AXFR opportunism:** for every name server discovered, attempt zone transfer:
+
 ```
 dig @<ns-host> <target-domain> AXFR
 ```
+
 Most NSs reject; those that don't = full zone disclosure (CRITICAL).
 
 **Brute-force tier:** Subfinder/Subbrute against `assetnote.io` wordlists (best-curated public wordlist source).
@@ -2984,12 +3125,14 @@ function Get-Subs {
 | **Custom per-target** | n/a | Best practice: derive a custom wordlist from the target's own content (extract every word from their public website + LinkedIn + careers page → unique → use as seed). |
 
 **Size guidance:**
+
 - **<10k entries** → fast subdomain check (1–2 min); use for opportunistic/passive-supplement.
 - **10k–100k entries** → standard depth (10–30 min); use as default brute-force.
 - **100k–1M entries** → thorough; use when the target is a known high-value engagement (1–4 hours).
 - **>1M entries** → exhaustive; reserve for week-long engagements; expect rate-limiting.
 
 **Tooling:**
+
 ```bash
 # Subfinder + brute-force with assetnote 100k
 subfinder -d target.example -all -recursive | tee passive.txt
@@ -3041,6 +3184,7 @@ curl -sk "https://ipinfo.io/8.8.8.8?token=<key>" | jq .
 ```
 
 **Watch out:**
+
 - `bgpview.io` API has aggressive undocumented rate limits (~1 req/min/IP); not suitable for bulk.
 - `bgp.he.net` has no public API; HTML scraping only — fragile.
 - `PeeringDB` is for facility/IX info, not per-IP ASN lookup.
@@ -3062,14 +3206,17 @@ curl -sk "https://ipinfo.io/8.8.8.8?token=<key>" | jq .
 Beyond the cert SAN + JARM, inspect cipher suites, protocols, and config quality.
 
 **sslyze (most thorough):**
+
 ```bash
 pip install sslyze
 sslyze --regular target.example:443
 sslyze --json_out=tls.json target.example:443
 ```
+
 Reports: protocols supported (TLS 1.0/1.1/1.2/1.3), cipher suites per protocol, cert chain, OCSP, key info, robot/heartbleed/lucky13/poodle/freak/logjam/drown/ccs/ticketbleed.
 
 **testssl.sh (thorough + readable output):**
+
 ```bash
 docker run --rm -ti drwetter/testssl.sh https://target.example
 # Or native install: https://github.com/drwetter/testssl.sh
@@ -3077,6 +3224,7 @@ testssl.sh --jsonfile-pretty=tls-report.json target.example:443
 ```
 
 **nmap script alternative (lighter):**
+
 ```bash
 nmap --script ssl-enum-ciphers,ssl-cert -p 443 target.example
 ```
@@ -3111,6 +3259,7 @@ nmap --script ssl-enum-ciphers,ssl-cert -p 443 target.example
 When a target owns an IP range (their ASN), enumerate it.
 
 **Reverse DNS sweep (within scope):**
+
 ```bash
 # Single /24
 for i in $(seq 1 254); do
@@ -3124,12 +3273,14 @@ prips 203.0.113.0/22 | xargs -I {} -P 50 sh -c 'PTR=$(dig +short -x {}); [ -n "$
 ```
 
 **Mass DNS approach (better for large ranges):**
+
 ```bash
 # zdns: install via go install github.com/zmap/zdns/cmd/zdns@latest
 prips 203.0.113.0/22 | zdns PTR
 ```
 
 **Banner-only sweep (no DNS round trip):**
+
 ```bash
 # masscan + banner-grab
 sudo masscan -p80,443 203.0.113.0/22 --rate=1000 --banners -oX masscan.xml
@@ -3204,6 +3355,7 @@ Methodology in companion skill §28. Concrete data sources here.
 | **Qualys ThreatPROTECT** | `https://threatprotect.qualys.com/` | Qualys' threat-context enrichment. |
 
 **Workflow:**
+
 ```bash
 # 1. Get EPSS score for a CVE
 curl -sk "https://api.first.org/data/v1/epss?cve=CVE-2024-3400" | jq '.data[0]'
@@ -3220,6 +3372,7 @@ msfconsole -q -x "search cve:2024-3400; exit"
 ```
 
 **Bulk prioritization** (given a Nuclei scan output with N CVEs):
+
 ```bash
 # Extract CVEs from nuclei JSON output
 jq -r '.info.classification.["cve-id"][]?' nuclei-results.json | sort -u > cves.txt
@@ -3239,6 +3392,7 @@ done < cves.txt | sort -t: -k2 -nr
 Use `skills/offensive-osint/scripts/h1_reference.py` (no API key required, public GraphQL) to pull community-validated findings as reference while testing. Run it at session start for the target's tech stack or attack type.
 
 **Key modes:**
+
 ```bash
 # Top voted community reports — best validated techniques
 python3 skills/offensive-osint/scripts/h1_reference.py --top-voted --limit 25
@@ -3263,12 +3417,14 @@ python3 skills/offensive-osint/scripts/h1_reference.py --top-voted --query "XSS"
 ```
 
 **When to run:**
+
 - At session start: `--top-voted` to load high-signal baseline
 - After identifying target's tech stack: `--query "<tech>" --pages 10`
 - Before probing a specific attack class: `--query "SSRF|XXE|SSTI" --pages 5`
 - For report writing: `--query "<vuln type>" --top-bounty` to find comparable severity/bounty
 
 **H1 GraphQL quirks (documented):**
+
 - Max 50 results/page regardless of `first:` value — use `--pages` for breadth
 - `disclosed_at` field crashes H1 server when combined with substate filter — omitted
 - Sort + substate filter combo crashes — script auto-routes around this
@@ -3438,6 +3594,7 @@ When you run a multi-module recon, late-arriving outputs need to feed into alrea
 3. Cross-feed: API discovery consumes both `mobile_endpoints.json` and `secrets_sidecar.json`; SSO×breach correlation consumes `sso_tenants.json` and the breach DB.
 
 **Sidecar shape (mobile_endpoints.json example):**
+
 ```json
 {
   "endpoints": [
@@ -3626,10 +3783,12 @@ LinkedIn is the highest-signal source for employee enumeration during external r
 ### 41.1 Search techniques
 
 **Free LinkedIn (no Sales Navigator):**
+
 - People-search by company: `https://www.linkedin.com/search/results/people/?currentCompany=["<company-id>"]`. Get company-id from the company's LinkedIn URL or profile JSON.
 - Bypass connection-degree filter: search shows 1st/2nd-degree only by default; use Google dorking instead.
 
 **Google dork for LinkedIn employee enum:**
+
 ```
 site:linkedin.com/in "<company name>"
 site:linkedin.com/in "<company name>" "engineer"   # role filter
@@ -3640,9 +3799,11 @@ site:linkedin.com/in "<company name>" -inurl:/posts
 **Bing/DuckDuckGo equivalents** — sometimes return different result sets; cross-engine union.
 
 **LinkedIn Sales Navigator (paid):**
+
 - Most efficient if available. Lead lists by company × role × seniority. Export CSV.
 
 **Tools:**
+
 - **theHarvester** with `-b linkedin` source (uses search-engine-driven enum).
 - **CrossLinked** — `https://github.com/m8r0wn/CrossLinked` — CLI tool that does the LinkedIn dorking.
 - **LinkedInDumper** / **Linkook** — open-source enum tools (verify currency; they break frequently).
@@ -3651,6 +3812,7 @@ site:linkedin.com/in "<company name>" -inurl:/posts
 ### 41.2 Role inference for prioritization
 
 For each enumerated employee, capture:
+
 - **Name** (canonical form: First Last; remove suffixes like "PMP", "PhD" for email-pattern matching).
 - **Job title** (raw + normalized to a role tier).
 - **Tenure** (years at company; longer = more access typically).
@@ -3671,6 +3833,7 @@ For each enumerated employee, capture:
 ### 41.3 Email-pattern derivation from confirmed names
 
 For each captured name, derive candidate emails using §11 templates. Cross-reference against:
+
 - Hunter.io `domain-search` to confirm pattern.
 - Breach corpus (HudsonRock + HIBP + DeHashed + IntelX) to find matches.
 
@@ -3685,6 +3848,7 @@ For each captured name, derive candidate emails using §11 templates. Cross-refe
 ### 41.5 Output
 
 Per discovered employee:
+
 ```
 Person:
   name:        "Alice Doe"
@@ -3729,6 +3893,7 @@ Job postings reveal the target's internal tech stack with surprising precision. 
 ### 42.2 What to extract
 
 For each job posting, harvest:
+
 - **Required technologies** ("must have experience with X, Y, Z") → confirmed in-use.
 - **Nice-to-have technologies** → likely in use but maybe in transition.
 - **Vendor names** (Workday, Salesforce, Snowflake, Databricks, Datadog, etc.) → SaaS tenants.
@@ -3748,6 +3913,7 @@ For each job posting, harvest:
 ### 42.4 Output
 
 Per discovered tech mention:
+
 ```
 Tech_inferred:
   product:     "Snowflake"
@@ -3760,6 +3926,7 @@ Tech_inferred:
 ```
 
 Aggregate to a **target tech-stack profile** that informs:
+
 - Which secret patterns to look for (Snowflake-specific keys, Databricks tokens).
 - Which SaaS tenants to fingerprint (Snowflake account URL pattern).
 - Which vendor-product fingerprints to probe (Snowflake DSN paths in JS).
@@ -3792,6 +3959,7 @@ Aggregate to a **target tech-stack profile** that informs:
 ### 43.3 Telegram
 
 Already covered in §38. Quick reference:
+
 - TGStat — channel analytics + search.
 - Telemetr — channel growth + overlaps.
 - Combot — group analytics.
@@ -3819,18 +3987,22 @@ Public package registries (npm, PyPI, RubyGems, Docker Hub, etc.) often contain 
 ### 44.1 npm
 
 - **Search packages by org / scope:**
+
   ```bash
   npm search "<target-keyword>"
   npm view @<scope>/<package-name>
   ```
+
 - **List org's packages:** `https://www.npmjs.com/org/<org>` or `https://registry.npmjs.org/-/org/<org>/package`.
 - **Per-package historical versions:** `https://registry.npmjs.org/<package>` — JSON with all versions.
 - **Tarball download for scan:**
+
   ```bash
   npm pack <package>@<version>
   tar -xzf package-version.tgz
   # Run secret catalog (§17) on extracted files
   ```
+
 - **Common leaks:** `.env` files included in published tarball, `package.json` `scripts` references to internal CI secrets, hardcoded API keys in `dist/` builds.
 
 ### 44.2 PyPI
@@ -3838,11 +4010,13 @@ Public package registries (npm, PyPI, RubyGems, Docker Hub, etc.) often contain 
 - **Search packages:** `https://pypi.org/search/?q=<target>`.
 - **Per-package metadata + history:** `https://pypi.org/pypi/<package>/json`.
 - **Download wheel/sdist for scan:**
+
   ```bash
   pip download <package>==<version> --no-deps -d /tmp/pkg
   unzip /tmp/pkg/*.whl -d /tmp/pkg/extracted
   # Run secret catalog
   ```
+
 - **Common leaks:** `setup.py` with hardcoded URLs, embedded test fixtures with real credentials, accidentally-included `.pypirc` files.
 
 ### 44.3 RubyGems
@@ -3850,6 +4024,7 @@ Public package registries (npm, PyPI, RubyGems, Docker Hub, etc.) often contain 
 - **Search:** `https://rubygems.org/search?query=<target>`.
 - **Per-gem metadata:** `https://rubygems.org/api/v1/gems/<gem-name>.json`.
 - **Download:**
+
   ```bash
   gem fetch <gem-name>
   gem unpack <gem-name>-<version>.gem
@@ -3880,6 +4055,7 @@ Already covered in §16.18; worth noting for completeness as part of registry-sw
 ### 44.9 Workflow
 
 For each registry, for each candidate package owned-by-target:
+
 1. List all historical versions (often `<package>@1.0.0` was clean but `<package>@0.9.0` had a leaked key).
 2. Download each version's archive.
 3. Extract; run secret catalog (§17) over all files.
@@ -4487,6 +4663,7 @@ if __name__ == "__main__":
 ```
 
 Save as `secret_scan.py`, then:
+
 ```bash
 python3 secret_scan.py path/to/repo/        # scan a directory tree
 python3 secret_scan.py file1 file2 file3    # scan specific files

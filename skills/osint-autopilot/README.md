@@ -59,6 +59,7 @@ Validated end-to-end before publishing. The verification run itself surfaced fou
 | `findings_gen.py` + `build_xlsx.py` | `findings.csv` + 9-tab workbook |
 
 Bugs caught and fixed during verification:
+
 1. Non-prod finding counted subdomain *strings* (incl. certificate-transparency noise) instead of *resolving* hosts.
 2. Identity finding fired on an "Unknown" namespace — now gated to Managed/Federated / discovered Okta org.
 3. WordPress finding fired on archived-URL noise — now a live HTTPS fingerprint check.

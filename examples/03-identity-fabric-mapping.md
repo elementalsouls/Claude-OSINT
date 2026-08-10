@@ -16,6 +16,7 @@ Walk-through of mapping a target's Microsoft 365 identity surface end-to-end.
 Compromise the identity fabric and you don't need to break into individual apps. Most organizations consolidate auth on one IdP — find it, map its tenants, and you've found the central trust anchor.
 
 For an M365 shop, the identity fabric includes:
+
 - Microsoft Entra (Azure AD) tenant
 - Teams Federation posture
 - SharePoint + OneDrive provisioning
@@ -63,6 +64,7 @@ curl -sk "https://login.microsoftonline.com/getuserrealm.srf?login=admin@${T}" |
 ```
 
 Look for:
+
 - `NameSpaceType: "Managed"` → cloud-native (Entra is the IdP).
 - `NameSpaceType: "Federated"` → on-prem ADFS or external IdP. Check `AuthURL` for the upstream.
 - `FederationBrandName` → reveals the upstream IdP (e.g., "ADFS" or "Okta").
@@ -115,6 +117,7 @@ done
 ```
 
 Expected:
+
 - `acme.sharepoint.com` → main tenant SharePoint (auth-required, but presence confirms tenancy).
 - `acme-my.sharepoint.com` → OneDrive-for-Business URLs.
 - `acme-admin.sharepoint.com` → SharePoint admin center.
@@ -138,6 +141,7 @@ done
 ```
 
 Status meaning:
+
 - 401 → personal site provisioned (user exists, OneDrive enabled).
 - 404 → not provisioned (user doesn't exist OR OneDrive disabled per user).
 
@@ -160,6 +164,7 @@ done | tee evidence/m365-clientids.txt
 ```
 
 **Look for:**
+
 - Microsoft well-known first-party client_ids (Office, Graph) — expected.
 - Custom GUIDs → custom internal apps. **High-value finding** if their permissions include sensitive Graph scopes.
 
@@ -220,6 +225,7 @@ grep -c '"total":[1-9]' evidence/breach-by-email.jsonl
 ```
 
 **Severity:**
+
 - ≥10 employees compromised → **CRITICAL** SSO_EXPOSURE finding (entire tenant at elevated risk).
 - 1–9 employees → **HIGH** SSO_EXPOSURE.
 - 0 → INFO (posture tracking).
@@ -246,6 +252,7 @@ grep -c '"total":[1-9]' evidence/breach-by-email.jsonl
 ## Citation
 
 This example follows:
+
 - `identity-provider-recon` §7 (domain→tenant resolution — Entra fingerprint)
 - `identity-provider-recon` §8, §11 (federation mapping + pre-auth user-enumeration oracle)
 - `osint-methodology` §12 (Breach × identity correlation)

@@ -73,6 +73,7 @@ triggers:
 ## 0. When to Use / When NOT
 
 **Use this skill when:**
+
 - You need to resolve a domain to its identity tenant (Entra/Okta/ADFS/Google Workspace) and
   determine whether auth is Managed or Federated.
 - You need to map an org's **federation boundary** — every sibling domain that shares the same
@@ -88,6 +89,7 @@ triggers:
   synthesize ranked login candidates to feed that oracle.
 
 **Do NOT use this skill when:**
+
 - You need to submit credentials, replay breach creds, forge/replay a token, or confirm an
   auth-bypass — that is a different, higher-authorization tier. See §14.
 - The target's authorization for **active, logged** probing isn't established — the passive half of
@@ -116,6 +118,7 @@ and §11 as two separate authorization tiers even within one engagement.
 > my end to stay under the radar. Confirm you want me to run this active pass?"*
 
 **Always-on guardrails specific to this skill:**
+
 - Never submit a real password, a guessed password, or any credential to any login endpoint. §11's
   oracles work by reading the *shape* of a rejection (§11.2, §11.3), not by trying to succeed.
 - Cap user-enumeration at 20 candidates per tenant (§11.4) — this is not a suggestion, it is the
@@ -288,6 +291,7 @@ Cheap regex-extract the response fields rather than pulling in a full XML parser
 D="target.example"; U="admin"
 curl -sk -m 15 "https://login.microsoftonline.com/getuserrealm.srf?login=${U}@${D}&xml=1"
 ```
+
 ```powershell
 $D = "target.example"; $U = "admin"
 Invoke-RestMethod -Uri "https://login.microsoftonline.com/getuserrealm.srf?login=$U@$D&xml=1"
@@ -313,6 +317,7 @@ GET https://login.microsoftonline.com/{domain}/.well-known/openid-configuration
 ```
 
 `issuer` (and `token_endpoint`) contain the tenant GUID:
+
 ```regex
 \b[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\b
 ```
@@ -345,17 +350,21 @@ and confirm each by fetching its OIDC config.
 
 **Candidate derivation** (from the target's own domain stem + any subdomain that is literally an
 `*.okta.com` host already in your graph):
+
 ```
 candidates = { stem, stem-prod, stem-dev, stemcorp, stem-corp } ∪ { okta-slug matches in known subdomains }
 ```
+
 ```regex
 [a-z0-9][a-z0-9-]{1,40}\.okta\.com
 ```
 
 **Confirmation probe** (Low detectability — Okta's own public metadata endpoint):
+
 ```
 GET https://{slug}.okta.com/.well-known/openid-configuration
 ```
+
 Only treat a slug as CONFIRMED when `issuer` actually contains `okta.com` — a slug guess that
 resolves to a *different* company's Okta org (namesake collision) is common with short/generic
 stems; don't attribute it without this check (§5). Distinguish **Classic vs. OIE** (Okta Identity
@@ -363,9 +372,11 @@ Engine) by whether the issuer contains `/oauth2/` — this affects which downstr
 policies apply.
 
 **Governed custom domains** (call ONLY after the org slug is confirmed real — never on a guess):
+
 ```
 GET https://{slug}.okta.com/api/v1/domains
 ```
+
 Returns every custom domain the org has verified as an identity-provider surface
 (`{"domain": "...", "validationStatus": "VERIFIED"}`). This is the Okta equivalent of §8's federation
 map — it reveals which branded login portals (`login.acmecorp.com`, `sso.subsidiary.com`) all route
@@ -376,19 +387,23 @@ node, not a guess — emit it as its own domain asset governed by this Okta org.
 ### 7.5 ADFS — passive fingerprint + version + mex (active)
 
 **Passive fingerprint:**
+
 ```
 GET https://adfs.{domain}/adfs/ls/idpinitiatedsignon.aspx
 ```
+
 A response body is version-fingerprintable from resource-reference strings: `adfs/portal/css/style.css`
-+ `2012` → ADFS 2012 R2 (3.0); `adfs/portal/illustration/illustration.png` → ADFS 2016/2019 (4.x/5.x);
+`2012` → ADFS 2012 R2 (3.0); `adfs/portal/illustration/illustration.png` → ADFS 2016/2019 (4.x/5.x);
 bare `federation service` string with neither marker → ADFS confirmed, version unknown. **Severity:**
 2012 R2/3.0 → MEDIUM (weak-crypto defaults, historical golden-SAML entry point); newer/unknown →
 INFO.
 
 **Mex endpoint (active — this one logs on the target side, unlike the fingerprint GET above):**
+
 ```
 GET https://adfs.{domain}/adfs/services/trust/mex
 ```
+
 A response containing `wsdl:definitions` confirms the mex endpoint is live and leaks federation
 metadata (endpoint URLs, signing certs, supported claim types). Gate this probe on the passive
 fingerprint already having confirmed ADFS — don't fire it speculatively.
@@ -398,12 +413,15 @@ fingerprint already having confirmed ADFS — don't fire it speculatively.
 Google Workspace has **no per-tenant OIDC endpoint** — `accounts.google.com`'s
 `/.well-known/openid-configuration` is provider-wide, not tenant-specific, so it cannot confirm *this
 specific domain* is a Workspace customer on its own. Detection therefore hinges on MX:
+
 ```bash
 dig +short MX target.example
 ```
+
 ```powershell
 Resolve-DnsName -Name target.example -Type MX
 ```
+
 Any MX host containing `aspmx.l.google.com` or `googlemail.com` confirms Google Workspace. Emit the
 tenant node with `tenant_id = domain` (there is no separate tenant GUID to extract) and
 `issuer = https://accounts.google.com` for consistency with the other tenant nodes, but be explicit
@@ -442,9 +460,11 @@ paths:
 
 Structural confirmation (don't bother parsing full XML): body contains `entitydescriptor` or
 `entitiesdescriptor` (case-insensitive). Extract `entityID` via a simple attribute regex:
+
 ```regex
 entityid=["']([^"']+)["']
 ```
+
 **Severity note:** public SAML metadata is INFO, CONFIRMED — and the remediation is explicitly *not*
 "block this." Publishing SP↔IdP trust metadata is conventional; the risk is entirely in signing-key
 compromise, which this passive probe cannot assess. Don't over-call a routine metadata endpoint as a
@@ -484,6 +504,7 @@ Content-Type: text/xml; charset=utf-8
 ```
 
 Body (only `{domain}` varies):
+
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <soap:Envelope xmlns:exm="http://schemas.microsoft.com/exchange/services/2006/messages"
@@ -515,6 +536,7 @@ curl -sk -m 20 -X POST "https://autodiscover-s.outlook.com/autodiscover/autodisc
   -H 'User-Agent: AutodiscoverClient' \
   --data "$BODY"
 ```
+
 ```powershell
 $D = "target.example"
 $body = @"
@@ -534,9 +556,11 @@ Invoke-RestMethod -Uri "https://autodiscover-s.outlook.com/autodiscover/autodisc
 ### 8.2 Parsing the response into a sibling-domain list
 
 Extract every `<Domain>` value namespace-agnostically (SOAP prefixes vary by server):
+
 ```regex
 <(?:\w+:)?Domain>\s*([^<\s][^<]*?)\s*</(?:\w+:)?Domain>
 ```
+
 Lowercase, de-duplicate, strip trailing dots. Two derived facts matter:
 
 - **Canonical tenant name** — the one domain ending `.onmicrosoft.com` (but NOT
@@ -550,6 +574,7 @@ Lowercase, de-duplicate, strip trailing dots. Two derived facts matter:
 
 Emit each sibling root as a **discover-only** `related_domain` asset, exactly like `org-attack-surface`
 treats every candidate beyond the seed:
+
 - Attach a `BRAND_MATCH` owner-signal, weight **0.40**, `confirming: false` — co-federation is a
   strong lead, not proof of common ownership, and should never be scored as if it were.
 - Tie it to the seed with a `FEDERATED_WITH` provenance edge — but **hold that edge type out of any
@@ -615,10 +640,12 @@ passive-mode gate. They are Low detectability by construction: the client never 
 ```
 GET https://autologon.microsoftazuread-sso.com/{domain}/winauth/trust/2005/usernamemixed
 ```
+
 ```bash
 D="target.example"
 curl -sk -m 15 -D - -o /dev/null "https://autologon.microsoftazuread-sso.com/${D}/winauth/trust/2005/usernamemixed"
 ```
+
 ```powershell
 $D = "target.example"
 try { Invoke-WebRequest -Uri "https://autologon.microsoftazuread-sso.com/$D/winauth/trust/2005/usernamemixed" -UseBasicParsing }
@@ -643,10 +670,12 @@ probe only runs once §8 has resolved it.
 ```
 <tenant-prefix>sensorapi.atp.azure.com   — resolve for an A record
 ```
+
 ```bash
 PREFIX="acme"
 dig +short A "${PREFIX}sensorapi.atp.azure.com"
 ```
+
 ```powershell
 $PREFIX = "acme"
 Resolve-DnsName -Name "${PREFIX}sensorapi.atp.azure.com" -Type A -ErrorAction SilentlyContinue
@@ -688,11 +717,13 @@ POST https://login.microsoftonline.com/common/GetCredentialType
 Content-Type: application/json; charset=UTF-8
 Body: {"Username": "<email>", "isOtherIdpSupported": true}
 ```
+
 ```bash
 curl -sk -m 15 -X POST "https://login.microsoftonline.com/common/GetCredentialType" \
   -H 'Content-Type: application/json; charset=UTF-8' \
   -d '{"Username":"alice@target.example","isOtherIdpSupported":true}'
 ```
+
 ```powershell
 $body = @{ Username = "alice@target.example"; isOtherIdpSupported = $true } | ConvertTo-Json
 Invoke-RestMethod -Uri "https://login.microsoftonline.com/common/GetCredentialType" -Method Post `
@@ -718,11 +749,13 @@ POST https://{org}.okta.com/api/v1/authn
 Content-Type: application/json
 Body: {"username": "<email>", "password": "<oracle-placeholder>"}
 ```
+
 ```bash
 curl -sk -m 15 -X POST "https://acme.okta.com/api/v1/authn" \
   -H 'Content-Type: application/json' \
   -d '{"username":"alice@target.example","password":"x"}'
 ```
+
 ```powershell
 $body = @{ username = "alice@target.example"; password = "x" } | ConvertTo-Json
 Invoke-RestMethod -Uri "https://acme.okta.com/api/v1/authn" -Method Post -ContentType "application/json" -Body $body
@@ -860,6 +893,7 @@ Seamless-SSO/MDI presence detection, the GetCredentialType/Okta-authn existence 
 candidate synthesis.
 
 **OUT of scope — a different, higher authorization tier, not covered by this skill at all:**
+
 - **Password spray** against the valid-account list this skill produces. Confirming account
   *existence* (§11) is not authorization to attempt *authentication* against those accounts.
 - **Credential submission of any kind** — a real password, a breach-sourced password, or any

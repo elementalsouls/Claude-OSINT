@@ -435,6 +435,7 @@ same root domain; and the `admin_panel+leaked_cred` attack-path chain fires (§9
 score 90). No KEV/EPSS data.
 
 **Loss:**
+
 ```
 by_source = {"hudsonrock": 180+40=220, "local_corpus": 95}
 records   = max(220, 95) = 220
@@ -728,8 +729,8 @@ Drop these into a fresh session to verify the skill loads correctly.
 12. *"The client disputes the risk grade. How do we defend it?"* → §12 (basis strings, stated assumptions, the range, not the bare point estimate).
 13. *"We're scoring a target in a market with a different average breach cost than the US. Do we still use $165/record?"* → §8.1 + §12 (region-tune the cost band; state which one you used).
 14. *"Score the risk of acme.com."* (no scan run yet, no findings collected) → **should NOT run.** This skill quantifies findings you already hold; with nothing collected there is nothing to score. Route to `osint-methodology` (§7 recon pipeline) / `offensive-osint` to run a recon pass first, then return here — see §0–§1.
-14. *"A finding is CONFIRMED-confidence, severity CRITICAL, but the owning asset's owner_tier is WEAK. Does it get demoted?"* → §7.5 Gate 2 (proof — `is_proven`, or an already-CONFIRMED explicit confidence — is exempt from the ownership ceiling; ownership context is recorded, not used to erase the confirmation).
-15. *"Rank three curated attack paths for the board one-pager's top-attack-path slot."* → §10.3 (dedup by `rule_id`, keep the highest-scoring variant per rule, sort by score, render only #1).
+15. *"A finding is CONFIRMED-confidence, severity CRITICAL, but the owning asset's owner_tier is WEAK. Does it get demoted?"* → §7.5 Gate 2 (proof — `is_proven`, or an already-CONFIRMED explicit confidence — is exempt from the ownership ceiling; ownership context is recorded, not used to erase the confirmation).
+16. *"Rank three curated attack paths for the board one-pager's top-attack-path slot."* → §10.3 (dedup by `rule_id`, keep the highest-scoring variant per rule, sort by score, render only #1).
 
 ---
 

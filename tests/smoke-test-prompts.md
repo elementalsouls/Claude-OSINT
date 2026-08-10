@@ -11,6 +11,7 @@
 5. Note PASS / PARTIAL / FAIL.
 
 **Pass criteria:**
+
 - ✅ Expected sections referenced (numbered or by topic).
 - ✅ No invented endpoints / regexes / wordlists.
 - ✅ Authorization scope-check invoked when needed.

@@ -14,18 +14,12 @@ jobs:
       - uses: actions/checkout@v4
       - uses: DavidAnson/markdownlint-cli2-action@v18
         with:
+          # Rule config lives in .markdownlint-cli2.jsonc (auto-discovered).
+          # The action's `config:` input is a file PATH, not literal config —
+          # inlining JSON there made every run fail to load its config.
           globs: |
             **/*.md
             !node_modules
-          config: |
-            {
-              "default": true,
-              "MD013": false,
-              "MD024": { "siblings_only": true },
-              "MD025": false,
-              "MD033": false,
-              "MD041": false
-            }
 
   yaml-frontmatter:
     name: SKILL.md YAML frontmatter

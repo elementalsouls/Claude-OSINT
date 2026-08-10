@@ -74,6 +74,7 @@ triggers:
 ## 0. When to Use / When NOT
 
 **Use this skill when:**
+
 - Standing up ongoing monitoring for a retainer, MSSP, or bug-bounty program instead of a one-shot
   engagement — the client wants to know about *new* exposure, not to re-read yesterday's report.
 - Deciding how often to re-run which recon stage (daily vs. weekly vs. monthly) without either
@@ -87,6 +88,7 @@ triggers:
 - Writing a "what changed on the perimeter since last week" deliverable.
 
 **Do NOT use this skill when:**
+
 - You need the one-shot discovery methodology itself — that's `osint-methodology` (5-stage
   pipeline) and `offensive-osint` (the per-technique arsenal). This skill assumes discovery already
   happened at least once and is about the *second and every subsequent* run.
@@ -292,6 +294,7 @@ realistic floor once asset count is non-trivial.
 ### 6.5 What's alert-worthy
 
 `monitor._maybe_alert` fires when **either**:
+
 - A new finding's severity rank is at or above the configured `--threshold` (default **medium**), or
 - A new asset's type is in the hot-asset-type set: `credential`, `typosquat_domain`, `bucket`,
   `repo` — these fire **regardless of severity threshold**, because a brand-new credential leak,
@@ -541,6 +544,7 @@ between scans. The `\x1f` (ASCII unit separator) between fields avoids cross-fie
 any field that happens to contain a more common delimiter.
 
 Two related-but-different keys exist — do not conflate them:
+
 - `fleet_findings` is keyed `(scan_id, fingerprint)` — one row **per scan**, the per-scan snapshot.
 - `finding_lifecycle` is keyed `(target, fingerprint)` — one row **per target**, the cross-scan
   identity that actually carries the state machine.
@@ -609,6 +613,7 @@ re-fire on it every single time the daemon's cursor sees a scan that reproduces 
 that rule's point of view, it's a fresh finding row it hasn't alerted on before.
 
 Recommendations, in priority order:
+
 1. Prefer `monitor`'s fingerprint-diff alerting for "tell me about *new* things" — it's the only one
    with lifecycle-equivalent protection built in.
 2. If you need `findings_watchlist` rules (they're the tool for "alert on any finding matching X,

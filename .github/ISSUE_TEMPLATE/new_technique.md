@@ -24,6 +24,7 @@ assignees: ''
 Paste the exact content to add. Examples:
 
 **For a vendor fingerprint:**
+
 ```
 | Vendor | Fingerprint paths | Notes |
 |---|---|---|
@@ -31,11 +32,13 @@ Paste the exact content to add. Examples:
 ```
 
 **For a secret pattern:**
+
 ```
 | <#> | <Pattern Name> | `<regex>` | <SEVERITY> | <category> |
 ```
 
 **For a dork:**
+
 ```
 site:{domain} <dork-content>
 ```

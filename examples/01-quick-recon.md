@@ -133,6 +133,7 @@ done > evidence/hibp.jsonl 2>/dev/null
 ```
 
 **Severity mapping** (per arsenal §15.1):
+
 - ≥10 employees in breach corpus → CRITICAL `SSO_EXPOSURE` candidate
 - 1–9 employees → HIGH
 - ≥1 user → MEDIUM
@@ -145,6 +146,7 @@ done > evidence/hibp.jsonl 2>/dev/null
 **Prompt to Claude:**
 
 > Write a 1-page executive summary for an authorized 1-hour quick-recon engagement on acme.example. Findings:
+>
 > - 47 subdomains discovered
 > - 3 open Elasticsearch instances on standard port (CRITICAL)
 > - 1 leaked GitHub PAT in public gist (validated live, scope: repo) (CRITICAL)
@@ -178,6 +180,7 @@ If your 1-hour quick recon found enough to warrant deeper work, propose to the e
 ## Citation
 
 This example follows the methodology defined in:
+
 - `osint-methodology` §7.2 (1-hour rapid recon engagement profile)
 - `osint-methodology` §7.1 (pipeline priority order)
 - `osint-methodology` §12 (breach × identity correlation)

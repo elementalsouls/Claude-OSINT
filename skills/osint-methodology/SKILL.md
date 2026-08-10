@@ -77,6 +77,7 @@ Intended for assets the operator owns or has **written authorization** to assess
 Once asserted, don't re-ask. If the engagement type is stated ("pentest of acme.com under contract"), proceed.
 
 **Always-on guardrails:**
+
 - Never weaken auth, rate limits, or safety controls on the target side.
 - No destructive probes (SYN scans at line-rate, masscan, fuzzing) outside explicit `--aggressive` mode.
 - Never paste real PII, credentials, session tokens, or API keys into cloud-hosted LLMs.
@@ -190,6 +191,7 @@ When you find a credential in the wild, confirm liveness with **read-only valida
 **Signs you've been detected (escalating severity):** 429 / `Retry-After`; captcha interstitials; WAF block page; status-code drift (200→403 from your IP only); banner change; NXDOMAIN rollback; honeypot bait (credentials that don't validate); direct contact.
 
 **Back-off ladder:**
+
 1. Halve concurrency; add 2–10s jitter.
 2. Stop hitting the triggering path; pivot to a different module.
 3. New User-Agent / TLS fingerprint.
@@ -334,6 +336,7 @@ Every asset carries: `type`, `key` (typed dedup id), `value`, `sources[]`, `conf
 | Reporting format | Narrative + sourced timeline | Per-asset findings + remediation + reproduction |
 
 **Scale tactics:**
+
 - **Small (<100):** Individual-account focus. One exec/CFO compromise often hands you the keys. Deep on every email + every identity-fabric finding. Check founders' personal GitHub orgs.
 - **Medium (100–1K):** Balanced enumeration. Full pipeline at standard depth. LinkedIn priority by role. Check both app stores.
 - **Large (1K–10K):** Breadth-first; automation for asset discovery; manual triage on findings only.
@@ -447,6 +450,7 @@ Run this pass any time Stage 3 person-enum/email-OSINT output and a breach looku
 **Platforms:** HackerOne (CVSS-based) · Bugcrowd (VRT: P1–P5) · Intigriti · YesWeHack · HackenProof (crypto-focused) · Open Bug Bounty (XSS/SSRF only) · `/.well-known/security.txt` for unprogrammed targets.
 
 **Report structure:**
+
 ```
 Title: [Severity] [Component] Brief description
 Summary: 2-3 sentences — what and why it matters.

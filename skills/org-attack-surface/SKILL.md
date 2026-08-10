@@ -83,6 +83,7 @@ triggers:
 ## 0. When to Use / When NOT
 
 **Use this skill when:**
+
 - The engagement starts from a **company name or legal entity**, not a domain — you need to derive
   the domain(s) first, not just enumerate one.
 - You need to find an org's **subsidiaries, sister brands, or M&A-acquired footprint** that a
@@ -96,6 +97,7 @@ triggers:
   ownership before spending recon budget on strangers.
 
 **Do NOT use this skill when:**
+
 - You already have a confirmed, bounded target list and just need per-host recon — go straight to
   `offensive-osint`.
 - The target's authorization isn't established — see §1.
@@ -312,11 +314,13 @@ this entire skill because relationships are *filed*, not inferred.
 **Two-hop query pattern:**
 
 1. Resolve a legal name → LEI (only ever done for the **seed** — see why below):
+
    ```bash
    LEI=$(curl -sk "https://api.gleif.org/api/v1/lei-records?filter[entity.legalName]=Acme%20Corporation&page[size]=1" \
      -H "Accept: application/vnd.api+json" | jq -r '.data[0].attributes.lei')
    echo "$LEI"   # capture it — the next step reuses $LEI
    ```
+
    ```powershell
    $r = Invoke-RestMethod -Uri "https://api.gleif.org/api/v1/lei-records?filter[entity.legalName]=Acme%20Corporation&page[size]=1" `
        -Headers @{ Accept = "application/vnd.api+json" }
@@ -324,11 +328,13 @@ this entire skill because relationships are *filed*, not inferred.
    ```
 
 2. Fetch that LEI's **direct children** (one level down, filed relationships only):
+
    ```bash
    curl -sk "https://api.gleif.org/api/v1/lei-records/$LEI/direct-children?page[size]=100" \
      -H "Accept: application/vnd.api+json" | \
      jq -r '.data[].attributes | .lei + "  " + .entity.legalName.name'
    ```
+
    ```powershell
    $children = Invoke-RestMethod -Uri "https://api.gleif.org/api/v1/lei-records/$lei/direct-children?page[size]=100" `
        -Headers @{ Accept = "application/vnd.api+json" }
@@ -386,6 +392,7 @@ $r.hits.hits | ForEach-Object { $_._source.display_names }
 ```
 
 **Caveats:**
+
 - **Response shape is documented, not guaranteed** — EFTS full-text search returns *filing-level*
   metadata under `_source` (`display_names`, `ciks`, `form`, …), so `display_names` are the filer /
   co-filer entity names on matching 10-K filings — **corroboration that the entity files with the
@@ -513,6 +520,7 @@ technique and the **one part of this skill with no keyless path** — both pract
 (§8.2–§8.4), not a hard dependency.
 
 **Pivotability guard — never pivot on generic or privacy-masked terms:**
+
 - Reject registrant org strings under 4 characters, containing a privacy-service token ("privacy,"
   "redacted," "domains by proxy," "withheld for privacy," …) or a registrar's own name (GoDaddy,
   Namecheap, Tucows, MarkMonitor, …), or with no distinctive token once generic corporate suffixes
@@ -580,6 +588,7 @@ $r | Select-Object -ExpandProperty name_value | ForEach-Object { $_ -split "`n" 
 ```
 
 **Parsing discipline:**
+
 - Split multi-value SAN entries on newlines; strip wildcard prefixes (`*.`); lowercase.
 - Validate each result actually looks like an FQDN before reducing to a registrable root — CT log
   garbage (malformed subject strings) is common enough to need a sanity filter.
@@ -799,6 +808,7 @@ $bgpview.data.ipv4_prefixes.prefix + $bgpview.data.ipv6_prefixes.prefix
 
 **For bulk IP→ASN (>50 IPs), don't hammer RIPEstat/BGPView per-IP** — use Team Cymru's bulk WHOIS,
 which accepts hundreds of IPs in one TCP session (full recipe in `offensive-osint` §28.1):
+
 ```bash
 echo -e "begin\nverbose\n8.8.8.8\n1.1.1.1\nend" | nc whois.cymru.com 43
 ```

@@ -39,6 +39,7 @@ triggers:
 ## 0. When to Use / When NOT
 
 **Use this skill when:**
+
 - Asked to audit spoof feasibility, produce an email-spoofability verdict, or explain "is domain X spoofable."
 - You already have raw SPF/DMARC TXT text (via `offensive-osint` §16.14 or your own `dig`) and need the *verdict*, not just the record dump.
 - Investigating an SPF PermError, a long or unusual include chain, or a dead `include:` target.
@@ -46,6 +47,7 @@ triggers:
 - Reasoning about DMARC subdomain policy inheritance, `pct=` partial enforcement, or duplicate-record handling.
 
 **Do NOT use this skill when:**
+
 - You haven't fetched the raw records yet. Run `offensive-osint` §16.14's dig/PowerShell recipes first, then bring the text here.
 - You want to actually *send* a spoofed test message or run an SMTP `RCPT TO` liveness check. That is active engagement work requiring explicit authorization and is out of scope for this passive-DNS skill — see §14.
 - You're auditing TLS/cert posture rather than email auth — that's `offensive-osint` §16.15 / TLS deep audit territory.
@@ -186,6 +188,7 @@ in an inbox. Neither one requires cracking any cryptography.
 This is the exact order a rigorous engine evaluates in — priorities are not arbitrary; earlier conditions **short-circuit** later ones (a duplicate-DMARC domain is spoofable regardless of what either individual record says; an `+all` SPF domain is spoofable regardless of DMARC policy).
 
 Before any branch runs, two **context reasons** are always evaluated and prepended to the eventual verdict's reasoning (informational — they explain *why*, they don't by themselves decide *whether*):
+
 - No SPF record present → *"the envelope return-path is unauthenticated."*
 - SPF present but its terminal qualifier is `+all` / bare `all` / absent entirely → *"the envelope accepts any sender."*
 
@@ -203,6 +206,7 @@ Then, in strict priority order:
 | — | `p=reject`, `pct=100`, effective subdomain policy also enforced | **NOT SPOOFABLE** | INFO | not spoofable (DMARC reject enforced) |
 
 **"Effective subdomain policy"** = the explicit `sp=` tag if present, otherwise it **inherits** the apex `p=` value (RFC 7489 §6.3). This is a common source of false findings both directions:
+
 - **False "protected":** don't assume an *absent* `sp=` is a gap — it inherits `p=reject` and subdomains ARE covered.
 - **True gap:** an *explicit* `sp=none` (or `sp=quarantine`) alongside `p=reject` overrides the inheritance — apex is enforced, subdomains are not. This is priority 7, and it's easy to miss on a quick read because the apex line looks fully hardened.
 
@@ -214,6 +218,7 @@ Then, in strict priority order:
 SPF:   v=spf1 include:_spf.google.com ~all       <- wait, this record ends -all/~all, no +all here
 DMARC: v=DMARC1; p=reject; pct=100; sp=reject    <- looks fully enforced at first glance
 ```
+
 If instead the SPF record actually reads `v=spf1 include:_spf.google.com +all` (a copy-paste error appending `+all` after a legitimate include list is a real, observed misconfiguration — someone meant to add a permissive fallback and instead nullified the whole record), priority 2 fires and the domain is spoofable **despite** a textbook-perfect DMARC record. This is exactly the kind of finding that a records-only read (§16.14) would miss if the auditor's eye jumps straight to the DMARC line and calls it done.
 
 ---
@@ -225,6 +230,7 @@ The composite verdict in §7 answers "is the domain spoofable." This section ans
 ### 8.1 The 10-lookup / 2-void-lookup budget
 
 RFC 7208 §4.6.4 caps SPF evaluation at:
+
 - **10** DNS-lookup-costing mechanisms (counted across the *entire* recursive chain, not per-record)
 - **2** void lookups (a mechanism that resolves to nothing)
 
@@ -288,12 +294,14 @@ The raw fetch commands for SPF / DMARC / DKIM / BIMI / MTA-STS / TLS-RPT / DNSSE
 **What this skill adds on top** (not duplicated in §16.14):
 
 **Duplicate-record detection** (feeds §7 priority 1 / the SPF-multiple check):
+
 ```bash
 D="target.example"
 echo "SPF records:";   dig +short TXT "$D"          | grep -ic 'v=spf1'
 echo "DMARC records:"; dig +short TXT "_dmarc.$D"    | grep -ic 'v=DMARC1'
 # either count > 1 -> the entire record set for that mechanism is ignored (§7 pri 1 / §8.1)
 ```
+
 ```powershell
 $D = "target.example"
 $spfCount   = (Resolve-DnsName $D -Type TXT -EA SilentlyContinue | ? { $_.Strings -match 'v=spf1' }).Count
@@ -302,6 +310,7 @@ $dmarcCount = (Resolve-DnsName "_dmarc.$D" -Type TXT -EA SilentlyContinue | ? { 
 ```
 
 **Subdomain-policy inheritance check** (feeds §7 priority 7 — is `sp=` explicit or inherited?):
+
 ```bash
 dig +short TXT "_dmarc.$D" | grep -oE 'sp=[a-z]+'
 # no match -> sp= is ABSENT -> inherits p= (protected if p=reject)
@@ -309,6 +318,7 @@ dig +short TXT "_dmarc.$D" | grep -oE 'sp=[a-z]+'
 ```
 
 **SPF mechanism inventory for one record** (manual pre-count before running the full recursive walker in §10):
+
 ```bash
 dig +short TXT "$D" | grep 'v=spf1' | tr ' ' '\n' | grep -E '^[+\-~?]?(include:|a[:/]?|mx[:/]?|ptr:?|exists:|redirect=)'
 ```
@@ -503,34 +513,42 @@ if __name__ == "__main__":
 ## 12. Worked Examples
 
 **Example A — the classic false sense of security (the mandated trap, worked through):**
+
 ```
 SPF:   v=spf1 include:_spf.google.com -all
 DMARC: (no record)
 ```
+
 *Verdict:* **SPOOFABLE, HIGH** — §7 priority 3 (no DMARC at all). The SPF `-all` is real and hardfails envelope spoofs of `target.com`'s own return-path — but per §6 Path A, an attacker doesn't need to pass `target.com`'s SPF at all. They send from an envelope domain they control, forge the header From: to `target.com`, and since there's no DMARC to check alignment, the mail is delivered with `target.com` visible to the recipient. **`-all` protects a channel the recipient never looks at.**
 
 **Example B — the +all bypass over a "hardened" DMARC:**
+
 ```
 SPF:   v=spf1 include:_spf.google.com include:mailgun.org +all
 DMARC: v=DMARC1; p=reject; pct=100; sp=reject
 ```
+
 *Verdict:* **SPOOFABLE, HIGH** — §7 priority 2, which wins over the DMARC branches entirely. The `+all` at the end (likely a copy-paste accident when someone added the `mailgun.org` include) makes SPF pass for literally any sending IP. An attacker aligns the envelope to `target.com` directly, SPF passes, DMARC's SPF-alignment leg is satisfied, and the reject policy never triggers.
 
 **Example C — dead include, correctly held as a lead, not a finding, until verified:**
+
 ```
 SPF:   v=spf1 include:_spf.oldvendor-2019.com -all
 ```
+
 `dig TXT _spf.oldvendor-2019.com` → NXDOMAIN. This is a **lead**: void lookup, dead include, §8.3 table row 1. Before writing "SPF-include takeover" in a report, run a WHOIS/RDAP check on `oldvendor-2019.com`. If it's genuinely unregistered → escalate to HIGH/CRITICAL takeover finding with the registration-availability evidence attached (§8.5). If it's still registered to someone (even a defunct-looking parked page) → it's a stale-reference hygiene finding at the base MEDIUM, not a takeover.
 
 **Example D — transient failure correctly NOT flagged:**
 Same record as Example C, but the `dig` query times out (upstream resolver had a bad moment). §8.3 row 3: **skip judging this hop entirely.** It is neither void nor dead. Re-run later. Reporting a takeover lead off a single timed-out query is exactly the FP class this skill's discipline exists to prevent.
 
 **Example E — lookup-count overflow with no single obviously "bad" record:**
+
 ```
 SPF: v=spf1 include:_spf.google.com include:mailgun.org include:sendgrid.net
      include:spf.protection.outlook.com include:_spf.salesforce.com
      include:mktomail.com include:spf.mandrillapp.com a mx ptr -all
 ```
+
 Seven `include:` mechanisms + `a` (1) + `mx` (1) + `ptr` (1) = **10 lookup-costing mechanisms at the top level** — already sitting exactly on the RFC 7208 §4.6.4 ceiling (PermError triggers at **>10**, §8.1), and that's *before a single recursion*. Each `include:` then pulls its own record and several expand into multiples (`_spf.google.com` alone chains into `_netblocks*.google.com`), so the true resolved total blows well past 10. **PermError** — receivers treat this domain as having no SPF, and every legitimate `-all` intent is void. This is a realistic pattern: each individual `include:` was added for a good reason (a real SaaS migration) by someone who never counted the running total. (Counting rule: §8.1. Note the ceiling is *>10*, not ≥10 — a record that lands on exactly 10 is at the edge but not yet a PermError; this one overflows only once the includes recurse.)
 
 ---

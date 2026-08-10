@@ -78,6 +78,7 @@ You found: `AKIAIOSFODNN7EXAMPLE` paired with a 40-char secret in a public GitHu
 **Claude pulls:** `offensive-osint` §17 (catalog row 1 — AWS_ACCESS_KEY) + `osint-methodology` §6.3 (validator discipline).
 
 **Classification:**
+
 - Pattern: AWS Access Key → severity **CRITICAL** (per catalog).
 - Confidence: **FIRM** (matches catalog regex; not yet validated).
 - Detectability of validation: **medium** (CloudTrail logs).
@@ -116,6 +117,7 @@ except Exception as e:
 ```
 
 **Expected output (valid key):**
+
 ```
 VALID
 Account: 123456789012
@@ -124,11 +126,13 @@ UserId:  AIDAEXAMPLE12345
 ```
 
 **ARN scope reading:**
+
 - `arn:aws:iam::*:user/...` → IAM user (broad scope possible).
 - `arn:aws:sts::*:assumed-role/...` → temp role (narrower scope).
 - `arn:aws:iam::*:root` → **DO NOT VALIDATE** root keys without explicit operator approval. Mark as `validation_skipped_by_policy` and consult.
 
 **Tag the validation:**
+
 - `status: verified_live`
 - `provider: aws`
 - `account_id: 123456789012`
@@ -149,6 +153,7 @@ Account ID `123456789012` — does it belong to your target?
 **Claude pulls:** `cloud-saas-exposure` §7 (offline AWS account-ID decode, test vector `ASIAY34FZKBOKMUTVV7A → 609629065308`) + `offensive-osint` §22.7 (AWS account-ID extraction).
 
 **Cross-reference:**
+
 - HEAD known target S3 buckets — does `x-amz-bucket-region` correlate with this account's likely region?
 - Search for the account ID in target's public docs / GitHub / docs subdomains: `"123456789012"` site:acme.example
 - Check known SaaS-vendor public account-ID lists (some vendors publish theirs).
@@ -303,15 +308,18 @@ might miss other leak locations).
 ## Step 8: Disclosure
 
 **Path A — bug-bounty program in scope:**
+
 - Submit to the program (HackerOne / Bugcrowd / etc.) using `osint-methodology` §15 report structure.
 - Severity: per program's CVSS-mapping (likely CRITICAL).
 
 **Path B — no program but ROE includes responsible disclosure:**
+
 - Notify target's security@ (or use security.txt contact).
 - Cc AWS abuse: `aws-security@amazon.com` (AWS will partner-revoke the key via their secret-scanning program; usually faster than waiting for the customer).
 - For GitHub-hosted gist: report via `https://github.com/contact` (abuse) — GitHub auto-revokes most published AWS keys via their partner program.
 
 **Documentation:**
+
 - Engagement-private annex includes the gist URL + secret values (encrypted at rest).
 - Client-facing report redacts secret values (last 4 chars only); references the annex.
 
@@ -329,6 +337,7 @@ might miss other leak locations).
 ## Citation
 
 This example follows:
+
 - `osint-methodology` §6.3 (validator discipline)
 - `cloud-saas-exposure` §7 (offline AWS account-ID decode — keyless, zero network)
 - `osint-methodology` §12 (breach × identity correlation)

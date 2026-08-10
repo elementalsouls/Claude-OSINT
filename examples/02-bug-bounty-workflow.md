@@ -25,6 +25,7 @@ End-to-end walkthrough from program selection through report submission.
 4. Note **excluded vulnerabilities** (clickjacking on non-sensitive pages, missing best-practices headers without exploit, etc.).
 
 **Severity inference for this program:**
+
 - HackerOne uses CVSS v3 base + program multiplier.
 - Conservative scoring → trust → repeat awards.
 
@@ -88,6 +89,7 @@ Suppose you find: **Unauthenticated POST `/api/v1/users` on `api.acme.example` r
 **Claude pulls:** `offensive-osint` §20 (endpoint interest score), §39 (attack-path hints), §40 (severity matrix).
 
 **Score evaluation:**
+
 - Unauth write → +40
 - Sensitive keyword `users` → +20
 - = 60 base
@@ -98,6 +100,7 @@ If verb tampering or schema leak adds → could push to ≥70 → HIGH/CRITICAL.
 > *"Unauthenticated POST `/api/v1/users` — try IDOR + privilege escalation; check whether numeric IDs are sequential or guessable."*
 
 **Next probes:**
+
 1. Confirm reproducibility (3 distinct test runs, different IDs).
 2. Check whether returned IDs are sequential (IDOR potential).
 3. Check role escalation: can the created user be made admin via parameter pollution?
@@ -117,6 +120,7 @@ If verb tampering or schema leak adds → could push to ≥70 → HIGH/CRITICAL.
 **Claude pulls:** `osint-methodology` §6.3 (validator discipline) + §9 (findings rubric — confirm severity + evidence before you report).
 
 **Approach:**
+
 - Create ONE user with a sock-puppet email (e.g., `bb-test-<random>@<your-private-domain>`).
 - Confirm the user appears in any public surface (e.g., GET `/api/v1/users` shows your created user).
 - DO NOT mass-create.
@@ -216,6 +220,7 @@ Affected component
 ## Citation
 
 This example follows:
+
 - `osint-methodology` §7.1, §7.2 (pipeline + 1-day profile)
 - `osint-methodology` §8.2 (asset triage)
 - `osint-methodology` §10 (bug-bounty pivot mode)

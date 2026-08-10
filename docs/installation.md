@@ -52,7 +52,7 @@ Claude should pull the 28-path Swagger wordlist from the `offensive-osint` skill
 
 ## Claude.ai (Pro / Team / Enterprise)
 
-1. Open https://claude.ai
+1. Open <https://claude.ai>
 2. Create a new Project (or open an existing one).
 3. Click **Add knowledge** → **Files**.
 4. Upload the `SKILL.md` from each skill you want. At minimum the core pair — `skills/osint-methodology/SKILL.md` and `skills/offensive-osint/SKILL.md` — plus any of the six org-grade depth skills (`org-attack-surface`, `email-domain-security`, `exposure-risk-quantification`, `continuous-exposure-monitoring`, `cloud-saas-exposure`, `identity-provider-recon`) relevant to your engagement.

@@ -307,6 +307,7 @@ unambiguous.
 ### 6.5 Recipes
 
 **Probe (bash):**
+
 ```bash
 NAME="acme-backup"
 for url in \
@@ -320,6 +321,7 @@ done
 ```
 
 **Probe (PowerShell):**
+
 ```powershell
 $Name = "acme-backup"
 $Targets = @(
@@ -341,6 +343,7 @@ foreach ($u in $Targets) {
 ```
 
 **Candidate generation — apex + full prefix/suffix expansion (bash):**
+
 ```bash
 APEX="acme"
 PREFIXES=("" "backup-" "assets-" "static-" "dev-" "prod-")
@@ -353,6 +356,7 @@ done
 ```
 
 **Candidate generation (PowerShell):**
+
 ```powershell
 $Apex = "acme"
 $Prefixes = @("", "backup-", "assets-", "static-", "dev-", "prod-")
@@ -618,6 +622,7 @@ event to point at.
 ### 8.6 Recipes
 
 **bash:**
+
 ```bash
 # unscoped npm
 curl -sk -m 15 -o /dev/null -w '%{http_code}\n' "https://registry.npmjs.org/acme-internal-utils"
@@ -630,6 +635,7 @@ curl -sk -m 15 -o /dev/null -w '%{http_code}\n' "https://pypi.org/pypi/acme-inte
 ```
 
 **PowerShell:**
+
 ```powershell
 function Test-RegistryStatus {
   param([string]$Url)

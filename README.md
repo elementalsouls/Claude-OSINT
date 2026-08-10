@@ -403,14 +403,14 @@ Operational tradecraft accumulated across external attack-surface engagements, c
 
 **Original framework:** [SnailSploit/offensive-checklist](https://github.com/SnailSploit/offensive-checklist) (v1.x)
 
-**Inspired by:** [Bellingcat's Online Investigations Toolkit](https://www.bellingcat.com/resources/2024/09/24/bellingcat-online-investigations-toolkit/) 
-· [IntelTechniques](https://inteltechniques.com/tools/) 
+**Inspired by:** [Bellingcat's Online Investigations Toolkit](https://www.bellingcat.com/resources/2024/09/24/bellingcat-online-investigations-toolkit/)
+· [IntelTechniques](https://inteltechniques.com/tools/)
 · [OSINT Framework](https://osintframework.com/)
 
-**Tool inventory:** 
-. [ProjectDiscovery](https://github.com/projectdiscovery) 
-· [Six2dez reconftw](https://github.com/six2dez/reconftw) 
-· [SecLists](https://github.com/danielmiessler/SecLists) 
+**Tool inventory:**
+. [ProjectDiscovery](https://github.com/projectdiscovery)
+· [Six2dez reconftw](https://github.com/six2dez/reconftw)
+· [SecLists](https://github.com/danielmiessler/SecLists)
 · [Assetnote Wordlists](https://wordlists.assetnote.io/)
 
 ## License

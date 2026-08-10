@@ -1,0 +1,28 @@
+// markdownlint-cli2 config. Auto-discovered at repo root by the CI action.
+// The workflow's inline `config:` input is a FILE PATH, not literal config —
+// passing JSON there made the action fail to load its config at all.
+{
+  "config": {
+    "default": true,
+    // Line length: skill docs run long on purpose.
+    "MD013": false,
+    // Duplicate headings only flagged within one section (repeated "Self-Test" etc.).
+    "MD024": { "siblings_only": true },
+    // Multiple H1 / first-line H1: SKILL.md leads with YAML frontmatter, not a heading.
+    "MD025": false,
+    "MD041": false,
+    // Inline HTML is used deliberately in the docs.
+    "MD033": false,
+    // Emphasis-as-heading: the skills use bold lead-ins as intentional style.
+    "MD036": false,
+    // Fenced-code language: many blocks are mixed shell+output; a guessed language
+    // tag would mislabel more than it documents.
+    "MD040": false,
+    // Spaces inside emphasis/code spans: DNS record names (`_amazonses`) and
+    // substring-match tokens ("access ") carry semantic leading/trailing spaces
+    // that these rules would strip. Off so the fixer can't corrupt them.
+    "MD037": false,
+    "MD038": false
+  },
+  "ignores": ["node_modules"]
+}
