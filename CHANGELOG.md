@@ -12,6 +12,7 @@ and the project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - `osint-autopilot/scripts/recon_pipeline.sh` — reject domain arguments containing anything other than letters, digits, `.`, or `-` before building the engagement path, closing a directory-traversal hole (a `../`-laden argument could write evidence outside `~/Research/engagements/`).
+- `osint-autopilot/scripts` — extend that guard to a full dotted-hostname match and apply it at all three entry points. The character-class check still admitted `.` and `..` (`recon_pipeline.sh ..` puts the whole evidence tree in `~/Research`) and a leading `-` (reaching `whois`/`gau` as a flag), and `findings_gen.py` / `build_xlsx.py` built the same path from the same unvalidated argument with no check at all. Adds `test_domain_guard.sh`, a network-free self-check covering all three.
 
 ### Added — six organization-grade depth skills
 

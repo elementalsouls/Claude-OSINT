@@ -3,7 +3,10 @@
 Usage: findings_gen.py <domain>"""
 import os, sys, re, csv, glob, json
 
+DOMAIN_RE = re.compile(r"[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?)+")
+
 D = sys.argv[1] if len(sys.argv) > 1 else sys.exit("usage: findings_gen.py <domain>")
+if not DOMAIN_RE.fullmatch(D): sys.exit(f"error: invalid domain {D!r} (expected a dotted hostname, e.g. example.com)")
 ENG = os.path.expanduser(f"~/Research/engagements/{D}")
 EV = f"{ENG}/evidence"
 

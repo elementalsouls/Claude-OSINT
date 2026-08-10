@@ -4,7 +4,8 @@
 # Host-specific: uses dig/curl (dnsx + pd-httpx segfault on m1cpu); nmap kept bounded.
 set -uo pipefail
 D="${1:?usage: recon_pipeline.sh <domain>}"
-[[ "$D" =~ ^[A-Za-z0-9.-]+$ ]] || { echo "error: invalid domain '$D' (letters, digits, '.', '-' only)" >&2; exit 1; }
+# Must be a real dotted hostname: blocks '..'/'.' path escapes and leading-'-' option injection into whois/gau.
+[[ "$D" =~ ^[A-Za-z0-9]([A-Za-z0-9-]*[A-Za-z0-9])?(\.[A-Za-z0-9]([A-Za-z0-9-]*[A-Za-z0-9])?)+$ ]] || { echo "error: invalid domain '$D' (expected a dotted hostname, e.g. example.com)" >&2; exit 1; }
 ENG="$HOME/Research/engagements/$D"
 TS(){ date -u +"%Y-%m-%dT%H:%M:%SZ"; }
 log(){ echo "$(TS) $*" >> "$ENG/run-log.jsonl"; }

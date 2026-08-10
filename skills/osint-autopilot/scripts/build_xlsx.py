@@ -6,7 +6,10 @@ from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment
 from openpyxl.utils import get_column_letter
 
+DOMAIN_RE = re.compile(r"[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?)+")
+
 D = sys.argv[1] if len(sys.argv) > 1 else sys.exit("usage: build_xlsx.py <domain>")
+if not DOMAIN_RE.fullmatch(D): sys.exit(f"error: invalid domain {D!r} (expected a dotted hostname, e.g. example.com)")
 ENG = os.path.expanduser(f"~/Research/engagements/{D}")
 EV = f"{ENG}/evidence"
 OUT = f"{ENG}/{D}-osint-consolidated.xlsx"
