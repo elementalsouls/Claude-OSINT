@@ -60,7 +60,7 @@ If you used these skills during an authorized engagement and found a vulnerabili
 ## Security best practices for users
 
 - Pin the skill version (`v2.1`) in any production deployment.
-- Run `scripts/sync-skill-content.sh` (or manual cp) only against this repo's bundled `docs/full-skills/` files; don't fetch from arbitrary sources.
+- Install skills only from this repo's `skills/` tree (or a trusted fork); don't fetch SKILL.md content from arbitrary sources.
 - Verify SHA-256 of any binary helper scripts before execution.
 - Don't commit your engagement-specific notes into a fork of this repo.
 - Use sock-puppet GitHub accounts when contributing if your engagement persona shouldn't be linked to your contributor identity.

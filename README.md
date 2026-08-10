@@ -333,8 +333,6 @@ flowchart TD
 # Install all 8 skills (one-time, after clone)
 git clone https://github.com/elementalsouls/Claude-OSINT.git
 cd Claude-OSINT
-chmod +x ./scripts/sync-skill-content.sh
-./scripts/sync-skill-content.sh
 mkdir -p ~/.claude/skills
 cp -r skills/* ~/.claude/skills/
 ls ~/.claude/skills/

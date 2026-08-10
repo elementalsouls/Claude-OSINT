@@ -75,7 +75,7 @@ cp scripts/secret_scan.py ~/.claude/skills/offensive-osint/scripts/secret_scan.p
 # Or attach to a Claude.ai project / Claude API system prompt
 ```
 
-The full content lives in this `SKILL.md` (or in `docs/full-skills/offensive-osint.SKILL.full.md` if this file is the structured-outline variant).
+The full content lives in this `SKILL.md`.
 
 ## Helper script
 

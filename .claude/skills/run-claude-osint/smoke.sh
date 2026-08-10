@@ -64,16 +64,8 @@ PY
   if [ $? -eq 0 ]; then pass "$skill"; else bad "$skill frontmatter"; fi
 done
 
-# 5. sync-skill-content.sh --check runs cleanly (no-op without docs/full-skills/).
-echo "[5] sync-skill-content.sh --check"
-if ./scripts/sync-skill-content.sh --check >/dev/null 2>&1; then
-  pass "sync --check exited 0"
-else
-  bad "sync --check failed"
-fi
-
-# 6. h1_reference.py live network (non-fatal — sandbox may block egress).
-echo "[6] h1_reference.py live network (HackerOne GraphQL)"
+# 5. h1_reference.py live network (non-fatal — sandbox may block egress).
+echo "[5] h1_reference.py live network (HackerOne GraphQL)"
 if [ "$NO_NET" = true ]; then
   printf '  \033[33m~\033[0m skipped (--no-net)\n'
 else

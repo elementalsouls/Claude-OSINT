@@ -88,6 +88,6 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ludeeus/action-shellcheck@master
         with:
-          # Whole repo, not just ./scripts — the skill drivers under
-          # skills/*/scripts/ and .claude/skills/ were never being linted.
+          # Scan the whole repo: the shell scripts live under
+          # skills/*/scripts/ and .claude/skills/, not a single scripts/ dir.
           severity: warning

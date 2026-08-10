@@ -54,7 +54,7 @@ cp SKILL.md ~/.claude/skills/osint-methodology/SKILL.md
 # (paste contents of SKILL.md as project knowledge)
 ```
 
-The full content lives in this `SKILL.md` (or in `docs/full-skills/osint-methodology.SKILL.full.md` if this file is the structured-outline variant — see repo root for sync instructions).
+The full content lives in this `SKILL.md`.
 
 ## Self-test
 

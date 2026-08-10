@@ -1,6 +1,6 @@
 ---
 name: run-claude-osint
-description: Build, validate, and run the claude-osint skills repo — check SKILL.md frontmatter, run the secret_scan.py and h1_reference.py helpers, run sync-skill-content.sh, run the smoke test. Use when asked to run, build, test, validate, or smoke-test claude-osint or its OSINT skills/scripts.
+description: Build, validate, and run the claude-osint skills repo — check SKILL.md frontmatter, run the secret_scan.py and h1_reference.py helpers, run the smoke test. Use when asked to run, build, test, validate, or smoke-test claude-osint or its OSINT skills/scripts.
 version: 1.0.0
 triggers:
   - run claude-osint
@@ -11,7 +11,6 @@ triggers:
   - run secret_scan
   - run h1_reference
   - validate SKILL.md frontmatter
-  - sync skill content
 ---
 
 # Run: claude-osint
@@ -45,14 +44,13 @@ From the repo root:
 .claude/skills/run-claude-osint/smoke.sh --no-net  # skip the HackerOne live check
 ```
 
-It runs six checks and prints a `==> PASS` / `==> FAIL` line (exit 0 / 1):
+It runs five checks and prints a `==> PASS` / `==> FAIL` line (exit 0 / 1):
 
 1. `py_compile` both helpers.
 2. `secret_scan.py` detects AWS key + JWT from stdin (the CI canaries).
 3. `secret_scan.py` recursively scans `skills/` and emits JSONL (~11 findings — example tokens in the SKILL.md docs).
 4. Every `skills/*/SKILL.md` has valid YAML frontmatter with `name`/`description`/`version`/`triggers` and ≥5 triggers.
-5. `sync-skill-content.sh --check` exits 0.
-6. `h1_reference.py` fetches one live disclosed report (non-fatal if offline).
+5. `h1_reference.py` fetches one live disclosed report (non-fatal if offline).
 
 ## Run individual pieces
 
@@ -79,18 +77,16 @@ cp -r skills/* ~/.claude/skills/
 
 CI (`.github/workflows/lint.yml`) runs four jobs: markdown lint
 (`markdownlint-cli2`), the frontmatter check, the `secret_scan.py` smoke, and
-`shellcheck ./scripts`. `smoke.sh` covers the latter two plus the helpers
-directly. `markdownlint-cli2` and `shellcheck` are **not installed** on this
-container; install with `npm i -g markdownlint-cli2` / `apt-get install -y
-shellcheck` if you need to reproduce those jobs locally.
+`shellcheck` over the repo's shell scripts. `smoke.sh` covers the latter two
+plus the helpers directly. `markdownlint-cli2` and `shellcheck` are **not
+installed** on this container; install with `npm i -g markdownlint-cli2` /
+`apt-get install -y shellcheck` if you need to reproduce those jobs locally.
 
 ## Gotchas
 
-- **`sync-skill-content.sh` is a no-op in a fresh clone.** It copies from
-  `docs/full-skills/`, which **is not in the repo** — the script prints
-  "⚠ Source missing … Skipping" and exits 0. The `skills/*/SKILL.md` files are
-  *already* the full inline content (offensive-osint ≈ 4,200 lines), so you do
-  **not** need to run sync after cloning. Don't be alarmed by the warnings.
+- **The `skills/*/SKILL.md` files are already the full inline content**
+  (offensive-osint ≈ 4,700 lines) — install is just `cp -r skills/*
+  ~/.claude/skills/`, no populate/sync step.
 - **`secret_scan.py` skips its own findings as noise filters.** It excludes
   `.git`, `node_modules`, `__pycache__`, `.venv`, `dist`, `build`, `.cache`
   and any file >10 MB. Scanning `skills/` returns the example/doc tokens (~11),
@@ -107,5 +103,4 @@ shellcheck` if you need to reproduce those jobs locally.
 | Symptom | Fix |
 |---|---|
 | `ModuleNotFoundError: No module named 'yaml'` in check [4] | `pip install pyyaml` (only the frontmatter check needs it). |
-| Check [6] shows `~ no network / HackerOne unreachable` | Expected when egress is blocked; run with `--no-net` to silence. Driver still passes. |
-| `sync --check` shows "Source missing" | Expected — see Gotchas. Not a failure; exit code is 0. |
+| Check [5] shows `~ no network / HackerOne unreachable` | Expected when egress is blocked; run with `--no-net` to silence. Driver still passes. |
