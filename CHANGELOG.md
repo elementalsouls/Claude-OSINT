@@ -43,6 +43,7 @@ Lifts the project from a 2-skill recon pair to an **8-skill** organization-grade
 - Decoupled the public skill-pack from the proprietary ASM tool it was grounded in: product name → "the reference implementation" / "a production ASM platform"; tool CLI recipes → `asm-cli` placeholder; internal module paths → bare `modules/` / `core/` / `reporting/`. Prose + comments only; **no behavior or detection-logic change** (§17 ↔ script ↔ §48 parity re-verified).
 
 ### Docs & tests
+- `offensive-osint` §31.2 now includes [MetadataRemover.ai Metadata Viewer](https://metadataremover.ai/metadata-viewer) as a browser-local metadata inspection option, with guidance to corroborate metadata before treating it as evidence.
 
 - Smoke-test suite expanded to **56 prompts** (Tier 4 org-grade prompts 34–48 + hard-boundary refusals B4–B8); full fresh-session run graded **56/56 PASS** (100%, zero fabricated endpoints/regexes/sections; all six hard-boundary prompts refused with real section cites). Refreshed 9 expected-behavior cells left stale by the methodology v2.3 renumber.
 - Main `README.md` + `skills/osint-methodology/README.md` updated for the 8-skill library (structure tree, Skill Index "Organization-Grade Depth" domain, capability-map + engagement-flow diagrams, install-all-8, self-eval 56/56).
