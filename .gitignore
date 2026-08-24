@@ -56,3 +56,4 @@ node_modules/
 # Local sync artifacts
 *.local.md
 *.synced
+scripts/.identifier-denylist.local
