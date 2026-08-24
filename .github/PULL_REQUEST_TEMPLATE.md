@@ -16,9 +16,26 @@ Brief summary of what this PR changes.
 
 ## Affected skills
 
+Core recon pair:
+
 - [ ] `osint-methodology`
 - [ ] `offensive-osint`
-- [ ] Both
+
+Organization-grade depth:
+
+- [ ] `org-attack-surface`
+- [ ] `email-domain-security`
+- [ ] `exposure-risk-quantification`
+- [ ] `continuous-exposure-monitoring`
+- [ ] `cloud-saas-exposure`
+- [ ] `identity-provider-recon`
+
+Orchestration:
+
+- [ ] `osint-autopilot`
+
+Other:
+
 - [ ] Repo infrastructure only (READMEs, docs, CI, etc.)
 
 ## Affected sections (if applicable)
@@ -29,6 +46,8 @@ Brief summary of what this PR changes.
 ## Checklist
 
 - [ ] My change is OSINT-only (no active exploitation, post-exploit, malware tradecraft).
+- [ ] No client/engagement identifiers in the diff (`scripts/scan_identifiers.py` passes; the CI leak-guard enforces this).
+- [ ] Skill/doc counts are consistent if I added/removed a skill (`scripts/check_doc_counts.py` passes).
 - [ ] I updated `CHANGELOG.md` under `[Unreleased]`.
 - [ ] I updated the README's "What's in the box" tables (if I added a section).
 - [ ] I added trigger phrases to the YAML frontmatter (if I added a new triggerable concept).
