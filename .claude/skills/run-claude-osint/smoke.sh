@@ -53,7 +53,7 @@ content = open(skill).read()
 if not content.startswith("---"):
     print(f"FAIL no-frontmatter {skill}"); sys.exit(1)
 data = yaml.safe_load(content[3:content.index("---", 3)])
-for r in ("name", "description", "version", "triggers"):
+for r in ("name", "description", "version", "triggers", "sources"):
     if r not in data:
         print(f"FAIL missing-{r} {skill}"); sys.exit(1)
 if not isinstance(data["triggers"], list) or len(data["triggers"]) < 5:

@@ -2,6 +2,7 @@
 name: osint-autopilot
 description: End-to-end external OSINT engagement autopilot. Run the FULL osint-methodology pipeline to completion in ONE go for an authorized domain — engagement folder, Stages 1-5 (seed, expansion, enrichment, exposure, convergence), multi-agent per-host content+JS fan-out, headline verification, auto-generated findings, and a consolidated multi-tab .xlsx deliverable. Stops ONLY for Stage 6 (active exploitation) arming and out-of-scope sibling assets. Use whenever asked to "run OSINT / recon / attack-surface" on a target — do NOT deliver a thin passive first pass.
 version: 1.0
+sources: asm_reference_impl, community
 triggers:
   - run OSINT
   - run recon
