@@ -1,0 +1,34 @@
+name: findings-eval
+
+# Capability eval: runs the osint-autopilot rules engine (findings_gen.py) over
+# recorded evidence fixtures and asserts the findings it must (and must not)
+# produce. Deterministic and network-free — catches a broken detection rule that
+# structural linting never would.
+
+on:
+  pull_request:
+    paths:
+      - "skills/osint-autopilot/scripts/findings_gen.py"
+      - "tests/test_findings_gen.py"
+      - "tests/fixtures/**"
+      - ".github/workflows/findings-eval.yml"
+  push:
+    branches: [main]
+    paths:
+      - "skills/osint-autopilot/scripts/findings_gen.py"
+      - "tests/fixtures/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  eval:
+    name: findings_gen rules eval
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python3 tests/test_findings_gen.py

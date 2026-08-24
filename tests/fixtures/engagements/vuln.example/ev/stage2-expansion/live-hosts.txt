@@ -1,0 +1,3 @@
+dev.vuln.example
+api.vuln.example
+www.vuln.example

@@ -1,0 +1,1 @@
+cdn.vuln.example | cname=bucket.s3.amazonaws.com | TAKEOVER:NoSuchBucket
