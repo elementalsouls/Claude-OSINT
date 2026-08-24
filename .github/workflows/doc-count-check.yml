@@ -1,0 +1,38 @@
+name: doc-count-check
+
+# Fails when a hardcoded skill count in the docs drifts from what's on disk.
+# The "8-skill library" number lives in ~10 places; adding a skill leaves stale
+# ones behind one at a time. scripts/check_doc_counts.py computes the truth from
+# skills/ and checks every doc assertion.
+
+on:
+  pull_request:
+    paths:
+      - "skills/**"
+      - "docs/**"
+      - "README.md"
+      - "CHANGELOG.md"
+      - "scripts/check_doc_counts.py"
+      - ".github/workflows/doc-count-check.yml"
+  push:
+    branches: [main]
+    paths:
+      - "skills/**"
+      - "docs/**"
+      - "README.md"
+      - "CHANGELOG.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Verify doc counts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python3 scripts/check_doc_counts.py
