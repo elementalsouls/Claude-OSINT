@@ -78,6 +78,24 @@ If you have OSINT experience, please review open PRs. Specifically:
 - **Detectability tag** — accurate? Conservative?
 - **Cross-skill consistency** — does a methodology change have a corresponding arsenal reference and vice versa?
 
+## Leak guard (client/engagement identifiers)
+
+Hard rule: **no real client/engagement identifier ever lands in the public tree.** `scripts/scan_identifiers.py` hashes every 1- and 2-word shingle of **every tracked text file** and compares against a hashed denylist (`scripts/.identifier-denylist.sha256`). It runs in CI via `.github/workflows/leak-guard.yml` on every push and PR, and **fails closed** if the denylist is missing.
+
+Enable the local pre-commit hook once per clone so you catch it before pushing:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+To ban a **new** identifier without committing the plaintext name, add its hash:
+
+```bash
+printf '%s' "the name" | tr '[:upper:]' '[:lower:]' | shasum -a 256   # paste into scripts/.identifier-denylist.sha256
+```
+
+or drop the plaintext (one per line) in `scripts/.identifier-denylist.local` — it's gitignored and hashed at runtime, so the name never enters the repo.
+
 ## License
 
 By contributing, you agree your contributions are released under the [MIT License](LICENSE).
