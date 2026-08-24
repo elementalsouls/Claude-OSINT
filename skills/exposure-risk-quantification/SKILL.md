@@ -2,6 +2,7 @@
 name: exposure-risk-quantification
 description: "FAIR-aligned exposure quantification: turns a pile of recon findings into a defensible 0-100 + A-F org risk score (Likelihood x Impact, three ownership-aware factors: exposure/threat/impact), an ownership + proof demotion cap so unproven or weakly-owned findings can't inflate the number, a $-denominated FAIR loss-magnitude estimate (IBM/Ponemon per-record cost bands, cross-source record dedup, threat-factor annualization), attack-path amplification (curated red-team chain catalog + generic graph-walk engine, with a kill-chain vs shared-fate honesty gate), and a board-ready one-pager deliverable (hero $ + letter grade + top-3 findings + top attack path + the ask). Extends osint-methodology's severity rubric and client deliverable templates with quantification. Passive analysis only -- operates on findings already collected, no target traffic, no API keys. Use when asked to score risk, quantify exposure, estimate breach cost, build a board report, translate technical findings to dollars, or explain why a grade or dollar figure came out the way it did."
 version: 1.0
+sources: asm_reference_impl, ibm_ponemon, public_research
 triggers:
   - risk score
   - risk quantification

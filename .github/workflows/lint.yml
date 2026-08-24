@@ -45,7 +45,7 @@ jobs:
           except yaml.YAMLError as e:
               print(f"  FAIL: $skill has invalid YAML frontmatter: {e}")
               sys.exit(1)
-          required = ["name", "description", "version", "triggers"]
+          required = ["name", "description", "version", "triggers", "sources"]
           for r in required:
               if r not in data:
                   print(f"  FAIL: $skill missing required field: {r}")
