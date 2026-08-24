@@ -1,0 +1,4 @@
+=== SPF ===
+v=spf1 include:_spf.example.com +all
+=== DMARC ===
+v=DMARC1; p=none; rua=mailto:x@example.com

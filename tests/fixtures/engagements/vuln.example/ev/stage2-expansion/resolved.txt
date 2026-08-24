@@ -1,0 +1,2 @@
+api.vuln.example -> 203.0.113.7
+www.vuln.example -> 203.0.113.8
