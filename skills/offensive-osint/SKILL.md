@@ -3488,6 +3488,7 @@ python3 skills/offensive-osint/scripts/h1_reference.py --top-voted --query "XSS"
 
 ### 31.2 Image Forensics
 
+- [MetadataRemover.ai Metadata Viewer](https://metadataremover.ai/metadata-viewer) — browser-local metadata inspection; treat EXIF/IPTC/XMP as leads only because metadata can be stale, edited, or stripped, and corroborate claims with independent evidence.
 - [Forensically](https://29a.ch/photo-forensics/), [ExifTool](https://exiftool.org/), [Jimpl](https://jimpl.com/), [Jeffrey's EXIF Viewer](http://exif.regex.info/exif.cgi), [FOCA](https://www.elevenpaths.com/labstools/foca), [Metagoofil](https://www.edge-security.com/metagoofil.php), [C2PA Verify](https://verify.contentauthenticity.org/).
 
 ### 31.3 Video Analysis
