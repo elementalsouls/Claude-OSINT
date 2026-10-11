@@ -9,6 +9,10 @@ and the project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### `offensive-osint` — docs: TGScope in §38
+
+- §38 Telegram & Messaging Intelligence: added TGScope, a free search over public Telegram channels that matches by meaning in any language, with a creation-date check that dates a channel from its numeric ID.
+
 ### Fixed
 
 - `osint-autopilot` — declare `openpyxl` as a required pip package (`scripts/requirements.txt`, referenced from `SKILL.md`'s workbook step); `build_xlsx.py` previously `ImportError`ed on a fresh clone with no indication of what to install.
