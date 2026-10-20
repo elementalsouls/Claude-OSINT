@@ -3626,6 +3626,7 @@ When you implement an ad-hoc multi-tool recon (no platform), use a `tmpdir + JSO
 - [Telemetr](https://telemetr.io/) — channel growth, overlaps, forwards.
 - [Combot](https://combot.org/) — group analytics (partial paid).
 - [TelegramDB Search Bot](https://t.me/TGdb_bot) — basic Telegram OSINT.
+- [TGScope](https://tgscope.io/) — channel creation-date / age estimate from its numeric ID ([checker](https://tgscope.io/tools/telegram-channel-creation-date)); also public channel search by meaning, any language.
 - [Discord ID](https://discord.id/) — basic Discord account info.
 - [Sogou Weixin search](https://weixin.sogou.com/) — WeChat Official Accounts.
 - View public Telegram channels: `https://t.me/s/<channel>`.
