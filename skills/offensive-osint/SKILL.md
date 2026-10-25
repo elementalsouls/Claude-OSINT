@@ -3195,6 +3195,7 @@ curl -sk "https://ipinfo.io/8.8.8.8?token=<key>" | jq .
 
 - [crt.sh](https://crt.sh/), [Censys Certificates](https://search.censys.io/certificates), [CertStream](https://certstream.calidog.io/) (real-time CT WebSocket), [Rapid7 Open Data](https://opendata.rapid7.com/), [Cert Spotter](https://sslmate.com/certspotter) (freemium).
 - **Favicon mmh3 hash:** cluster infrastructure across hosts; pair with Shodan/Censys favicon search for shared-infra discovery.
+- **Newly registered lookalikes:** CT logs only show domains that already have a certificate. [NetAPI](https://netapi.com/) searches the domains registered in the last 1 to 7 days across 1,100+ TLDs by keyword, no key needed: `curl -s "https://netapi.com/api-json/?method=search-new&q=<brand>&days=7" | jq -r '.results[].domain'`. Add `match=starts` for prefix matches.
 
 ### 28.3 Web tech / TLS / fingerprinting
 
