@@ -9,6 +9,10 @@ and the project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### `offensive-osint` — docs: newly registered lookalikes in §28.2
+
+- §28.2 Certificates & CT Monitoring: added a keyword search over newly registered domains (NetAPI, keyless), which catches lookalike domains before they get a certificate.
+
 ### `offensive-osint` — docs: TGScope in §38
 
 - §38 Telegram & Messaging Intelligence: added TGScope — dates a Telegram channel from its numeric ID (creation-date / age estimate), plus a free search over public channels that matches by meaning in any language.
