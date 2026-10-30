@@ -3041,6 +3041,7 @@ Practical "what actually returns useful data in 2026" reference, ordered by reca
 | Netlas | Paid | Large-scale HTTP/DNS/cert pivots. |
 | SecurityTrails | Paid | Passive DNS + asset discovery. |
 | RapidDNS | Free | Public passive DNS. |
+| ScanMalware | Free | Keyless. Its own CT index plus hosts a browser contacted while rendering pages on the domain, which can include names no certificate shows. Recipe in §27.0.1. |
 | Subfinder bundled | Free | Aggregates 30+ free sources via one CLI. |
 | Amass | Free | Comparable, more thorough, slower. |
 | Recon-ng | Free | Modular framework; many free providers built in. |
@@ -3086,7 +3087,14 @@ curl -sk "https://api.threatminer.org/v2/domain.php?q=${D}&rt=5" | jq -r '.resul
 curl -sk "https://urlscan.io/api/v1/search/?q=domain:${D}" | \
   jq -r '.results[].page.domain' | sort -u
 
-# 8. Anubis-DB / DNSDumpster (HTML scrape, last resort)
+# 8. ScanMalware — its own CT index, plus hosts a browser contacted on the domain's pages; free, no key.
+#    Keep the User-Agent: ScanMalware leaves Claude-OSINT/ lookups out of its scan queue and public stats.
+curl -sk -A "Claude-OSINT/2.2" "https://scanmalware.com/api/v1/ct/dns/${D}?subdomain_limit=5000" | \
+  jq -r '.subdomains[], .subdomains_unresolved[]' | sort -u
+curl -sk -A "Claude-OSINT/2.2" "https://scanmalware.com/api/v1/hosts/${D}?sources=observed,scripts&subdomains_only=true" | \
+  jq -r '.subdomains[]' | sort -u
+
+# 9. Anubis-DB / DNSDumpster (HTML scrape, last resort)
 curl -sk -A "Mozilla/5.0" "https://anubisdb.com/anubis/subdomains/${D}" | jq -r '.[]'
 ```
 
