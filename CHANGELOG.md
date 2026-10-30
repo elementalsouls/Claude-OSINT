@@ -9,6 +9,11 @@ and the project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### `offensive-osint` — docs: ScanMalware in §27
+
+- §27 Subdomain-Source Stack: added ScanMalware (free, keyless): its own Certificate Transparency index plus hosts a browser contacted while rendering pages on the domain, which can include names no certificate shows.
+- §27.0.1 crt.sh fallback chain: added ScanMalware as step 8 (Anubis-DB / DNSDumpster moves to 9). The recipe sends `Claude-OSINT/2.2` as its User-Agent, which ScanMalware leaves out of its scan queue and public statistics.
+
 ### `offensive-osint` — docs: TGScope in §38
 
 - §38 Telegram & Messaging Intelligence: added TGScope — dates a Telegram channel from its numeric ID (creation-date / age estimate), plus a free search over public channels that matches by meaning in any language.
