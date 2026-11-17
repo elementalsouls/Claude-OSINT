@@ -73,6 +73,17 @@ triggers:
   - Pulse Secure
   - FortiGate
   - PaloAlto GlobalProtect
+  - Prisma Access
+  - Cloudflare Access
+  - Cloudflare Zero Trust
+  - Zscaler fingerprint
+  - Netskope tenant
+  - Meraki client VPN
+  - Tailscale Funnel
+  - Twingate
+  - SSE fingerprint
+  - ZTNA fingerprint
+  - SASE vendor
   - Cisco AnyConnect
   - VMware vCenter
   - cloud native fingerprint
@@ -1277,6 +1288,37 @@ Common edge appliances / products on the target's perimeter, with fingerprint pa
 | **Kaseya VSA** | `/dl.asp`, `/userFilterTableRpt.asp` | CVE-2021-30116 (REvil supply-chain). |
 | **Microsoft IIS / OWA misc** | `Server: Microsoft-IIS/<version>` | Old versions = old CVEs; check. |
 | **Cisco Smart Install** | port 4786 open | CVE-2018-0171 (smart install client mode RCE). |
+
+**Cloud-delivered remote access (SSE / ZTNA / SASE).** Many orgs have replaced the on-prem VPN appliance with a vendor-hosted service. There is no appliance path to probe, so fingerprint from DNS, certificate transparency and vendor-hosted names instead. Detectability: low (passive DNS / CT, or requests to vendor-hosted endpoints, never the target).
+
+| Platform | Passive fingerprint | Reveals | Confidence |
+|---|---|---|---|
+| **Palo Alto Prisma Access** (cloud GlobalProtect) | Portal `<name>.gpcloudservice.com` (the default domain); custom portal names CNAME to it | Remote access is cloud GlobalProtect, operated and patched by Palo Alto, not an appliance the target runs | FIRM via CNAME from a target name; TENTATIVE on brand-token match alone |
+| **Cloudflare Access / Cloudflare One** | Team domain `<team>.cloudflareaccess.com`; `/cdn-cgi/access/certs` on it serves the team's public signing keys. Protected apps 302 to `https://<team>.cloudflareaccess.com/cdn-cgi/access/login/<app-host>` | Team name, and which target hostnames sit behind Access. Pairs with the `cloudflare-verify=` TXT row (§16.22) | FIRM when a target hostname redirects to the team domain |
+| **Netskope** (SSE) | Tenant `<tenant>.goskope.com`; regional `<tenant>.eu.goskope.com`, `.au.`, `.de.`; client hosts `gateway-<tenant>.goskope.com` | SSE vendor and tenant name | FIRM when referenced in target-controlled content (CNAME, public docs, scripts, IdP app tiles); TENTATIVE on name match |
+| **Zscaler ZIA** | Cloud name from `gateway.<cloud>.net` or hosted PAC URLs `pac.<cloud>.net/<org-domain>/…` in public docs, scripts or repos. Clouds include `zscaler.net`, `zscloud.net`, `zscalerone.net`, `zscalertwo.net`, `zscalerthree.net` | Which Zscaler cloud the org uses. Complements the `zscaler-verification-` TXT row (§16.22) | FIRM when the PAC path carries the target's domain |
+| **Cisco Meraki MX** | Client-VPN dynamic DNS `<model>-<id>.dynamic-m.com`, often CNAME'd from `vpn.<target>` | Public IP of the active WAN link (the name tracks it) and, in the default naming, the MX model prefix | FIRM via CNAME from a target name |
+| **Tailscale** (HTTPS / Funnel) | `<machine>.<tailnet>.ts.net` names in CT logs (any node with HTTPS certs enabled; Funnel uses the same names) | Internal machine names, and services published to the internet through Funnel | TENTATIVE unless names carry target tokens or are corroborated elsewhere |
+| **Twingate** | Network `<network>.twingate.com` (admin console and client sign-in use the network name) | ZTNA vendor and network name | TENTATIVE on name match; FIRM when referenced by target content |
+
+**Passive pivots:**
+
+```bash
+D="target.example"; B="target"   # apex domain and brand token
+# Where do the org's remote-access names point?
+for h in vpn remote access portal gp sase ztna; do
+  printf '%s -> %s\n' "$h.$D" "$(dig +short CNAME "$h.$D")"
+done | grep -E 'gpcloudservice\.com|cloudflareaccess\.com|goskope\.com|dynamic-m\.com|twingate\.com|ts\.net'
+# CT: vendor-hosted names carrying the brand token (crt.sh may 502; see §27 fallbacks)
+for z in gpcloudservice.com ts.net; do
+  curl -s "https://crt.sh/?q=%25${B}%25.${z}&output=json" | grep -o '"name_value":"[^"]*"' | sort -u
+done
+# Cloudflare Access: does a team domain exist under the brand token? (vendor-hosted request)
+curl -s -o /dev/null -w '%{http_code}\n' "https://${B}.cloudflareaccess.com/cdn-cgi/access/certs"
+# 200 + JSON keys = team exists; 404 = no such team. Don't test the bare team URL: it returns 200 for any name.
+```
+
+**Severity:** a fingerprint alone is **INFO** (methodology §9). It maps the remote-access architecture and narrows the attack surface. Escalate on what it exposes: a Tailscale Funnel serving an admin UI takes that service's severity. Don't carry the on-prem GlobalProtect KEV escalations in §40 over to Prisma Access, where Palo Alto patches the infrastructure.
 
 **Per-vendor probe pattern:**
 

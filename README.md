@@ -172,6 +172,7 @@ The six skills that lift the library from single-target recon to enterprise atta
 |---|---|
 | Citrix Netscaler · F5 BIG-IP · Pulse Secure / Ivanti · FortiGate | arsenal |
 | PaloAlto GlobalProtect · Cisco AnyConnect · VMware vCenter / ESXi / Horizon | arsenal |
+| Cloud-delivered remote access: Prisma Access · Cloudflare Access · Zscaler · Netskope · Meraki · Tailscale · Twingate | arsenal |
 | Microsoft Exchange OWA (ProxyShell / ProxyLogon / ProxyNotShell) | arsenal |
 | KEV CVE enrichment + EPSS scoring + Metasploit availability | arsenal |
 | WAF / CDN bypass + origin discovery (8 techniques) | methodology, arsenal |

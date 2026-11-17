@@ -9,6 +9,12 @@ and the project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### `offensive-osint` — feat: cloud-delivered remote access fingerprints in §16.16
+
+- §16.16 Vendor Product Fingerprints: added a cloud-delivered remote access (SSE / ZTNA / SASE) block covering Palo Alto Prisma Access, Cloudflare Access / One, Netskope, Zscaler ZIA, Cisco Meraki MX client VPN, Tailscale (HTTPS / Funnel) and Twingate. Passive fingerprints from DNS, certificate transparency and vendor-hosted names, with confidence tags, a low-detectability pivot recipe, and a severity note (INFO by default; on-prem GlobalProtect KEV escalations don't carry over to Prisma Access).
+- Frontmatter: trigger phrases for the new platforms.
+- Smoke test #20 extended to cover the cloud platforms.
+
 ### `offensive-osint` — docs: TGScope in §38
 
 - §38 Telegram & Messaging Intelligence: added TGScope — dates a Telegram channel from its numeric ID (creation-date / age estimate), plus a free search over public channels that matches by meaning in any language.
