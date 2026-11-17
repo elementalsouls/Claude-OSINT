@@ -51,7 +51,7 @@
 | 17 | "Jenkins / GitLab / GitHub Actions / CircleCI misconfigurations — how do I check?" | Pulls arsenal §16.19 with per-platform recipes. |
 | 18 | "Container/K8s exposure — what ports + endpoints?" | Pulls arsenal §16.18 (kubelet 10250, etcd 2379, K8s API 6443, dashboard, Helm Tiller, container registries). |
 | 19 | "Target fully behind Cloudflare. Find the origin." | Pulls arsenal §16.15 (origin-discovery / CDN-bypass techniques) + methodology §11 (WAF/CDN-bypass pointer). |
-| 20 | "Fingerprint Citrix / F5 / Pulse / FortiGate / PaloAlto / Cisco / VMware on a target's perimeter." | Pulls arsenal §16.16 with per-vendor probe paths + KEV CVE associations. |
+| 20 | "Fingerprint Citrix / F5 / Pulse / FortiGate / PaloAlto / Cisco / VMware on a target's perimeter, and any cloud remote access (Prisma Access / Cloudflare Access / Zscaler / Netskope)." | Pulls arsenal §16.16 with per-vendor probe paths + KEV CVE associations, plus the cloud-delivered SSE / ZTNA passive fingerprints and pivots. |
 | 21 | "Enumerate target employees on LinkedIn for a phishing target list." | Pulls arsenal §41 (search techniques + role inference + sock-puppet considerations). |
 | 22 | "Infer target's internal tech stack from job postings." | Pulls arsenal §42 (sources + extraction + tooling). |
 
