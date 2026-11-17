@@ -11,7 +11,7 @@ and the project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### `offensive-osint` — feat: cloud-delivered remote access fingerprints in §16.16
 
-- §16.16 Vendor Product Fingerprints: added a cloud-delivered remote access (SSE / ZTNA / SASE) block covering Palo Alto Prisma Access, Cloudflare Access / One, Netskope, Zscaler ZIA, Cisco Meraki MX client VPN, Tailscale (HTTPS / Funnel) and Twingate. Passive fingerprints from DNS, certificate transparency and vendor-hosted names, each taken from the vendor's own documentation (linked inline), with confidence tags, a low-detectability pivot recipe, and a severity note (INFO by default, escalating on what the platform exposes).
+- §16.16 Vendor Product Fingerprints: added a cloud-delivered remote access (SSE / ZTNA / SASE) block covering Palo Alto Prisma Access, Cloudflare Access / One, Netskope, Zscaler, Cisco Meraki MX client VPN, Tailscale (HTTPS / Funnel) and Twingate. Passive fingerprints from DNS, certificate transparency and vendor-hosted names, each taken from the vendor's own documentation (linked inline), with confidence tags, a low-detectability pivot recipe, and a severity note (INFO by default, escalating on what the platform exposes).
 - Frontmatter: trigger phrases for the new platforms.
 - Smoke test #20 extended to cover the cloud platforms.
 
