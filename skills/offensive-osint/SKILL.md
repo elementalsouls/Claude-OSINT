@@ -1293,13 +1293,15 @@ Common edge appliances / products on the target's perimeter, with fingerprint pa
 
 | Platform | Passive fingerprint | Reveals | Confidence |
 |---|---|---|---|
-| **Palo Alto Prisma Access** (cloud GlobalProtect) | Portal `<name>.gpcloudservice.com` (the default domain); custom portal names CNAME to it | Remote access is cloud GlobalProtect, operated and patched by Palo Alto, not an appliance the target runs | FIRM via CNAME from a target name; TENTATIVE on brand-token match alone |
-| **Cloudflare Access / Cloudflare One** | Team domain `<team>.cloudflareaccess.com`; `/cdn-cgi/access/certs` on it serves the team's public signing keys. Protected apps 302 to `https://<team>.cloudflareaccess.com/cdn-cgi/access/login/<app-host>` | Team name, and which target hostnames sit behind Access. Pairs with the `cloudflare-verify=` TXT row (§16.22) | FIRM when a target hostname redirects to the team domain |
-| **Netskope** (SSE) | Tenant `<tenant>.goskope.com`; regional `<tenant>.eu.goskope.com`, `.au.`, `.de.`; client hosts `gateway-<tenant>.goskope.com` | SSE vendor and tenant name | FIRM when referenced in target-controlled content (CNAME, public docs, scripts, IdP app tiles); TENTATIVE on name match |
-| **Zscaler ZIA** | Cloud name from `gateway.<cloud>.net` or hosted PAC URLs `pac.<cloud>.net/<org-domain>/…` in public docs, scripts or repos. Clouds include `zscaler.net`, `zscloud.net`, `zscalerone.net`, `zscalertwo.net`, `zscalerthree.net` | Which Zscaler cloud the org uses. Complements the `zscaler-verification-` TXT row (§16.22) | FIRM when the PAC path carries the target's domain |
-| **Cisco Meraki MX** | Client-VPN dynamic DNS `<model>-<id>.dynamic-m.com`, often CNAME'd from `vpn.<target>` | Public IP of the active WAN link (the name tracks it) and, in the default naming, the MX model prefix | FIRM via CNAME from a target name |
-| **Tailscale** (HTTPS / Funnel) | `<machine>.<tailnet>.ts.net` names in CT logs (any node with HTTPS certs enabled; Funnel uses the same names) | Internal machine names, and services published to the internet through Funnel | TENTATIVE unless names carry target tokens or are corroborated elsewhere |
-| **Twingate** | Network `<network>.twingate.com` (admin console and client sign-in use the network name) | ZTNA vendor and network name | TENTATIVE on name match; FIRM when referenced by target content |
+| **Palo Alto Prisma Access** (GlobalProtect mobile users) | Portal `<name>.gpcloudservice.com`, the default domain, which Prisma Access publishes to public DNS. Custom portal names CNAME to it | Remote access runs on Prisma Access | FIRM via CNAME from a target name; TENTATIVE on brand-token match alone |
+| **Cloudflare Access / Cloudflare One** | Team domain `<team>.cloudflareaccess.com`; the team's public signing keys are published at `/cdn-cgi/access/certs` on it | Access team name. Pairs with the `cloudflare-verify=` TXT row (§16.22) | FIRM when the team domain appears in target-controlled content; TENTATIVE on name match |
+| **Netskope** (SSE) | Admin console `<tenant>.goskope.com`, or regional `<tenant>.eu.goskope.com` / `<tenant>.au.goskope.com`; client gateways `gateway-<tenant>[.region].goskope.com` | SSE vendor and tenant name | FIRM when referenced in target-controlled content (CNAME, public docs, scripts); TENTATIVE on name match |
+| **Zscaler** | Service names such as `gateway.zscalertwo.net` / `secondary.gateway.zscalertwo.net` in public docs, scripts or repos. Internet & SaaS (ZIA) clouds: `zscaler.net`, `zscalerone.net`, `zscalertwo.net`, `zscalerthree.net`, `zscloud.net`; Private Access (ZPA): `private.zscaler.com`, `zpatwo.net` | Which Zscaler cloud the org is provisioned on (an org is provisioned on one cloud). Complements the `zscaler-verification-` TXT row (§16.22) | FIRM when referenced in target-controlled content |
+| **Cisco Meraki MX** | Client-VPN dynamic DNS `<hostname>.dynamic-m.com` (e.g. `mx60-bjvqggbknd.dynamic-m.com`); `-1` / `-2` suffixes resolve per WAN link | Public IP of the active WAN link, and of WAN 1 / WAN 2 | FIRM when a target name CNAMEs to it or target content references it; TENTATIVE otherwise |
+| **Tailscale** (HTTPS / Funnel) | `<machine>.<tailnet>.ts.net` names in CT logs for nodes with HTTPS certificates. Funnel requires those certificates and uses the tailnet's `ts.net` names | Machine names, and services Funnel shares to the public internet | TENTATIVE unless corroborated: default tailnet names (`tailNNNN.ts.net`) rarely carry the brand |
+| **Twingate** | Network name `<network>.twingate.com`; tenant traffic resolves to `<network>.<region>.twingate.com` (e.g. `us1`) | ZTNA vendor and network name | TENTATIVE on name match; FIRM when referenced by target content |
+
+Sources (vendor documentation): [Prisma Access portal set-up](https://docs.paloaltonetworks.com/prisma-access/administration/prisma-access-mobile-users/mobile-users-globalprotect/set-up-globalprotect-mobile-users/set-up-globalprotect-mobile-users-cloud-management) · [Cloudflare Access JWT validation](https://developers.cloudflare.com/cloudflare-one/access-controls/applications/http-apps/authorization-cookie/validating-json/) · [Netskope admin console](https://docs.netskope.com/en/access-the-admin-console/) and [client network configuration](https://docs.netskope.com/en/netskope-client-network-configuration.html) · [Zscaler cloud names](https://help.zscaler.com/unified/understanding-zscaler-cloud-names) and [no-default-route DNS names](https://help.zscaler.com/zia/implementing-zscaler-no-default-route-environments) · [Meraki DDNS](https://documentation.meraki.com/MX/Other_Topics/Dynamic_DNS_(DDNS)) · [Tailscale HTTPS](https://tailscale.com/kb/1153/enabling-https) and [Funnel](https://tailscale.com/kb/1223/funnel) · [Twingate allowlist](https://help.twingate.com/hc/en-us/articles/14142225907485)
 
 **Passive pivots:**
 
@@ -1309,16 +1311,11 @@ D="target.example"; B="target"   # apex domain and brand token
 for h in vpn remote access portal gp sase ztna; do
   printf '%s -> %s\n' "$h.$D" "$(dig +short CNAME "$h.$D")"
 done | grep -E 'gpcloudservice\.com|cloudflareaccess\.com|goskope\.com|dynamic-m\.com|twingate\.com|ts\.net'
-# CT: vendor-hosted names carrying the brand token (crt.sh may 502; see §27 fallbacks)
-for z in gpcloudservice.com ts.net; do
-  curl -s "https://crt.sh/?q=%25${B}%25.${z}&output=json" | grep -o '"name_value":"[^"]*"' | sort -u
-done
-# Cloudflare Access: does a team domain exist under the brand token? (vendor-hosted request)
-curl -s -o /dev/null -w '%{http_code}\n' "https://${B}.cloudflareaccess.com/cdn-cgi/access/certs"
-# 200 + JSON keys = team exists; 404 = no such team. Don't test the bare team URL: it returns 200 for any name.
+# CT: Tailscale machine names carrying the brand token (crt.sh may 502; see §27 fallbacks)
+curl -s "https://crt.sh/?q=%25${B}%25.ts.net&output=json" | grep -o '"name_value":"[^"]*"' | sort -u
 ```
 
-**Severity:** a fingerprint alone is **INFO** (methodology §9). It maps the remote-access architecture and narrows the attack surface. Escalate on what it exposes: a Tailscale Funnel serving an admin UI takes that service's severity. Don't carry the on-prem GlobalProtect KEV escalations in §40 over to Prisma Access, where Palo Alto patches the infrastructure.
+**Severity:** a fingerprint alone is **INFO** (methodology §9). It maps the remote-access architecture and narrows the attack surface. Escalate on what it exposes: a Tailscale Funnel serving an admin UI takes that service's severity.
 
 **Per-vendor probe pattern:**
 
