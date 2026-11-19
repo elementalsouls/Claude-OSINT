@@ -9,6 +9,10 @@ and the project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### `offensive-osint` — feat: SASE / zero-trust vendor fingerprints in §16.16
+
+- §16.16 Vendor Product Fingerprints: added the 6 SASE / zero-trust products listed as HIGH-priority missing fingerprints in CONTRIBUTING.md — Zscaler ZIA / ZPA, Palo Alto Prisma Access, Cato Networks, Cloudflare One / Access, Cisco Meraki, and Tailscale Funnel. Each row gives passive fingerprint signals (portal / CNAME / TXT / redirect patterns), an honest severity anchor (tenant discovery is INFO; escalation only on unauthenticated reachability or an Access/Funnel bypass), and a detectability tag. No on-prem CVEs are claimed for cloud-delivered products.
+
 ### `offensive-osint` — docs: TGScope in §38
 
 - §38 Telegram & Messaging Intelligence: added TGScope — dates a Telegram channel from its numeric ID (creation-date / age estimate), plus a free search over public channels that matches by meaning in any language.
